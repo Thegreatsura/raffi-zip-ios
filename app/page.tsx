@@ -67,7 +67,7 @@ export default function Home() {
           </p>
 
           <p>
-            Before Shopify I founded{" "}
+            Before Shop I founded{" "}
             <a
               href="#"
               className="text-blue-600 hover:underline"
@@ -76,8 +76,8 @@ export default function Home() {
             >
               Light Nudge
             </a>{" "}
-            where I built three health & fitness iOS apps with friends I met on
-            the internet. Together, we shipped:
+            and built three health & fitness iOS apps with friends I met on the
+            internet. Together, we shipped:
           </p>
 
           <p>
