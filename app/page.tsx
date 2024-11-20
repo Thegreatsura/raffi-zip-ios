@@ -51,10 +51,8 @@ export default function Home() {
         </div>
 
         <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
-          <p>I'm a designer & builder living in Chicago.</p>
-
           <p>
-            I'm currently working at{" "}
+            I'm a designer living in Chicago and currently working at{" "}
             <a
               href="#"
               className="text-blue-600 hover:underline"
@@ -67,7 +65,7 @@ export default function Home() {
           </p>
 
           <p>
-            Before Shop I founded{" "}
+            Before, I founded{" "}
             <a
               href="#"
               className="text-blue-600 hover:underline"
