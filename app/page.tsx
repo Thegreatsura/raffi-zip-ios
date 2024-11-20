@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="max-w-[600px] mx-auto px-6 py-16">
       <main className="flex flex-col">
-        <div className="w-[52px] h-[52px] relative rounded-[15px] mb-8 overflow-hidden border border-[#EDEDED]">
+        <div className="w-[52px] h-[52px] relative rounded-[15px] mb-8 overflow-hidden">
           <div
             className="absolute inset-0 flex"
             style={{
@@ -74,8 +74,8 @@ export default function Home() {
             >
               Light Nudge
             </a>{" "}
-            and built three health & fitness iOS apps with friends I met on the
-            internet. Together, we shipped:
+            where I built fitness apps with friends I met on the internet.
+            Together, we shipped:
           </p>
 
           <p>
@@ -105,7 +105,7 @@ export default function Home() {
               onMouseEnter={() => setActiveImage(5)}
               onMouseLeave={() => setActiveImage(0)}
             >
-              Numbles
+              Numbies
             </a>{" "}
             - a realtime social workout app
           </p>
