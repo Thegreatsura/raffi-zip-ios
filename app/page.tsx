@@ -3,38 +3,55 @@
 import Image from "next/image";
 import { useState } from "react";
 
+const AVATAR_SIZE = 52;
+
 export default function Home() {
   const [activeImage, setActiveImage] = useState(0);
 
-  const images = Array.from({ length: 8 }, (_, i) => `/images/${i}raffi.jpg`);
+  const images = [
+    "/images/0raffi.jpg",
+    "/images/1shop.jpg",
+    "/images/2lne.jpg",
+    "/images/3steddy.jpg",
+    "/images/4empty.jpg",
+    "/images/5numbies.jpg",
+    "/images/6sip.jpg",
+    "/images/7mail.jpg",
+  ];
 
   return (
     <div className="max-w-[600px] mx-auto px-6 py-16">
-      <main className="flex flex-col items-center">
-        <div className="w-[80px] h-[80px] relative rounded-full overflow-hidden mb-8">
+      <main className="flex flex-col">
+        <div className="w-[52px] h-[52px] relative rounded-[15px] mb-8 overflow-hidden border border-[#EDEDED]">
           <div
-            className="flex transition-transform duration-300 ease-in-out"
-            style={{ transform: `translateX(-${activeImage * 80}px)` }}
+            className="absolute inset-0 flex"
+            style={{
+              transform: `translateX(-${activeImage * AVATAR_SIZE}px)`,
+              transition: "transform 300ms ease-in-out",
+              width: `${images.length * AVATAR_SIZE}px`,
+              height: AVATAR_SIZE,
+            }}
           >
             {images.map((src, index) => (
-              <Image
+              <div
                 key={src}
-                src={src}
-                alt={`Avatar ${index}`}
-                width={80}
-                height={80}
-                className="flex-shrink-0"
-                priority
-              />
+                className="relative"
+                style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
+              >
+                <Image
+                  src={src}
+                  alt={`Avatar ${index}`}
+                  fill
+                  className="object-cover"
+                  priority
+                />
+              </div>
             ))}
           </div>
         </div>
 
         <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
-          <p>
-            I'm a designer, project manager, and AI-assisted junior developer
-            living in Chicago, IL.
-          </p>
+          <p>I'm a designer & builder living in Chicago.</p>
 
           <p>
             I'm currently working at{" "}
@@ -44,9 +61,9 @@ export default function Home() {
               onMouseEnter={() => setActiveImage(1)}
               onMouseLeave={() => setActiveImage(0)}
             >
-              Shopify
-            </a>{" "}
-            on the Shop app.
+              Shop
+            </a>
+            .
           </p>
 
           <p>
