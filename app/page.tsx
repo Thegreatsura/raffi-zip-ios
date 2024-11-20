@@ -22,7 +22,7 @@ export default function Home() {
   return (
     <div className="max-w-[600px] mx-auto px-6 py-16">
       <main className="flex flex-col">
-        <div className="w-[52px] h-[52px] relative rounded-[15px] mb-8 overflow-hidden">
+        <div className="w-[52px] h-[52px] relative mb-8 overflow-hidden">
           <div
             className="absolute inset-0 flex"
             style={{
