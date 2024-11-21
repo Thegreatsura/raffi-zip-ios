@@ -6,7 +6,16 @@ import { useState } from "react";
 const AVATAR_SIZE = 52;
 
 export default function Home() {
-  const [activeImage, setActiveImage] = useState(0);
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const handleImageChange = (newIndex: number) => {
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentImage(newIndex);
+      setIsAnimating(false);
+    }, 120);
+  };
 
   const images = [
     "/images/0raffi.jpg",
@@ -22,45 +31,30 @@ export default function Home() {
   return (
     <div className="max-w-[600px] mx-auto px-6 py-16">
       <main className="flex flex-col">
-        <div className="w-[52px] h-[52px] relative mb-8 overflow-hidden">
+        <div className="w-[52px] h-[52px] relative mb-8 rounded-[12.5px] overflow-hidden">
           <div
-            className="absolute inset-0 flex"
-            style={{
-              transform: `translateX(-${activeImage * AVATAR_SIZE}px)`,
-              transition: "transform 300ms ease-in-out",
-              width: `${images.length * AVATAR_SIZE}px`,
-              height: AVATAR_SIZE,
-            }}
+            className="absolute inset-0 transition-all duration-120"
+            style={{ opacity: isAnimating ? 0 : 1 }}
           >
-            {images.map((src, index) => (
-              <div
-                key={src}
-                className="relative"
-                style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-              >
-                <Image
-                  src={src}
-                  alt={`Avatar ${index}`}
-                  fill
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            ))}
+            <Image
+              src={images[currentImage]}
+              alt={`Avatar ${currentImage}`}
+              fill
+              className="object-cover"
+              priority
+            />
           </div>
         </div>
-
         <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
           <p>
             I'm a designer living in Chicago and currently working at{" "}
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(1)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(1)}
             >
               Shop
-            </a>
+            </a>{" "}
             .
           </p>
 
@@ -69,8 +63,7 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(2)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(2)}
             >
               Light Nudge
             </a>{" "}
@@ -82,8 +75,7 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(3)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(3)}
             >
               Steddy
             </a>{" "}
@@ -92,8 +84,7 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(4)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(4)}
             >
               Empty
             </a>{" "}
@@ -102,8 +93,7 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(5)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(5)}
             >
               Numbies
             </a>{" "}
@@ -115,8 +105,7 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(6)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(6)}
             >
               Spotted in Prod
             </a>{" "}
@@ -134,8 +123,7 @@ export default function Home() {
             <a
               href="mailto:your@email.com"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => setActiveImage(7)}
-              onMouseLeave={() => setActiveImage(0)}
+              onMouseEnter={() => handleImageChange(7)}
             >
               shoot me an email
             </a>
