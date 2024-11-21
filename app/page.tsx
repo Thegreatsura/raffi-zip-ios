@@ -140,18 +140,18 @@ export default function Home() {
         }, shrinkDuration + shrinkDelay)
       );
 
-      // Step 3: Navigate to the URL
+      // Step 3: Perform Navigation
       console.log("[handleLinkClick] Navigating to URL:", url);
-      router.push(url);
+      window.location.href = url; // Use native browser navigation for reliability
 
-      // Step 4: Reset the state with a delay
+      // Step 4: Reset State Immediately After Navigation Trigger
       setTimeout(() => {
         console.log("[handleLinkClick] Resetting state...");
         setTranslate(0); // Reset slide position
         setStartShrink(false); // Reset shrink animation
         setShrinkMessage("Pce"); // Reset message
         console.log("[handleLinkClick] State reset completed.");
-      }, 500); // Delay to ensure navigation is complete
+      }, 0); // Immediately after navigation trigger
     } catch (error) {
       console.error("[handleLinkClick] Error occurred:", error);
     }
