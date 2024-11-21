@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState, useRef } from "react";
+import { getSvgPath } from "figma-squircle";
 
 // Custom debounce hook
 const useDebounce = (callback: () => void, delay: number) => {
@@ -24,6 +25,14 @@ const useDebounce = (callback: () => void, delay: number) => {
 
   return { debounce, cancel };
 };
+
+// clippy
+const svgPath = getSvgPath({
+  width: 52,
+  height: 52,
+  cornerRadius: 12,
+  cornerSmoothing: 0.7,
+});
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
@@ -66,13 +75,13 @@ export default function Home() {
   return (
     <div className="max-w-[600px] mx-auto px-6 py-16">
       <main className="flex flex-col">
-        <div className="w-[52px] h-[52px] mb-8 border-2 border-red-500">
-          <div
-            className="relative w-full h-full overflow-hidden"
-            style={{
-              clipPath: "url(/images/clippy.svg)", // Reference your clippy.svg file
-            }}
-          >
+        <div
+          style={{
+            clipPath: `path('${svgPath}')`,
+          }}
+          className="w-[52px] h-[52px] mb-6"
+        >
+          <div className="relative w-full h-full overflow-hidden">
             <Image
               src={
                 hoveredIndex !== null ? images[currentImageIndex] : images[0]
@@ -85,8 +94,10 @@ export default function Home() {
           </div>
         </div>
         <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
+          <p className="opacity-50">November 21st, 2024</p>
+
           <p>
-            I'm a designer living in Chicago and currently working at{" "}
+            I'm a designer currently living in Chicago and working at{" "}
             <a
               href="#"
               className="text-blue-600 hover:opacity-70"
@@ -121,7 +132,7 @@ export default function Home() {
             >
               Steddy
             </a>{" "}
-            - a weekly exercise planner
+            - a weekly exercise planner & streak tracker
             <br />
             <a
               href="#"
@@ -154,8 +165,9 @@ export default function Home() {
             >
               Spotted in Prod
             </a>{" "}
-            (or SIP for short) - a collection of my favorite features and
-            interactions that I've found while exploring other iOS apps.
+            (or SIP for short) - a growing collection of my favorite features
+            and interactions that I've come across while exploring other iOS
+            apps.
           </p>
 
           <p>
