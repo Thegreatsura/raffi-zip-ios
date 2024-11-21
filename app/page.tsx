@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { getSvgPath } from "figma-squircle";
 import { motion } from "framer-motion";
 import { useRouter, usePathname } from "next/navigation";
@@ -75,8 +75,6 @@ const useDebounce = <T extends (...args: any[]) => void>(
 };
 
 export default function Home() {
-  const router = useRouter();
-
   // STATE
   const [initialLoad, setInitialLoad] = useState(true);
   const [translate, setTranslate] = useState(0);
@@ -179,7 +177,7 @@ export default function Home() {
               opacity: { duration: 1.5, delay: 0.2 },
               filter: { duration: 0.5 },
             }}
-            onAnimationComplete={() => setInitialLoad(false)} // Clear the initial load state after animation
+            // onAnimationComplete={() => setInitialLoad(false)} // Clear the initial load state after animation
           >
             <div className="max-w-[600px] mx-auto px-6 py-16">
               <main className="flex flex-col">
@@ -209,7 +207,7 @@ export default function Home() {
                     I'm a designer currently living in Chicago and working at{" "}
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() => handleLinkClick("https://shop.app")}
                       onMouseEnter={() => handleMouseEnter(1)}
                       onMouseLeave={handleMouseLeave}
@@ -222,7 +220,7 @@ export default function Home() {
                     Before, I founded{" "}
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() => handleLinkClick("https://lightnudge.com")}
                       onMouseEnter={() => handleMouseEnter(2)}
                       onMouseLeave={handleMouseLeave}
@@ -235,7 +233,7 @@ export default function Home() {
                   <p>
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() =>
                         handleLinkClick(
                           "https://apps.apple.com/us/app/steddy-stay-consistent/id1579825538?platform=iphone"
@@ -250,7 +248,7 @@ export default function Home() {
                     <br />
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() =>
                         handleLinkClick(
                           "https://apps.apple.com/us/app/empty-fasting/id6475213946"
@@ -265,7 +263,7 @@ export default function Home() {
                     <br />
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() =>
                         handleLinkClick(
                           "https://apps.apple.com/us/app/numbies-work-out-with-friends/id6448198083"
@@ -282,7 +280,7 @@ export default function Home() {
                     I also curate{" "}
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() =>
                         handleLinkClick("https://x.com/spottedinprod")
                       }
@@ -303,7 +301,7 @@ export default function Home() {
                     Feel free to{" "}
                     <a
                       href="mailto:your@email.com"
-                      className="text-blue-600 hover:opacity-70"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onMouseEnter={() => handleMouseEnter(7)}
                       onMouseLeave={handleMouseLeave}
                     >
