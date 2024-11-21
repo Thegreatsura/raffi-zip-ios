@@ -1,21 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 
-const AVATAR_SIZE = 52;
+// Custom debounce hook
+const useDebounce = (callback: () => void, delay: number) => {
+  const timeoutRef = useRef<number | null>(null);
+
+  const debounce = (...args: any[]) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+    timeoutRef.current = window.setTimeout(() => {
+      callback(...args);
+    }, delay);
+  };
+
+  const cancel = () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+  };
+
+  return { debounce, cancel };
+};
 
 export default function Home() {
-  const [currentImage, setCurrentImage] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  const handleImageChange = (newIndex: number) => {
-    setIsAnimating(true);
-    setTimeout(() => {
-      setCurrentImage(newIndex);
-      setIsAnimating(false);
-    }, 120);
-  };
+  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track hover timeout
+  const { debounce, cancel } = useDebounce(() => setCurrentImageIndex(0), 1000);
 
   const images = [
     "/images/0raffi.jpg",
@@ -28,17 +43,38 @@ export default function Home() {
     "/images/7mail.jpg",
   ];
 
+  const handleMouseEnter = (index: number) => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current); // Clear any pending timeout
+      hoverTimeoutRef.current = null; // Reset the ref
+    }
+    setHoveredIndex(index);
+    setCurrentImageIndex(index);
+    cancel(); // Cancel any pending debounce reset
+  };
+
+  const handleMouseLeave = () => {
+    hoverTimeoutRef.current = setTimeout(() => {
+      setHoveredIndex(null);
+      debounce(); // Trigger the debounced reset
+    }, 1000); // 1000ms timeout
+  };
+
   return (
     <div className="max-w-[600px] mx-auto px-6 py-16">
       <main className="flex flex-col">
-        <div className="w-[52px] h-[52px] relative mb-8 rounded-[12.5px] overflow-hidden">
+        <div className="w-[52px] h-[52px] mb-8 border-2 border-red-500">
           <div
-            className="absolute inset-0 transition-all duration-120"
-            style={{ opacity: isAnimating ? 0 : 1 }}
+            className="relative w-full h-full overflow-hidden"
+            style={{
+              clipPath: "url(/images/clippy.svg)", // Reference your clippy.svg file
+            }}
           >
             <Image
-              src={images[currentImage]}
-              alt={`Avatar ${currentImage}`}
+              src={
+                hoveredIndex !== null ? images[currentImageIndex] : images[0]
+              } // Default to /0raffi when hoveredIndex is null
+              alt={`Avatar ${currentImageIndex}`}
               fill
               className="object-cover"
               priority
@@ -51,7 +87,8 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(1)}
+              onMouseEnter={() => handleMouseEnter(1)}
+              onMouseLeave={handleMouseLeave}
             >
               Shop
             </a>{" "}
@@ -63,7 +100,8 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(2)}
+              onMouseEnter={() => handleMouseEnter(2)}
+              onMouseLeave={handleMouseLeave}
             >
               Light Nudge
             </a>{" "}
@@ -75,7 +113,8 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(3)}
+              onMouseEnter={() => handleMouseEnter(3)}
+              onMouseLeave={handleMouseLeave}
             >
               Steddy
             </a>{" "}
@@ -84,7 +123,8 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(4)}
+              onMouseEnter={() => handleMouseEnter(4)}
+              onMouseLeave={handleMouseLeave}
             >
               Empty
             </a>{" "}
@@ -93,7 +133,8 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(5)}
+              onMouseEnter={() => handleMouseEnter(5)}
+              onMouseLeave={handleMouseLeave}
             >
               Numbies
             </a>{" "}
@@ -105,7 +146,8 @@ export default function Home() {
             <a
               href="#"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(6)}
+              onMouseEnter={() => handleMouseEnter(6)}
+              onMouseLeave={handleMouseLeave}
             >
               Spotted in Prod
             </a>{" "}
@@ -123,7 +165,8 @@ export default function Home() {
             <a
               href="mailto:your@email.com"
               className="text-blue-600 hover:underline"
-              onMouseEnter={() => handleImageChange(7)}
+              onMouseEnter={() => handleMouseEnter(7)}
+              onMouseLeave={handleMouseLeave}
             >
               shoot me an email
             </a>
