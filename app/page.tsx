@@ -10,9 +10,9 @@ import { useRouter, usePathname } from "next/navigation";
 
 const messages = [
   "Pce",
-  "Have fun!",
+  "Have fun",
   "It's been real",
-  "Ok miss u",
+  "Miss u",
   "Bye bye",
   "l8r",
   "Ciao",
@@ -111,29 +111,50 @@ export default function Home() {
   };
 
   // HANDLE CLICK
+
   const handleLinkClick = async (url: string) => {
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     setShrinkMessage(randomMessage);
 
-    // Step 1: Slide the home content out
-    setTranslate(-100);
-    await new Promise((resolve) =>
-      setTimeout(resolve, slideDuration + shrinkDelay)
-    );
+    console.log("[handleLinkClick] Clicked URL:", url);
+    console.log("[handleLinkClick] Random Message Selected:", randomMessage);
 
-    // Step 2: Trigger whimsical shrink animation
-    setStartShrink(true);
-    await new Promise((resolve) =>
-      setTimeout(resolve, shrinkDuration + shrinkDelay)
-    );
+    try {
+      // Step 1: Slide the home content out
+      console.log("[handleLinkClick] Starting slide animation...");
+      setTranslate(-100);
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          console.log("[handleLinkClick] Slide animation completed.");
+          resolve(true);
+        }, slideDuration + shrinkDelay)
+      );
 
-    // Step 3: Reset the state invisibly during shrink animation
-    setTranslate(0);
-    setStartShrink(false);
-    setShrinkMessage("Pce");
+      // Step 2: Trigger whimsical shrink animation
+      console.log("[handleLinkClick] Starting shrink animation...");
+      setStartShrink(true);
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          console.log("[handleLinkClick] Shrink animation completed.");
+          resolve(true);
+        }, shrinkDuration + shrinkDelay)
+      );
 
-    // Step 4: Navigate after reset
-    router.push(url);
+      // Step 3: Navigate to the URL
+      console.log("[handleLinkClick] Navigating to URL:", url);
+      router.push(url);
+
+      // Step 4: Reset the state with a delay
+      setTimeout(() => {
+        console.log("[handleLinkClick] Resetting state...");
+        setTranslate(0); // Reset slide position
+        setStartShrink(false); // Reset shrink animation
+        setShrinkMessage("Pce"); // Reset message
+        console.log("[handleLinkClick] State reset completed.");
+      }, 500); // Delay to ensure navigation is complete
+    } catch (error) {
+      console.error("[handleLinkClick] Error occurred:", error);
+    }
   };
 
   return (
