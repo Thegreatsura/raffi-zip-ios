@@ -10,10 +10,10 @@ import { useRouter, usePathname } from "next/navigation";
 
 const messages = [
   "Pce",
-  "hav fun",
-  "it's been ril",
-  "Miss u",
-  "bye bye",
+  "Have fun!",
+  "It's been real",
+  "Ok miss u",
+  "Bye bye",
   "l8r",
   "Ciao",
 ];
@@ -85,24 +85,6 @@ export default function Home() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [shrinkMessage, setShrinkMessage] = useState("Pce"); // Default message
 
-  // RESET ON BACK NAV
-
-  // useEffect(() => {
-  //   const handlePopState = () => {
-  //     // Reset state when navigating back
-  //     console.log("Navigated back, resetting state...");
-  //     setTranslate(0);
-  //     setStartShrink(false);
-  //     setShrinkMessage("Pce");
-  //   };
-
-  //   window.addEventListener("popstate", handlePopState);
-
-  //   return () => {
-  //     window.removeEventListener("popstate", handlePopState);
-  //   };
-  // }, []);
-
   // POINTER HANDLERS
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { debounce, cancel } = useDebounce(
@@ -133,16 +115,24 @@ export default function Home() {
     const randomMessage = messages[Math.floor(Math.random() * messages.length)];
     setShrinkMessage(randomMessage);
 
+    // Step 1: Slide the home content out
     setTranslate(-100);
     await new Promise((resolve) =>
       setTimeout(resolve, slideDuration + shrinkDelay)
     );
 
+    // Step 2: Trigger whimsical shrink animation
     setStartShrink(true);
     await new Promise((resolve) =>
-      setTimeout(resolve, shrinkDelay + shrinkDuration)
+      setTimeout(resolve, shrinkDuration + shrinkDelay)
     );
 
+    // Step 3: Reset the state invisibly during shrink animation
+    setTranslate(0);
+    setStartShrink(false);
+    setShrinkMessage("Pce");
+
+    // Step 4: Navigate after reset
     router.push(url);
   };
 
