@@ -4,16 +4,19 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import { getSvgPath } from "figma-squircle";
 
-// Custom debounce hook
-const useDebounce = (callback: () => void, delay: number) => {
+// Debounce hook
+const useDebounce = <T extends (...args: any[]) => void>(
+  callback: T,
+  delay: number
+) => {
   const timeoutRef = useRef<number | null>(null);
 
-  const debounce = (...args: any[]) => {
+  const debounce = (...args: Parameters<T>) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     timeoutRef.current = window.setTimeout(() => {
-      callback(...args);
+      callback(...args); // Pass the arguments correctly
     }, delay);
   };
 
@@ -37,7 +40,7 @@ const svgPath = getSvgPath({
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const debounceDelay = 500; //
+  const debounceDelay = 630; //
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track hover timeout
   const { debounce, cancel } = useDebounce(
     () => setCurrentImageIndex(0),
