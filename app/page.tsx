@@ -28,9 +28,12 @@ const useDebounce = (callback: () => void, delay: number) => {
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-
+  const debounceDelay = 500; //
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null); // Track hover timeout
-  const { debounce, cancel } = useDebounce(() => setCurrentImageIndex(0), 1000);
+  const { debounce, cancel } = useDebounce(
+    () => setCurrentImageIndex(0),
+    debounceDelay
+  );
 
   const images = [
     "/images/0raffi.jpg",
@@ -57,7 +60,7 @@ export default function Home() {
     hoverTimeoutRef.current = setTimeout(() => {
       setHoveredIndex(null);
       debounce(); // Trigger the debounced reset
-    }, 1000); // 1000ms timeout
+    }, debounceDelay);
   };
 
   return (
@@ -86,12 +89,12 @@ export default function Home() {
             I'm a designer living in Chicago and currently working at{" "}
             <a
               href="#"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(1)}
               onMouseLeave={handleMouseLeave}
             >
               Shop
-            </a>{" "}
+            </a>
             .
           </p>
 
@@ -99,30 +102,30 @@ export default function Home() {
             Before, I founded{" "}
             <a
               href="#"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(2)}
               onMouseLeave={handleMouseLeave}
             >
               Light Nudge
             </a>{" "}
-            where I built fitness apps with friends I met on the internet.
-            Together, we shipped:
+            and built fitness apps with friends from the internet. Together we
+            launched:
           </p>
 
           <p>
             <a
               href="#"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(3)}
               onMouseLeave={handleMouseLeave}
             >
               Steddy
             </a>{" "}
-            - a weekly routine planner
+            - a weekly exercise planner
             <br />
             <a
               href="#"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(4)}
               onMouseLeave={handleMouseLeave}
             >
@@ -132,7 +135,7 @@ export default function Home() {
             <br />
             <a
               href="#"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(5)}
               onMouseLeave={handleMouseLeave}
             >
@@ -145,18 +148,18 @@ export default function Home() {
             I also curate{" "}
             <a
               href="#"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(6)}
               onMouseLeave={handleMouseLeave}
             >
               Spotted in Prod
             </a>{" "}
-            (or SIP for short) - a collection of features and interactions that
-            I've bumped into while exploring other iOS apps.
+            (or SIP for short) - a collection of my favorite features and
+            interactions that I've found while exploring other iOS apps.
           </p>
 
           <p>
-            I love talking to people about products they are building,
+            I enjoy talking to people about products they are building,
             especially if they are building for themselves.
           </p>
 
@@ -164,11 +167,11 @@ export default function Home() {
             Feel free to{" "}
             <a
               href="mailto:your@email.com"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:opacity-70"
               onMouseEnter={() => handleMouseEnter(7)}
               onMouseLeave={handleMouseLeave}
             >
-              shoot me an email
+              get in touch
             </a>
             .
           </p>
