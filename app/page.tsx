@@ -232,6 +232,9 @@ export default function Home() {
                   <a
                     href="#"
                     className="text-blue-600 hover:opacity-70"
+                    onClick={() =>
+                      handleLinkClick("https://x.com/spottedinprod")
+                    }
                     onMouseEnter={() => handleMouseEnter(6)}
                     onMouseLeave={handleMouseLeave}
                   >
