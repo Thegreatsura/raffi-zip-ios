@@ -4,7 +4,6 @@ import Image from "next/image";
 import { useState, useRef } from "react";
 import { getSvgPath } from "figma-squircle";
 import { motion } from "framer-motion";
-import { useRouter, usePathname } from "next/navigation";
 
 // CONSTANTS
 
@@ -76,7 +75,6 @@ const useDebounce = <T extends (...args: any[]) => void>(
 
 export default function Home() {
   // STATE
-  const [initialLoad, setInitialLoad] = useState(true);
   const [translate, setTranslate] = useState(0);
   const [startShrink, setStartShrink] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
