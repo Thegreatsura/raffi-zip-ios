@@ -10,8 +10,7 @@ import { motion } from "framer-motion";
 const messages = [
   "Pce",
   "Have fun",
-  "It's been real",
-  "Miss u",
+  "It&#39;s been real",
   "Bye bye",
   "l8r",
   "Ciao",
@@ -38,6 +37,13 @@ const svgPath = getSvgPath({
   cornerSmoothing: 0.7,
 });
 
+const svgClipPath = getSvgPath({
+  width: 25,
+  height: 25,
+  cornerRadius: 5.5,
+  cornerSmoothing: 0.7,
+});
+
 const images = [
   "/images/0raffi.jpg",
   "/images/1shop.jpg",
@@ -49,7 +55,7 @@ const images = [
   "/images/7mail.jpg",
 ];
 
-const useDebounce = <T extends (...args: any[]) => void>(
+const useDebounce = <T extends (...args: unknown[]) => void>(
   callback: T,
   delay: number
 ) => {
@@ -116,7 +122,6 @@ export default function Home() {
     console.log("[handleLinkClick] Random Message Selected:", randomMessage);
 
     try {
-      // Step 1: Slide the home content out
       console.log("[handleLinkClick] Starting slide animation...");
       setTranslate(-100);
       await new Promise((resolve) =>
@@ -126,7 +131,6 @@ export default function Home() {
         }, slideDuration + shrinkDelay)
       );
 
-      // Step 2: Trigger whimsical shrink animation
       console.log("[handleLinkClick] Starting shrink animation...");
       setStartShrink(true);
       await new Promise((resolve) =>
@@ -136,18 +140,16 @@ export default function Home() {
         }, shrinkDuration + shrinkDelay)
       );
 
-      // Step 3: Perform Navigation
       console.log("[handleLinkClick] Navigating to URL:", url);
-      window.location.href = url; // Use native browser navigation for reliability
+      window.location.href = url;
 
-      // Step 4: Reset State Immediately After Navigation Trigger
       setTimeout(() => {
         console.log("[handleLinkClick] Resetting state...");
-        setTranslate(0); // Reset slide position
-        setStartShrink(false); // Reset shrink animation
-        setShrinkMessage("Pce"); // Reset message
+        setTranslate(0);
+        setStartShrink(false);
+        setShrinkMessage("Pce");
         console.log("[handleLinkClick] State reset completed.");
-      }, 0); // Immediately after navigation trigger
+      }, 0);
     } catch (error) {
       console.error("[handleLinkClick] Error occurred:", error);
     }
@@ -175,30 +177,48 @@ export default function Home() {
               opacity: { duration: 1.5, delay: 0.2 },
               filter: { duration: 0.5 },
             }}
-            // onAnimationComplete={() => setInitialLoad(false)} // Clear the initial load state after animation
           >
             <div className="max-w-[600px] mx-auto px-6 py-16">
               <main className="flex flex-col">
-                <div
-                  style={{
-                    clipPath: `path('${svgPath}')`,
-                  }}
-                  className="w-[52px] h-[52px] mb-6"
-                >
-                  <div className="relative w-full h-full overflow-hidden">
-                    <Image
-                      src={
-                        hoveredIndex !== null
-                          ? images[currentImageIndex]
-                          : images[0]
-                      }
-                      alt={`Avatar ${currentImageIndex}`}
-                      fill
-                      className="object-cover"
-                      priority
-                    />
+                {/* AVATAR */}
+                <div className="w-[52px] h-[52px] mb-6 relative">
+                  <div className="relative w-full h-full">
+                    {/* HEADSHOT */}
+                    <div
+                      style={{
+                        clipPath: `path('${svgPath}')`, // Clip only the headshot
+                      }}
+                      className="w-full h-full overflow-hidden"
+                    >
+                      <Image
+                        src={images[0]}
+                        alt="Avatar"
+                        fill
+                        className="object-cover"
+                        priority
+                      />
+                    </div>
+
+                    {/* BADGE */}
+                    {hoveredIndex !== null && (
+                      <div
+                        style={{
+                          clipPath: `path('${svgClipPath}')`, // Clip only the badge
+                        }}
+                        className="absolute bottom-0 right-0 w-[25px] h-[25px] overflow-hidden bg-gray-100"
+                      >
+                        <Image
+                          src={images[hoveredIndex]}
+                          alt={`Badge for ${hoveredIndex}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
+
+                {/* PARAGRAPH */}
                 <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
                   <p className="opacity-50">November 21st, 2024</p>
                   <p>
