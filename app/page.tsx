@@ -13,15 +13,15 @@ const messages = ["Pce", "Bye bye", "Bye", "l8r", "Ciao"];
 
 const slideDuration = 480;
 const shrinkDelay = 480;
-const shrinkDuration = 480;
+const shrinkDuration = 100;
 
 const slideStiffness = 250;
 const slideDamping = 25;
 const shrinkStiffness = 150;
 const shrinkDamping = 15;
 
-const shrinkInitial = { opacity: 1, scale: 2, rotate: 0 };
-const shrinkAnimate = { opacity: 0, scale: 0.3, rotate: 20 };
+const shrinkInitial = { opacity: 1, scale: 1.8, rotate: 0 };
+const shrinkAnimate = { opacity: 0, scale: 0.2, rotate: 20 };
 
 const svgPath = getSvgPath({
   width: 52,
@@ -175,7 +175,7 @@ export default function Home() {
 
                 {/* PARAGRAPH */}
                 <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
-                  <p className="opacity-50">November 21st, 2024</p>
+                  <p className="opacity-35">Updated Nov 21st, 2024</p>
                   <p>
                     I&apos;m a designer currently living in Chicago and working
                     at{" "}
