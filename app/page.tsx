@@ -23,8 +23,6 @@ const shrinkDamping = 15;
 const shrinkInitial = { opacity: 1, scale: 2, rotate: 0 };
 const shrinkAnimate = { opacity: 0, scale: 0.3, rotate: 20 };
 
-const debounceDelay = 630;
-
 const svgPath = getSvgPath({
   width: 52,
   height: 52,
@@ -43,45 +41,16 @@ const images = [
   "/images/7mail.jpg",
 ];
 
-const useDebounce = <T extends (...args: unknown[]) => void>(
-  callback: T,
-  delay: number
-) => {
-  const timeoutRef = useRef<number | null>(null);
-
-  const debounce = (...args: Parameters<T>) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    timeoutRef.current = window.setTimeout(() => {
-      callback(...args); // Pass the arguments correctly
-    }, delay);
-  };
-
-  const cancel = () => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-  };
-
-  return { debounce, cancel };
-};
-
 export default function Home() {
   // STATE
   const [translate, setTranslate] = useState(0);
   const [startShrink, setStartShrink] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [shrinkMessage, setShrinkMessage] = useState("Pce"); // Default message
   const [pointerPosition, setPointerPosition] = useState({ x: 0, y: 0 });
 
   // POINTER HANDLERS
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const { debounce, cancel } = useDebounce(
-    () => setCurrentImageIndex(0),
-    debounceDelay
-  );
 
   // ENTER
   const handleMouseEnter = (index: number, event: React.MouseEvent) => {
@@ -89,7 +58,6 @@ export default function Home() {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
-    cancel();
     setHoveredIndex(index);
     setPointerPosition({ x: event.clientX, y: event.clientY });
   };
@@ -209,7 +177,8 @@ export default function Home() {
                 <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
                   <p className="opacity-50">November 21st, 2024</p>
                   <p>
-                    I'm a designer currently living in Chicago and working at{" "}
+                    I&apos;m a designer currently living in Chicago and working
+                    at{" "}
                     <a
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
@@ -308,8 +277,8 @@ export default function Home() {
                       Spotted in Prod
                     </a>{" "}
                     - a growing collection of my favorite features and
-                    interactions that I've come across while exploring other iOS
-                    apps.
+                    interactions that I&apos;ve come across while exploring
+                    other iOS apps.
                   </p>
                   <p>
                     I enjoy talking to people about products they are building,
