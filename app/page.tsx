@@ -32,13 +32,6 @@ const svgPath = getSvgPath({
   cornerSmoothing: 0.7,
 });
 
-const svgClipPath = getSvgPath({
-  width: 27,
-  height: 27,
-  cornerRadius: 7,
-  cornerSmoothing: 0.9,
-});
-
 const images = [
   "/images/0raffi.jpg",
   "/images/1shop.jpg",
@@ -188,7 +181,7 @@ export default function Home() {
                     {/* HEADSHOT */}
                     <div
                       style={{
-                        clipPath: `path('${svgPath}')`, // Clip only the headshot
+                        clipPath: `path('${svgPath}')`,
                       }}
                       className="w-full h-full overflow-hidden"
                     >
@@ -325,7 +318,7 @@ export default function Home() {
                   <p>
                     Feel free to{" "}
                     <a
-                      href="mailto:your@email.com"
+                      href="mailto:raffi.chilingaryan@gmail.com"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       // Remove Tooltip-related event handlers for email
                     >
