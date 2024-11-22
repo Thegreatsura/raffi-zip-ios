@@ -5,16 +5,11 @@ import { useState, useRef } from "react";
 import { getSvgPath } from "figma-squircle";
 import { motion } from "framer-motion";
 
+import Tooltip from "./tooltip";
+
 // CONSTANTS
 
-const messages = [
-  "Pce",
-  "Have fun",
-  "It&#39;s been real",
-  "Bye bye",
-  "l8r",
-  "Ciao",
-];
+const messages = ["Pce", "Bye bye", "Bye", "l8r", "Ciao"];
 
 const slideDuration = 480;
 const shrinkDelay = 480;
@@ -33,15 +28,15 @@ const debounceDelay = 630;
 const svgPath = getSvgPath({
   width: 52,
   height: 52,
-  cornerRadius: 12,
+  cornerRadius: 52,
   cornerSmoothing: 0.7,
 });
 
 const svgClipPath = getSvgPath({
-  width: 25,
-  height: 25,
-  cornerRadius: 5.5,
-  cornerSmoothing: 0.7,
+  width: 27,
+  height: 27,
+  cornerRadius: 7,
+  cornerSmoothing: 0.9,
 });
 
 const images = [
@@ -86,6 +81,7 @@ export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [shrinkMessage, setShrinkMessage] = useState("Pce"); // Default message
+  const [pointerPosition, setPointerPosition] = useState({ x: 0, y: 0 });
 
   // POINTER HANDLERS
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -93,23 +89,29 @@ export default function Home() {
     () => setCurrentImageIndex(0),
     debounceDelay
   );
-  const handleMouseEnter = (index: number) => {
+
+  // ENTER
+  const handleMouseEnter = (index: number, event: React.MouseEvent) => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
     cancel();
     setHoveredIndex(index);
-    setCurrentImageIndex(index);
+    setPointerPosition({ x: event.clientX, y: event.clientY });
   };
+
+  const handleMouseMove = (event: React.MouseEvent) => {
+    setPointerPosition({ x: event.clientX, y: event.clientY });
+  };
+
   const handleMouseLeave = () => {
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
     }
     hoverTimeoutRef.current = setTimeout(() => {
       setHoveredIndex(null);
-      debounce();
-    }, debounceDelay);
+    }, 0);
   };
 
   // HANDLE CLICK
@@ -199,21 +201,13 @@ export default function Home() {
                       />
                     </div>
 
-                    {/* BADGE */}
+                    {/* TOOLTIP */}
                     {hoveredIndex !== null && (
-                      <div
-                        style={{
-                          clipPath: `path('${svgClipPath}')`, // Clip only the badge
-                        }}
-                        className="absolute bottom-0 right-0 w-[25px] h-[25px] overflow-hidden bg-gray-100"
-                      >
-                        <Image
-                          src={images[hoveredIndex]}
-                          alt={`Badge for ${hoveredIndex}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
+                      <Tooltip
+                        imageSrc={images[hoveredIndex]} // Image to display in the tooltip
+                        position={pointerPosition} // Tooltip position based on pointer
+                        key={hoveredIndex} // Use key to ensure re-mount on index change
+                      />
                     )}
                   </div>
                 </div>
@@ -227,7 +221,8 @@ export default function Home() {
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() => handleLinkClick("https://shop.app")}
-                      onMouseEnter={() => handleMouseEnter(1)}
+                      onMouseEnter={(event) => handleMouseEnter(1, event)}
+                      onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                     >
                       Shop
@@ -240,7 +235,8 @@ export default function Home() {
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() => handleLinkClick("https://lightnudge.com")}
-                      onMouseEnter={() => handleMouseEnter(2)}
+                      onMouseEnter={(event) => handleMouseEnter(2, event)}
+                      onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                     >
                       Light Nudge
@@ -248,16 +244,20 @@ export default function Home() {
                     and built fitness apps with friends from the internet.
                     Together we launched:
                   </p>
-                  <p>
+
+                  {/* LNE APPS */}
+                  <div>
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120 inline-block"
+                      style={{ margin: "-1px" }}
                       onClick={() =>
                         handleLinkClick(
                           "https://apps.apple.com/us/app/steddy-stay-consistent/id1579825538?platform=iphone"
                         )
                       }
-                      onMouseEnter={() => handleMouseEnter(3)}
+                      onMouseEnter={(event) => handleMouseEnter(3, event)}
+                      onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                     >
                       Steddy
@@ -266,13 +266,15 @@ export default function Home() {
                     <br />
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120 inline-block"
+                      style={{ margin: "-1px" }}
                       onClick={() =>
                         handleLinkClick(
                           "https://apps.apple.com/us/app/empty-fasting/id6475213946"
                         )
                       }
-                      onMouseEnter={() => handleMouseEnter(4)}
+                      onMouseEnter={(event) => handleMouseEnter(4, event)}
+                      onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                     >
                       Empty
@@ -281,19 +283,23 @@ export default function Home() {
                     <br />
                     <a
                       href="#"
-                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
+                      className="text-blue-600 hover:opacity-70 transition-opacity duration-120 inline-block"
+                      style={{ margin: "-1px" }}
                       onClick={() =>
                         handleLinkClick(
-                          "https://apps.apple.com/us/app/numbies-work-out-with-friends/id6448198083"
+                          "https://apps.apple.com/us/app/numbies/id6448198083"
                         )
                       }
-                      onMouseEnter={() => handleMouseEnter(5)}
+                      onMouseEnter={(event) => handleMouseEnter(5, event)}
+                      onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                     >
                       Numbies
                     </a>{" "}
                     - a realtime social workout app
-                  </p>
+                  </div>
+
+                  {/* SIP */}
                   <p>
                     I also curate{" "}
                     <a
@@ -302,7 +308,8 @@ export default function Home() {
                       onClick={() =>
                         handleLinkClick("https://x.com/spottedinprod")
                       }
-                      onMouseEnter={() => handleMouseEnter(6)}
+                      onMouseEnter={(event) => handleMouseEnter(6, event)}
+                      onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
                     >
                       Spotted in Prod
@@ -320,10 +327,9 @@ export default function Home() {
                     <a
                       href="mailto:your@email.com"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
-                      onMouseEnter={() => handleMouseEnter(7)}
-                      onMouseLeave={handleMouseLeave}
+                      // Remove Tooltip-related event handlers for email
                     >
-                      get in touch
+                      send me an email
                     </a>
                     .
                   </p>
