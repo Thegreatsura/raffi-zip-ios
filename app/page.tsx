@@ -224,7 +224,7 @@ export default function Home() {
                     >
                       Steddy
                     </a>{" "}
-                    - a weekly exercise planner & streak tracker
+                    - a weekly exercise planner
                     <br />
                     <a
                       href="#"
