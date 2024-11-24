@@ -183,7 +183,9 @@ export default function Home() {
                     <a
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
-                      onClick={() => (window.location.href = "https:/shop.app")}
+                      onClick={() =>
+                        (window.location.href = "https://shop.app/")
+                      }
                       onMouseEnter={(event) => handleMouseEnter(1, event)}
                       onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
@@ -198,7 +200,7 @@ export default function Home() {
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() =>
-                        (window.location.href = "https:/lightnudge.com")
+                        (window.location.href = "https://www.lightnudge.com/")
                       }
                       onMouseEnter={(event) => handleMouseEnter(2, event)}
                       onMouseMove={handleMouseMove}
