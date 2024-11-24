@@ -54,11 +54,26 @@ export default function Home() {
   const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // ENTER
+  // const handleMouseEnter = (index: number, event: React.MouseEvent) => {
+  //   if (hoverTimeoutRef.current) {
+  //     clearTimeout(hoverTimeoutRef.current);
+  //     hoverTimeoutRef.current = null;
+  //   }
+  //   setHoveredIndex(index);
+  //   setPointerPosition({ x: event.clientX, y: event.clientY });
+  // };
+
   const handleMouseEnter = (index: number, event: React.MouseEvent) => {
+    // Disable tooltip on devices that don't support hover
+    if (window.matchMedia("(hover: none)").matches) {
+      return; // Exit early on mobile/touch devices
+    }
+
     if (hoverTimeoutRef.current) {
       clearTimeout(hoverTimeoutRef.current);
       hoverTimeoutRef.current = null;
     }
+
     setHoveredIndex(index);
     setPointerPosition({ x: event.clientX, y: event.clientY });
   };
