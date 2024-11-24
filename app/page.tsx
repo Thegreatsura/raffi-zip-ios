@@ -9,19 +9,19 @@ import Tooltip from "./tooltip";
 
 // CONSTANTS
 
-const messages = ["Pce", "Bye bye", "Bye", "l8r", "Ciao"];
+// const messages = ["Pce", "Bye bye", "Bye", "l8r", "Ciao"];
 
-const slideDuration = 480;
-const shrinkDelay = 480;
-const shrinkDuration = 480;
+// const slideDuration = 480;
+// const shrinkDelay = 480;
+// const shrinkDuration = 480;
 
-const slideStiffness = 250;
-const slideDamping = 25;
-const shrinkStiffness = 150;
-const shrinkDamping = 15;
+// const slideStiffness = 250;
+// const slideDamping = 25;
+// const shrinkStiffness = 150;
+// const shrinkDamping = 15;
 
-const shrinkInitial = { opacity: 1, scale: 1.8, rotate: 0 };
-const shrinkAnimate = { opacity: 0, scale: 0.2, rotate: 20 };
+// const shrinkInitial = { opacity: 1, scale: 1.8, rotate: 0 };
+// const shrinkAnimate = { opacity: 0, scale: 0.2, rotate: 20 };
 
 const svgPath = getSvgPath({
   width: 52,
@@ -123,12 +123,12 @@ export default function Home() {
       <motion.div
         className="relative w-[200vw] h-screen flex overflow-hidden"
         animate={{ x: `${translate}vw` }}
-        transition={{
-          type: "spring",
-          stiffness: slideStiffness,
-          damping: slideDamping,
-          duration: slideDuration / 1000,
-        }}
+        // transition={{
+        //   type: "spring",
+        //   stiffness: slideStiffness,
+        //   damping: slideDamping,
+        //   duration: slideDuration / 1000,
+        // }}
       >
         {/* HOME CONTENT */}
         <div className="w-screen h-screen overflow-hidden">
@@ -303,14 +303,14 @@ export default function Home() {
         {/* TEXT */}
         <div className="w-screen h-screen flex items-center justify-center">
           <motion.div
-            initial={shrinkInitial}
-            animate={startShrink ? shrinkAnimate : shrinkInitial}
-            transition={{
-              type: "spring",
-              stiffness: shrinkStiffness,
-              damping: shrinkDamping,
-              duration: shrinkDuration / 1000,
-            }}
+            // initial={shrinkInitial}
+            // animate={startShrink ? shrinkAnimate : shrinkInitial}
+            // transition={{
+            //   type: "spring",
+            //   stiffness: shrinkStiffness,
+            //   damping: shrinkDamping,
+            //   duration: shrinkDuration / 1000,
+            // }}
             className="text-center"
           >
             <p>{shrinkMessage}</p>
