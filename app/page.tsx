@@ -175,14 +175,14 @@ export default function Home() {
 
                 {/* PARAGRAPH */}
                 <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
-                  <p className="opacity-35">Updated 11/22/2024</p>
+                  <p className="opacity-35">Updated 11/24/2024</p>
                   <p>
                     I&apos;m a designer currently living in Chicago and working
                     at{" "}
                     <a
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
-                      onClick={() => handleLinkClick("https://shop.app")}
+                      onClick={() => (window.location.href = "https:/shop.app")}
                       onMouseEnter={(event) => handleMouseEnter(1, event)}
                       onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
@@ -196,7 +196,9 @@ export default function Home() {
                     <a
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
-                      onClick={() => handleLinkClick("https://lightnudge.com")}
+                      onClick={() =>
+                        (window.location.href = "https:/lightnudge.com")
+                      }
                       onMouseEnter={(event) => handleMouseEnter(2, event)}
                       onMouseMove={handleMouseMove}
                       onMouseLeave={handleMouseLeave}
@@ -214,9 +216,8 @@ export default function Home() {
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120 inline-block"
                       style={{ margin: "-1px" }}
                       onClick={() =>
-                        handleLinkClick(
-                          "https://apps.apple.com/us/app/steddy-stay-consistent/id1579825538?platform=iphone"
-                        )
+                        (window.location.href =
+                          "https://apps.apple.com/us/app/steddy-stay-consistent/id1579825538?platform=iphone")
                       }
                       onMouseEnter={(event) => handleMouseEnter(3, event)}
                       onMouseMove={handleMouseMove}
@@ -231,9 +232,8 @@ export default function Home() {
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120 inline-block"
                       style={{ margin: "-1px" }}
                       onClick={() =>
-                        handleLinkClick(
-                          "https://apps.apple.com/us/app/empty-fasting/id6475213946"
-                        )
+                        (window.location.href =
+                          "https://apps.apple.com/us/app/empty-fasting/id6475213946")
                       }
                       onMouseEnter={(event) => handleMouseEnter(4, event)}
                       onMouseMove={handleMouseMove}
@@ -248,9 +248,8 @@ export default function Home() {
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120 inline-block"
                       style={{ margin: "-1px" }}
                       onClick={() =>
-                        handleLinkClick(
-                          "https://apps.apple.com/us/app/numbies/id6448198083"
-                        )
+                        (window.location.href =
+                          "https://apps.apple.com/us/app/numbies/id6448198083")
                       }
                       onMouseEnter={(event) => handleMouseEnter(5, event)}
                       onMouseMove={handleMouseMove}
@@ -268,7 +267,7 @@ export default function Home() {
                       href="#"
                       className="text-blue-600 hover:opacity-70 transition-opacity duration-120"
                       onClick={() =>
-                        handleLinkClick("https://x.com/spottedinprod")
+                        (window.location.href = "https://x.com/spottedinprod")
                       }
                       onMouseEnter={(event) => handleMouseEnter(6, event)}
                       onMouseMove={handleMouseMove}

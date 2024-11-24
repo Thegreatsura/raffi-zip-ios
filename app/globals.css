@@ -13,3 +13,9 @@ body {
   letter-spacing: -0.012em; /* Slightly negative letter spacing */
   color: var(--text-color); /* Apply the softer text color */
 }
+
+@media (hover: none) and (pointer: coarse) {
+  a {
+    hover: none !important; /* Disable hover styles */
+  }
+}
