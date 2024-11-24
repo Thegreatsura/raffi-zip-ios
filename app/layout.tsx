@@ -10,8 +10,8 @@ const inter = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your Name",
-  description: "Designer, project manager, and AI-assisted junior developer",
+  title: "Raffi Chilingaryan",
+  description: "I like apps",
 };
 
 export default function RootLayout({
