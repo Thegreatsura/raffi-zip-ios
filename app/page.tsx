@@ -123,7 +123,7 @@ export default function Home() {
     <div className="relative w-screen h-screen overflow-hidden bg-white">
       <motion.div
         className="relative w-[200vw] h-screen flex overflow-hidden"
-        animate={{ x: `${translate}vw` }}
+        // animate={{ x: `${translate}vw` }}
         // transition={{
         //   type: "spring",
         //   stiffness: slideStiffness,
@@ -314,7 +314,8 @@ export default function Home() {
             // }}
             className="text-center"
           >
-            <p>{shrinkMessage}</p>
+            {/* <p>{shrinkMessage}</p> */}
+            <p>Pce</p>
           </motion.div>
         </div>
       </motion.div>
