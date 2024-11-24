@@ -77,46 +77,46 @@ export default function Home() {
 
   // HANDLE CLICK
 
-  const handleLinkClick = async (url: string) => {
-    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
-    setShrinkMessage(randomMessage);
+  // const handleLinkClick = async (url: string) => {
+  //   const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+  //   setShrinkMessage(randomMessage);
 
-    console.log("[handleLinkClick] Clicked URL:", url);
-    console.log("[handleLinkClick] Random Message Selected:", randomMessage);
+  //   console.log("[handleLinkClick] Clicked URL:", url);
+  //   console.log("[handleLinkClick] Random Message Selected:", randomMessage);
 
-    try {
-      console.log("[handleLinkClick] Starting slide animation...");
-      setTranslate(-100);
-      await new Promise((resolve) =>
-        setTimeout(() => {
-          console.log("[handleLinkClick] Slide animation completed.");
-          resolve(true);
-        }, slideDuration + shrinkDelay)
-      );
+  //   try {
+  //     console.log("[handleLinkClick] Starting slide animation...");
+  //     setTranslate(-100);
+  //     await new Promise((resolve) =>
+  //       setTimeout(() => {
+  //         console.log("[handleLinkClick] Slide animation completed.");
+  //         resolve(true);
+  //       }, slideDuration + shrinkDelay)
+  //     );
 
-      console.log("[handleLinkClick] Starting shrink animation...");
-      setStartShrink(true);
-      await new Promise((resolve) =>
-        setTimeout(() => {
-          console.log("[handleLinkClick] Shrink animation completed.");
-          resolve(true);
-        }, shrinkDuration + shrinkDelay)
-      );
+  //     console.log("[handleLinkClick] Starting shrink animation...");
+  //     setStartShrink(true);
+  //     await new Promise((resolve) =>
+  //       setTimeout(() => {
+  //         console.log("[handleLinkClick] Shrink animation completed.");
+  //         resolve(true);
+  //       }, shrinkDuration + shrinkDelay)
+  //     );
 
-      console.log("[handleLinkClick] Navigating to URL:", url);
-      window.location.href = url;
+  //     console.log("[handleLinkClick] Navigating to URL:", url);
+  //     window.location.href = url;
 
-      setTimeout(() => {
-        console.log("[handleLinkClick] Resetting state...");
-        setTranslate(0);
-        setStartShrink(false);
-        setShrinkMessage("Pce");
-        console.log("[handleLinkClick] State reset completed.");
-      }, 0);
-    } catch (error) {
-      console.error("[handleLinkClick] Error occurred:", error);
-    }
-  };
+  //     setTimeout(() => {
+  //       console.log("[handleLinkClick] Resetting state...");
+  //       setTranslate(0);
+  //       setStartShrink(false);
+  //       setShrinkMessage("Pce");
+  //       console.log("[handleLinkClick] State reset completed.");
+  //     }, 0);
+  //   } catch (error) {
+  //     console.error("[handleLinkClick] Error occurred:", error);
+  //   }
+  // };
 
   return (
     <div className="relative w-screen h-screen overflow-hidden bg-white">
