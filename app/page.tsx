@@ -13,7 +13,7 @@ const messages = ["Pce", "Bye bye", "Bye", "l8r", "Ciao"];
 
 const slideDuration = 480;
 const shrinkDelay = 480;
-const shrinkDuration = 100;
+const shrinkDuration = 480;
 
 const slideStiffness = 250;
 const slideDamping = 25;
