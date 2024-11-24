@@ -293,12 +293,11 @@ export default function Home() {
                     >
                       Spotted in Prod
                     </a>{" "}
-                    - a growing collection of my favorite features and
-                    interactions that I&apos;ve come across while exploring
-                    other iOS apps.
+                    - a collection of cool features and interactions that
+                    I&apos;ve come across while exploring other iOS apps.
                   </p>
                   <p>
-                    I enjoy talking to people about products they are building,
+                    I enjoy chatting about products people are building,
                     especially if they are building for themselves.
                   </p>
                   <p>
