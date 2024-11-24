@@ -175,7 +175,7 @@ export default function Home() {
 
                 {/* PARAGRAPH */}
                 <div className="space-y-4 text-[15px] leading-relaxed text-left w-full">
-                  <p className="opacity-35">Updated Nov 21st, 2024</p>
+                  <p className="opacity-35">Updated 11/22/2024</p>
                   <p>
                     I&apos;m a designer currently living in Chicago and working
                     at{" "}

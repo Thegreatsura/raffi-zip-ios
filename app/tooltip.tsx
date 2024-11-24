@@ -27,12 +27,14 @@ const Tooltip: React.FC<TooltipProps> = ({ imageSrc, position }) => {
         left: position.x + 10,
       }}
       className="fixed w-[48px] h-[48px] overflow-hidden bg-gray-100 z-50"
-      initial={{ opacity: 0, filter: "blur(10px)" }} // Fade/blur in
-      animate={{ opacity: 1, filter: "blur(0px)" }} // Fully visible
-      exit={{ opacity: 0, filter: "blur(10px)" }} // Fade/blur out
+      initial={{ opacity: 0, filter: "blur(20px)", scale: 0.1 }}
+      animate={{ opacity: 1, filter: "blur(0px)", scale: 1 }}
+      exit={{ opacity: 0, filter: "blur(20px)", scale: 0.1 }}
       transition={{
-        duration: 0.3, // Smooth in/out animation
-        ease: "easeInOut",
+        type: "spring",
+        stiffness: 75,
+        damping: 11,
+        duration: 0.3,
       }}
     >
       <Image src={imageSrc} alt="Tooltip Badge" fill className="object-cover" />
