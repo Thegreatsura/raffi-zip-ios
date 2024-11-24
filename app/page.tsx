@@ -43,10 +43,11 @@ const images = [
 
 export default function Home() {
   // STATE
-  const [translate, setTranslate] = useState(0);
-  const [startShrink, setStartShrink] = useState(false);
+  // const [translate, setTranslate] = useState(0);
+  // const [startShrink, setStartShrink] = useState(false);
+  // const [shrinkMessage, setShrinkMessage] = useState("Pce"); // Default message
+
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  const [shrinkMessage, setShrinkMessage] = useState("Pce"); // Default message
   const [pointerPosition, setPointerPosition] = useState({ x: 0, y: 0 });
 
   // POINTER HANDLERS
