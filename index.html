@@ -35,9 +35,11 @@
       let latestMouseX = window.innerWidth / 2; // Initialize center
       let latestMouseY = window.innerHeight / 2;
       let previousFrameMouseX = latestMouseX; // For frame-by-frame diff
+      let queueIntervalId = null; // ID for the interval timer
 
       // --- Configuration Constants ---
-      const OUTER_BEAM_CAP_PX = 180; // Max distance (px) the inner edge of outer beams can be from the viewport edge
+      // const OUTER_BEAM_CAP_PX = 180; // REMOVED - Max distance (px) the inner edge of outer beams can be from the viewport edge
+      const OUTER_BEAM_OFFSET_PX = 150; // Offset from text edge for outer beams
       const MIN_CENTER_BEAM_WIDTH_PX = 10; // Min width (px) for centermost beams
 
       // --- Colors for Visualization (Sampled from image) ---
@@ -104,7 +106,8 @@
         calculateLetterCenters();
         if (letterCenters.length === 0) return; // Need centers
 
-        // 1b. Calculate midpoints between letter centers (used for initial base estimates)
+        // 1b. Remove midpoint calculation - no longer needed for setting boundaries
+        /*
         const midpoints = [0]; // Start with left edge
         if (numLetters > 0) { // Need at least one letter
            for (let i = 0; i < numLetters - 1; i++) {
@@ -115,27 +118,34 @@
            }
            midpoints.push(viewportWidth); // End with right edge
         }
+        */
         
-        // 2. Define Outer Region Boundaries WITH CAP using constant
+        // 2. Define Outer Region Boundaries based on text offset
         let outerRegion1_start = 0;
-        let outerRegion1_end = (numLetters > 1 && midpoints[1]) ? midpoints[1] : viewportWidth / 2; 
-        outerRegion1_end = Math.min(outerRegion1_end, OUTER_BEAM_CAP_PX);
-
-        let outerRegionLast_start = (numLetters > 1 && midpoints[numLetters - 1]) ? midpoints[numLetters - 1] : viewportWidth / 2; 
+        let outerRegion1_end = 0;
+        let outerRegionLast_start = viewportWidth;
         let outerRegionLast_end = viewportWidth;
-        outerRegionLast_start = Math.max(outerRegionLast_start, viewportWidth - OUTER_BEAM_CAP_PX);
 
-        // Ensure start is less than end for outer regions after capping
-        outerRegion1_end = Math.max(outerRegion1_start + 1, outerRegion1_end); // Ensure min width of 1px
-        outerRegionLast_start = Math.min(outerRegionLast_end - 1, outerRegionLast_start); // Ensure min width of 1px
-        
         if (numLetters > 0) {
+            outerRegion1_end = Math.max(1, letterCenters[0].left - OUTER_BEAM_OFFSET_PX); // Ensure min width 1px
+            if (numLetters > 1) {
+                 outerRegionLast_start = Math.min(viewportWidth - 1, letterCenters[numLetters - 1].right + OUTER_BEAM_OFFSET_PX); // Ensure min width 1px
+            } else { // Only 1 letter
+                 outerRegionLast_start = outerRegion1_end; // Prevent overlap calculation issue
+            }
+
+            // Prevent outer regions overlapping on narrow screens
+            if (outerRegion1_end >= outerRegionLast_start) {
+                const midPoint = (outerRegion1_start + outerRegionLast_end) / 2;
+                outerRegion1_end = midPoint;
+                outerRegionLast_start = midPoint;
+            }
+            
             letterRegions[0] = { start: outerRegion1_start, end: outerRegion1_end };
             if (numLetters > 1) { 
                  letterRegions[numLetters - 1] = { start: outerRegionLast_start, end: outerRegionLast_end };
-            } else { // If only 1 letter, it takes the whole space
+            } else { // Only 1 letter case revisited
                  letterRegions[0] = { start: 0, end: viewportWidth };
-                 // Set last region to avoid errors later if needed, though won't be used for middle calcs
                  letterRegions[numLetters - 1] = letterRegions[0]; 
             }
         }
@@ -247,50 +257,55 @@
         latestMouseY = event.clientY;
       }
 
-      // --- Process the next animation in the queue with overlap & delay for active ---
-      const ANIMATION_OVERLAP_DELAY_MS = 20; // Delay before starting next queued animation
-      const ANIMATION_CHECK_DELAY_MS = 50; // Delay to re-check queue if head is animating
+      // --- Process the next animation in the queue via Interval ---
+      const ANIMATION_OVERLAP_DELAY_MS = 20; // Interval check/trigger delay
+      // const ANIMATION_CHECK_DELAY_MS = 50; // No longer needed
 
-      function processAnimationQueue() {
+      function tryProcessQueueItem() {
         if (animationQueue.length === 0) {
+             // Optional: Stop the interval if queue is empty
+             // if (queueIntervalId) { 
+             //    clearInterval(queueIntervalId);
+             //    queueIntervalId = null;
+             // } 
             return; // Queue empty
         }
 
-        // Peek at the next item without removing it
+        // Peek at the next item 
         const nextIndexToAnimate = animationQueue[0];
 
         // Check if the letter for the next item is *already* animating
         if (animatingLetters.has(nextIndexToAnimate)) {
-            // Yes, it's still animating. Pause queue processing and check again soon.
-            setTimeout(processAnimationQueue, ANIMATION_CHECK_DELAY_MS);
+            // Yes, it's still animating. Do nothing, interval will check again.
             return; 
         }
 
-        // No, it's not animating. Proceed to dequeue and start.
+        // No, it's not animating. Dequeue and start.
         const letterIndexToAnimate = animationQueue.shift(); 
         const letterSpan = letters[letterIndexToAnimate];
 
         if (letterSpan) { 
-            // Add to tracking set
-            animatingLetters.add(letterIndexToAnimate);
+            animatingLetters.add(letterIndexToAnimate); // Add to tracking
 
             letterSpan.classList.remove('animate-letter');
             void letterSpan.offsetWidth;
             letterSpan.classList.add('animate-letter');
             
+            // Animation end listener ONLY removes from tracking set
             letterSpan.addEventListener('animationend', () => {
                 letterSpan.classList.remove('animate-letter');
-                // Remove from tracking set WHEN animation truly ends
                 animatingLetters.delete(letterIndexToAnimate); 
-                // Immediately try processing queue again, in case it was waiting for this
-                processAnimationQueue(); 
+                // We DON'T trigger processing from here anymore
             }, { once: true });
         } 
+        // If dequeued item had no span, it's handled; interval continues
+      }
 
-        // Schedule the next potential dequeue after the standard overlap delay
-        if (animationQueue.length > 0) {
-             setTimeout(processAnimationQueue, ANIMATION_OVERLAP_DELAY_MS);
-        }
+      // --- Start the Queue Processing Interval (if not already running) ---
+      function ensureQueueProcessing() {
+         if (!queueIntervalId) {
+             queueIntervalId = setInterval(tryProcessQueueItem, ANIMATION_OVERLAP_DELAY_MS);
+         }
       }
 
       // --- New: Main loop using requestAnimationFrame ---
@@ -377,7 +392,7 @@
 
         // Trigger processing only if we actually added something
         if (addedToQueue) {
-             processAnimationQueue(); 
+             ensureQueueProcessing(); 
         }
         
         /* --- OLD LOGIC --- 
