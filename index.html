@@ -7,6 +7,12 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+    <svg class="triangle-visualization-svg">
+        <!-- Triangle polygons will be added by JS -->
+    </svg>
+    <div class="region-borders-container">
+      <!-- Border divs will be added/managed by JS -->
+    </div>
     <div class="name-container">
       <span>R</span><span>A</span><span>F</span><span>F</span><span>I</span>
       <span class="space"> </span>
@@ -17,70 +23,201 @@
       const nameContainer = document.querySelector('.name-container');
       const letters = Array.from(nameContainer.children); // Get all spans (letters + space)
       const numLetters = letters.length;
-      let letterRegions = [];
-      let previousLetterIndex = -1; // Track the last animated letter
+      let letterRegions = []; // Stores { start: x, end: x } boundaries along top/bottom edge
+      let letterCenters = []; // Stores horizontal center { x: x } for each letter span
+      let activeLetterIndex = -1; // Track the index of the letter whose triangles contain the mouse
+      let previousMouseX = null; // Needed only if we revert to range checking
+      const svgContainer = document.querySelector('.triangle-visualization-svg'); // Get SVG container
 
-      // --- Calculate trigger regions based on viewport width ---
-      function calculateRegions() {
-        const viewportWidth = window.innerWidth;
-        letterRegions = []; // Reset regions on resize
-        const firstLastWidth = viewportWidth * 0.20; // 20% for first and last
-        const remainingWidth = viewportWidth - (2 * firstLastWidth);
-        const middleSectionCount = numLetters - 2; // Number of sections between first and last
-        const middleWidth = remainingWidth / middleSectionCount;
+      // --- Colors for Visualization (Sampled from image) ---
+      // RAFFI CHILINGARYAN
+      const regionColors = [
+        '#FF8080', // R (Light Red)
+        '#FFFF80', // A (Light Yellow)
+        '#80FF80', // F (Light Green)
+        '#80FFFF', // F (Light Cyan)
+        '#8080FF', // I (Light Blue)
+        '#FF80FF', // Space (Light Magenta)
+        '#FF0000', // C (Red)
+        '#0000FF', // H (Blue)
+        '#FF00FF', // I (Magenta)
+        '#808080', // L (Gray)
+        '#00FF00', // I (Green)
+        '#008080', // N (Teal)
+        '#FFFF00', // G (Yellow)
+        '#FF8080', // A (Light Red) - Repeat or choose new?
+        '#FFFF80', // R (Light Yellow)
+        '#80FF80', // Y (Light Green)
+        '#80FFFF', // A (Light Cyan)
+        '#8080FF'  // N (Light Blue)
+      ];
 
-        let currentBoundary = 0;
-
-        for (let i = 0; i < numLetters; i++) {
-          let regionWidth;
-          if (i === 0) {
-            regionWidth = firstLastWidth;
-          } else if (i === numLetters - 1) {
-            regionWidth = firstLastWidth;
-          } else {
-            regionWidth = middleWidth;
-          }
-          letterRegions.push({ start: currentBoundary, end: currentBoundary + regionWidth });
-          currentBoundary += regionWidth;
-        }
-         // console.log("Calculated Regions:", letterRegions); // For debugging
+      // --- Helper: Calculate Sign for Point-in-Triangle --- 
+      function sign(p1, p2, p3) {
+          return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
       }
 
-      // --- Handle mouse movement ---
-      function handleMouseMove(event) {
-        const mouseX = event.clientX;
-        let currentLetterIndex = -1;
+      // --- Helper: Check if point is in triangle --- 
+      function pointInTriangle(pt, v1, v2, v3) {
+          const d1 = sign(pt, v1, v2);
+          const d2 = sign(pt, v2, v3);
+          const d3 = sign(pt, v3, v1);
+          const has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+          const has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+          // Point is inside or on the edge if signs are all non-negative or all non-positive
+          return !(has_neg && has_pos);
+      }
 
-        // Find which region the mouse is in
-        for (let i = 0; i < letterRegions.length; i++) {
-          if (mouseX >= letterRegions[i].start && mouseX < letterRegions[i].end) {
-            currentLetterIndex = i;
-            break;
+      // --- Calculate Horizontal Letter Positions & Widths --- 
+      function calculateLetterCenters() {
+          letterCenters = [];
+          letters.forEach(span => {
+              const rect = span.getBoundingClientRect();
+              letterCenters.push({
+                  x: rect.left + rect.width / 2,
+                  width: rect.width,
+                  left: rect.left, 
+                  right: rect.right
+              });
+          });
+           // console.log("Letter Centers:", letterCenters);
+      }
+
+      // --- Calculate trigger regions (beam bases) & Draw SVG Shapes (Revised for Exact Letter Edges) ---
+      function calculateRegions() {
+        const viewportWidth = window.innerWidth;
+        letterRegions = []; // Reset regions
+
+        // 1. Ensure letter positions & widths are calculated first
+        calculateLetterCenters();
+        if (letterCenters.length === 0) return; // Need centers
+
+        // 2. Calculate base widths
+        const firstLastBaseWidth = viewportWidth * 0.35;
+        const middleRegionCount = Math.max(0, numLetters - 2);
+        let middleBaseWidth = 0;
+        if (middleRegionCount > 0) {
+             const totalMiddleWidth = Math.max(0, viewportWidth - 2 * firstLastBaseWidth); // Prevent negative
+             middleBaseWidth = totalMiddleWidth / middleRegionCount;
+        }
+
+        // 3. Define regions sequentially using calculated base widths
+        let currentX = 0;
+        for (let i = 0; i < numLetters; i++) {
+            let baseWidth;
+            if (i === 0 || i === numLetters - 1) {
+                baseWidth = firstLastBaseWidth;
+            } else {
+                baseWidth = middleBaseWidth;
+            }
+            const regionStart = currentX;
+            // Ensure end doesn't overshoot due to rounding, except for the last one
+            const regionEnd = (i === numLetters - 1) ? viewportWidth : currentX + baseWidth;
+            letterRegions.push({ start: regionStart, end: regionEnd });
+            currentX = regionEnd; // Move to the start of the next region
+        }
+        // console.log("Final Letter Regions (Bases):", letterRegions);
+
+        // 4. Draw SVG polygons using exact letter edges at the center
+        svgContainer.innerHTML = ''; // Clear existing polygons
+        const viewportHeight = window.innerHeight;
+        const nameCenterY = viewportHeight / 2; 
+
+        letterRegions.forEach((region, index) => {
+          if (!letterCenters[index] || typeof letterCenters[index].left !== 'number') return;
+          // Check for invalid region start/end (can happen if middle width is negative)
+          if (region.start >= region.end) return; 
+          
+          const color = regionColors[index % regionColors.length]; 
+          const letterLeft = letterCenters[index].left;
+          const letterRight = letterCenters[index].right;
+
+          // Vertices for polygons
+          const vTopLeft = { x: region.start, y: 0 };
+          const vTopRight = { x: region.end, y: 0 };
+          const vCenterLeft = { x: letterLeft, y: nameCenterY }; // Use exact letter edge
+          const vCenterRight = { x: letterRight, y: nameCenterY }; // Use exact letter edge
+          const vBottomLeft = { x: region.start, y: viewportHeight };
+          const vBottomRight = { x: region.end, y: viewportHeight };
+          
+          const topPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+          topPoly.setAttribute('points', `${vTopLeft.x},${vTopLeft.y} ${vTopRight.x},${vTopRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
+          topPoly.setAttribute('fill', color);
+          svgContainer.appendChild(topPoly);
+          const bottomPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+          bottomPoly.setAttribute('points', `${vBottomLeft.x},${vBottomLeft.y} ${vBottomRight.x},${vBottomRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
+          bottomPoly.setAttribute('fill', color);
+          svgContainer.appendChild(bottomPoly);
+        });
+      }
+
+      // --- Handle mouse movement (Updated for Exact Letter Edges) ---
+      function handleMouseMove(event) {
+        const currentMouseX = event.clientX;
+        const mouseY = event.clientY;
+        const viewportHeight = window.innerHeight;
+        const nameCenterY = viewportHeight / 2;
+
+        // Initialize previousMouseX if it's the first event
+        if (previousMouseX === null) {
+          previousMouseX = currentMouseX;
+        }
+
+        const minX = Math.min(previousMouseX, currentMouseX);
+        const maxX = Math.max(previousMouseX, currentMouseX);
+
+        // Determine the vertical position factor (0 at center, 1 at edges)
+        const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
+
+        // Find which letter's region the mouse interacts with
+        for (let i = 0; i < numLetters; i++) {
+          if (!letterCenters[i] || typeof letterCenters[i].left !== 'number' || !letterRegions[i]) continue;
+
+          const region = letterRegions[i]; // Horizontal base boundaries
+          const letterLeft = letterCenters[i].left;
+          const letterRight = letterCenters[i].right;
+          const baseWidth = region.end - region.start; // Width at top/bottom
+          const centerWidth = letterRight - letterLeft; // Exact width at center line
+          const letterSpan = letters[i];
+
+          // Check 1: Does the horizontal mouse movement range overlap the region's base?
+          const horizontalOverlap = !(region.end <= minX || region.start >= maxX);
+
+          if (horizontalOverlap) {
+            // Calculate the expected width of the shape at the current mouseY
+            // Linear interpolation between centerWidth and baseWidth based on verticalFactor
+            const widthAtY = centerWidth + (baseWidth - centerWidth) * verticalFactor;
+            const halfWidthAtY = widthAtY / 2;
+
+            // Calculate the shape's horizontal boundaries at the current mouseY
+            // Need to interpolate the *center* of the shape at this Y level too
+            const centerAtY = letterLeft + (region.start - letterLeft) * verticalFactor + (baseWidth * verticalFactor) / 2;
+
+            const shapeStartX = centerAtY - halfWidthAtY;
+            const shapeEndX = centerAtY + halfWidthAtY;
+
+            // Check 2: Is the *current* mouseX within the shape's boundaries at this mouseY?
+            const withinShapeVertically = (currentMouseX >= shapeStartX && currentMouseX < shapeEndX);
+
+            // If both checks pass and not already animating, trigger
+            if (withinShapeVertically && !letterSpan.classList.contains('animate-letter')) {
+              letterSpan.classList.add('animate-letter');
+              letterSpan.addEventListener('animationend', () => {
+                letterSpan.classList.remove('animate-letter');
+              }, { once: true });
+            }
           }
         }
 
-        // If mouse moved to a *new* letter's region, trigger animation
-        if (currentLetterIndex !== -1 && currentLetterIndex !== previousLetterIndex) {
-          const currentLetterSpan = letters[currentLetterIndex];
-
-          // Add class to trigger animation
-          currentLetterSpan.classList.add('animate-letter');
-
-          // Remove class after animation finishes (600ms based on CSS)
-          // Using 'animationend' event is slightly more robust than setTimeout
-          currentLetterSpan.addEventListener('animationend', () => {
-            currentLetterSpan.classList.remove('animate-letter');
-          }, { once: true }); // Important: listener removes itself after firing once
-
-          previousLetterIndex = currentLetterIndex;
-        } else if (currentLetterIndex === -1) {
-            // Reset if mouse is outside all defined regions (might happen at exact edge)
-            previousLetterIndex = -1;
-        }
+        // Update previous mouse position for the next event
+        previousMouseX = currentMouseX;
       }
 
       // --- Initial setup and event listeners ---
-      calculateRegions(); // Calculate initial regions
+      requestAnimationFrame(() => {
+         // calculateLetterCenters(); // Called within calculateRegions now
+         calculateRegions();      // Calculates centers, regions & draws SVG
+      }); 
       window.addEventListener('mousemove', handleMouseMove);
       window.addEventListener('resize', calculateRegions); // Recalculate on resize
     </script>
