@@ -106,8 +106,8 @@ body {
 }
 
 .color-cycle-indicator {
-    width: 20px;  /* Changed size */
-    height: 20px; /* Changed size */
+    width: 19px;  /* Changed size */
+    height: 19px; /* Changed size */
     border-radius: 50%; /* Make it a circle */
     background-color: #ccc; /* Default/fallback color */
     /* Apply animation properties separately */
@@ -143,31 +143,6 @@ body {
     /* stroke-width: 1; */
 }
 /* --- End SVG --- */
-
-/* --- Remove Old Region Borders --- */
-/*
-.region-borders-container {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; // Make it non-interactive 
-  z-index: -1; // Place it behind the text 
-  display: flex; // Use flex to align markers 
-}
-
-.region-border-marker {
-  height: 100%;
-  border-right: 1px solid lightgray; // Border between regions 
-  box-sizing: border-box;
-  flex-shrink: 0; // Prevent markers from shrinking 
-}
-
-.region-border-marker:first-child {
-   border-left: 1px solid lightgray; // Add left border to the first one 
-}
-*/
 
 /* Animation for the letter */
 @keyframes springUpFloatBack {
