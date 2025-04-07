@@ -83,49 +83,64 @@
            // console.log("Letter Centers:", letterCenters);
       }
 
-      // --- Calculate trigger regions (beam bases) & Draw SVG Shapes (Revised for Exact Letter Edges) ---
+      // --- Calculate trigger regions (beam bases) & Draw SVG Shapes (Varying Base Width) ---
       function calculateRegions() {
         const viewportWidth = window.innerWidth;
+        const viewportCenterX = viewportWidth / 2;
         letterRegions = []; // Reset regions
 
         // 1. Ensure letter positions & widths are calculated first
         calculateLetterCenters();
         if (letterCenters.length === 0) return; // Need centers
 
-        // 2. Calculate base widths
-        const firstLastBaseWidth = viewportWidth * 0.35;
-        const middleRegionCount = Math.max(0, numLetters - 2);
-        let middleBaseWidth = 0;
-        if (middleRegionCount > 0) {
-             const totalMiddleWidth = Math.max(0, viewportWidth - 2 * firstLastBaseWidth); // Prevent negative
-             middleBaseWidth = totalMiddleWidth / middleRegionCount;
+        // 2. Calculate Target Base Width for each letter
+        const maxBaseWidth = viewportWidth * 0.35; // Max width for outer letters
+        const minBaseWidth = 10; // Min width for centermost letters (px)
+        const easeInQuad = t => t*t;
+        const targetBaseWidths = [];
+        for (let i = 0; i < numLetters; i++) {
+             if (!letterCenters[i]) { // Handle missing center data
+                 targetBaseWidths.push(minBaseWidth);
+                 continue;
+             }
+             const distanceFromCenter = Math.abs(letterCenters[i].x - viewportCenterX);
+             const maxDistance = viewportWidth / 2;
+             const normalizedDistance = Math.min(1, distanceFromCenter / maxDistance); // 0 at center, 1 at edge
+             const easedNormalizedDistance = easeInQuad(normalizedDistance);
+             const targetWidth = minBaseWidth + (maxBaseWidth - minBaseWidth) * easedNormalizedDistance;
+             targetBaseWidths.push(targetWidth);
+        }
+        // Force outer edges to max width
+        if (numLetters > 0) {
+            targetBaseWidths[0] = maxBaseWidth;
+            targetBaseWidths[numLetters - 1] = maxBaseWidth;
         }
 
-        // 3. Define regions sequentially using calculated base widths
+        // 3. Scale widths to fit viewport and define regions
+        const totalTargetWidth = targetBaseWidths.reduce((sum, w) => sum + w, 0);
+        const scaleFactor = totalTargetWidth > 0 ? viewportWidth / totalTargetWidth : 0;
+
         let currentX = 0;
         for (let i = 0; i < numLetters; i++) {
-            let baseWidth;
-            if (i === 0 || i === numLetters - 1) {
-                baseWidth = firstLastBaseWidth;
-            } else {
-                baseWidth = middleBaseWidth;
-            }
+            const actualBaseWidth = targetBaseWidths[i] * scaleFactor;
             const regionStart = currentX;
-            // Ensure end doesn't overshoot due to rounding, except for the last one
-            const regionEnd = (i === numLetters - 1) ? viewportWidth : currentX + baseWidth;
+            const regionEnd = currentX + actualBaseWidth;
             letterRegions.push({ start: regionStart, end: regionEnd });
-            currentX = regionEnd; // Move to the start of the next region
+            currentX = regionEnd;
         }
-        // console.log("Final Letter Regions (Bases):", letterRegions);
+         // Ensure the last region perfectly hits the viewport width due to potential float rounding
+         if(letterRegions.length > 0) {
+             letterRegions[numLetters - 1].end = viewportWidth;
+         }
+        // console.log("Final Letter Regions (Varying Bases):", letterRegions);
 
-        // 4. Draw SVG polygons using exact letter edges at the center
+        // 4. Draw SVG polygons (using exact letter edges at center)
         svgContainer.innerHTML = ''; // Clear existing polygons
         const viewportHeight = window.innerHeight;
         const nameCenterY = viewportHeight / 2; 
 
         letterRegions.forEach((region, index) => {
           if (!letterCenters[index] || typeof letterCenters[index].left !== 'number') return;
-          // Check for invalid region start/end (can happen if middle width is negative)
           if (region.start >= region.end) return; 
           
           const color = regionColors[index % regionColors.length]; 
@@ -140,6 +155,12 @@
           const vBottomLeft = { x: region.start, y: viewportHeight };
           const vBottomRight = { x: region.end, y: viewportHeight };
           
+          // Clamp center points slightly to prevent crossing if letters are too close
+          const safeCenterLeftX = Math.min(vCenterLeft.x, vCenterRight.x - 0.1); 
+          const safeCenterRightX = Math.max(vCenterRight.x, vCenterLeft.x + 0.1);
+          vCenterLeft.x = safeCenterLeftX;
+          vCenterRight.x = safeCenterRightX;
+
           const topPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
           topPoly.setAttribute('points', `${vTopLeft.x},${vTopLeft.y} ${vTopRight.x},${vTopRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
           topPoly.setAttribute('fill', color);
@@ -151,7 +172,7 @@
         });
       }
 
-      // --- Handle mouse movement (Updated for Exact Letter Edges) ---
+      // --- Handle mouse movement (Adjusted for Varying Base Width) ---
       function handleMouseMove(event) {
         const currentMouseX = event.clientX;
         const mouseY = event.clientY;
@@ -173,11 +194,12 @@
         for (let i = 0; i < numLetters; i++) {
           if (!letterCenters[i] || typeof letterCenters[i].left !== 'number' || !letterRegions[i]) continue;
 
-          const region = letterRegions[i]; // Horizontal base boundaries
+          const region = letterRegions[i]; // Horizontal base boundaries (now varies)
           const letterLeft = letterCenters[i].left;
           const letterRight = letterCenters[i].right;
-          const baseWidth = region.end - region.start; // Width at top/bottom
-          const centerWidth = letterRight - letterLeft; // Exact width at center line
+          const letterCenterX = letterCenters[i].x; // Center of the letter itself
+          const baseWidth = region.end - region.start; // ACTUAL width at top/bottom edge for THIS beam
+          const centerWidth = letterRight - letterLeft; // Exact letter width at center line
           const letterSpan = letters[i];
 
           // Check 1: Does the horizontal mouse movement range overlap the region's base?
@@ -189,10 +211,11 @@
             const widthAtY = centerWidth + (baseWidth - centerWidth) * verticalFactor;
             const halfWidthAtY = widthAtY / 2;
 
-            // Calculate the shape's horizontal boundaries at the current mouseY
-            // Need to interpolate the *center* of the shape at this Y level too
-            const centerAtY = letterLeft + (region.start - letterLeft) * verticalFactor + (baseWidth * verticalFactor) / 2;
-
+            // Calculate the shape's *center* position at the current mouseY
+            // It moves from letterCenterX towards the center of the base region
+            const baseCenterX = region.start + baseWidth / 2;
+            const centerAtY = letterCenterX + (baseCenterX - letterCenterX) * verticalFactor;
+            
             const shapeStartX = centerAtY - halfWidthAtY;
             const shapeEndX = centerAtY + halfWidthAtY;
 
