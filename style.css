@@ -18,6 +18,14 @@ body {
   font-weight: 300; /* Apply light weight */
 }
 
+/* New wrapper to center name and links together */
+.main-content-wrapper {
+    display: flex;
+    flex-direction: column; /* Stack name and links vertically */
+    align-items: center; /* Center items horizontally within wrapper */
+    text-align: center; /* Ensure text aligns center if needed */
+}
+
 .name-container {
   display: flex; /* Align letters horizontally */
   cursor: default; /* Default cursor */
@@ -52,15 +60,10 @@ body {
 
 /* --- Links / Icons --- */
 .links-container {
-    position: absolute; /* Position relative to body */
-    /* Center horizontally */
-    left: 50%;
-    transform: translateX(-50%); 
-    /* Position below name - adjust top as needed */
-    top: calc(50% + 40px); /* Approx center + offset, assumes name is centered */
+    margin-top: 25px; /* Add space above the links */
     display: flex;
     gap: 15px; /* Space between buttons */
-    z-index: 10; /* Ensure links are clickable above SVG */
+    z-index: 10; /* Keep links clickable */
 }
 
 .icon-button {
