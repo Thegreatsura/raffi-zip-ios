@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Geist Mono';
+  src: url('./fonts/GeistMono-VariableFont_wght.ttf') format('truetype');
+  font-weight: 100 900; /* Indicate variable weight range */
+  font-style: normal;
+}
+
 /* style.css */
 body {
   display: flex;
@@ -7,7 +14,8 @@ body {
   background-color: #ffffff; /* White background */
   margin: 0;
   overflow: hidden; /* Prevent scrollbars */
-  font-family: "Courier New", Courier, monospace; /* Monospace font like the image */
+  font-family: "Geist Mono", "Courier New", Courier, monospace; /* Use Geist Mono */
+  font-weight: 300; /* Apply light weight */
 }
 
 .name-container {
