@@ -29,6 +29,12 @@
       let previousMouseX = null; // Needed only if we revert to range checking
       const svgContainer = document.querySelector('.triangle-visualization-svg'); // Get SVG container
 
+      // --- Animation Queue & State ---
+      let animationQueue = [];
+      let latestMouseX = window.innerWidth / 2; // Initialize center
+      let latestMouseY = window.innerHeight / 2;
+      let previousFrameMouseX = latestMouseX; // For frame-by-frame diff
+
       // --- Configuration Constants ---
       const OUTER_BEAM_CAP_PX = 180; // Max distance (px) the inner edge of outer beams can be from the viewport edge
       const MIN_CENTER_BEAM_WIDTH_PX = 10; // Min width (px) for centermost beams
@@ -234,77 +240,112 @@
         });
       }
 
-      // --- Handle mouse movement --- 
-      // Uses final region coords directly - No override needed
-      function handleMouseMove(event) {
-        const currentMouseX = event.clientX;
-        const mouseY = event.clientY;
+      // --- New: Simple listener to just update mouse coords ---
+      function updateMousePosition(event) {
+        latestMouseX = event.clientX;
+        latestMouseY = event.clientY;
+      }
+
+      // --- Process the next animation in the queue with overlap ---
+      const ANIMATION_OVERLAP_DELAY_MS = 20; // Delay before starting next queued animation
+
+      function processAnimationQueue() {
+        if (animationQueue.length === 0) {
+            return; // Queue empty
+        }
+
+        // Dequeue the next letter index WITHOUT checking isAnimating
+        const letterIndexToAnimate = animationQueue.shift(); 
+        const letterSpan = letters[letterIndexToAnimate];
+
+        if (letterSpan) { // Check if span exists
+            // Clear any potentially stuck class from previous rapid triggers
+            letterSpan.classList.remove('animate-letter');
+            
+            // Force reflow/repaint to ensure animation restarts if class was just removed
+            void letterSpan.offsetWidth;
+            
+            // Add class to start animation
+            letterSpan.classList.add('animate-letter');
+            
+            // Listener ONLY removes class on end, doesn't trigger next
+            letterSpan.addEventListener('animationend', () => {
+                letterSpan.classList.remove('animate-letter');
+                // DO NOT set isAnimating or call processAnimationQueue here
+            }, { once: true });
+        } 
+
+        // Schedule the next check/dequeue after a short delay, allowing overlap
+        if (animationQueue.length > 0) {
+             setTimeout(processAnimationQueue, ANIMATION_OVERLAP_DELAY_MS);
+        }
+      }
+
+      // --- New: Main loop using requestAnimationFrame ---
+      let lastRegionIndex = -1; // Track region index from the previous frame
+
+      function animationFrameLoop() {
+        const currentMouseX = latestMouseX;
+        const mouseY = latestMouseY;
         const viewportHeight = window.innerHeight;
         const nameCenterY = viewportHeight / 2;
-
-        if (previousMouseX === null) previousMouseX = currentMouseX;
-
-        const minX = Math.min(previousMouseX, currentMouseX);
-        const maxX = Math.max(previousMouseX, currentMouseX);
         const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
 
+        let currentRegionIndex = -1; // Region index for THIS frame
+
+        // Find which letter's region the CURRENT mouse position is in
         for (let i = 0; i < numLetters; i++) {
-          // Use final calculated region and letter data
           const region = letterRegions[i];
           const letterData = letterCenters[i];
 
-          // Add robust checks here
           if (!letterData || typeof letterData.left !== 'number' || !region || typeof region.start !== 'number' || typeof region.end !== 'number') continue;
 
           const letterLeft = letterData.left;
           const letterRight = letterData.right;
           const letterCenterX = letterData.x; 
           const centerWidth = letterRight - letterLeft; 
-          const letterSpan = letters[i];
-
-          // Use the FINAL calculated region boundaries directly
           const effectiveBaseStartX = region.start; 
           const effectiveBaseEndX = region.end;
-          // Skip if base width is zero or negative
           if (effectiveBaseStartX >= effectiveBaseEndX) continue; 
-          
           const effectiveBaseWidth = effectiveBaseEndX - effectiveBaseStartX;
           const effectiveBaseCenterX = effectiveBaseStartX + effectiveBaseWidth / 2;
+          
+          // Calculate shape boundaries at current mouseY
+          const widthAtY = centerWidth + (effectiveBaseWidth - centerWidth) * verticalFactor;
+          const halfWidthAtY = widthAtY / 2;
+          const centerAtY = letterCenterX + (effectiveBaseCenterX - letterCenterX) * verticalFactor;
+          const shapeStartX = centerAtY - halfWidthAtY;
+          const shapeEndX = centerAtY + halfWidthAtY;
 
-          // Check 1: Horizontal overlap with the final region base
-          const horizontalOverlap = !(effectiveBaseEndX <= minX || effectiveBaseStartX >= maxX);
-
-          if (horizontalOverlap) {
-            // Calculate shape width at mouseY using final base width
-            const widthAtY = centerWidth + (effectiveBaseWidth - centerWidth) * verticalFactor;
-            const halfWidthAtY = widthAtY / 2;
-
-            // Calculate shape center at mouseY using final base center
-            const centerAtY = letterCenterX + (effectiveBaseCenterX - letterCenterX) * verticalFactor;
-            
-            const shapeStartX = centerAtY - halfWidthAtY;
-            const shapeEndX = centerAtY + halfWidthAtY;
-
-            // Check 2: Within vertical shape boundaries
-            const withinShapeVertically = (currentMouseX >= shapeStartX && currentMouseX < shapeEndX);
-
-            if (withinShapeVertically && !letterSpan.classList.contains('animate-letter')) {
-              letterSpan.classList.add('animate-letter');
-              letterSpan.addEventListener('animationend', () => {
-                letterSpan.classList.remove('animate-letter');
-              }, { once: true });
-            }
+          // Check if CURRENT mouseX is inside
+          if (currentMouseX >= shapeStartX && currentMouseX < shapeEndX) {
+            currentRegionIndex = i;
+            break;
           }
         }
-        previousMouseX = currentMouseX;
+
+        // If mouse entered a NEW region since the last frame, add to queue
+        if (currentRegionIndex !== -1 && currentRegionIndex !== lastRegionIndex) {
+            if (!animationQueue.includes(currentRegionIndex)) { // Optional: Prevent adding same index multiple times in a row
+                animationQueue.push(currentRegionIndex);
+                processAnimationQueue(); // Attempt to start processing if not already animating
+            }
+        }
+
+        lastRegionIndex = currentRegionIndex; // Update for next frame
+        previousFrameMouseX = currentMouseX; // Store for potential future diff logic if needed
+
+        requestAnimationFrame(animationFrameLoop); // Loop!
       }
 
-      // --- Initial setup and event listeners ---
+      // --- Initial setup and event listeners (MODIFIED) ---
       requestAnimationFrame(() => {
-         // calculateLetterCenters(); // Called within calculateRegions now
          calculateRegions();      // Calculates centers, regions & draws SVG
+         animationFrameLoop();    // Start the main loop
       }); 
-      window.addEventListener('mousemove', handleMouseMove);
+      // Remove the old mousemove handler for triggering animations
+      // window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mousemove', updateMousePosition); // NEW: Just update position
       window.addEventListener('resize', calculateRegions); // Recalculate on resize
     </script>
   </body>
