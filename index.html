@@ -330,10 +330,12 @@
 
          if (showColorRegions) {
             svgContainer.classList.remove('regions-hidden');
-            indicator?.classList.add('indicator-static'); // Add static class
+            indicator?.classList.add('indicator-static'); 
+            document.body.classList.add('color-mode-active'); // Add body class
          } else {
             svgContainer.classList.add('regions-hidden');
-            indicator?.classList.remove('indicator-static'); // Remove static class
+            indicator?.classList.remove('indicator-static'); 
+            document.body.classList.remove('color-mode-active'); // Remove body class
          }
       }
 
