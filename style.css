@@ -172,4 +172,12 @@ body {
 .animate-letter {
   /* Apply the animation */
   animation: springUpFloatBack 0.6s ease-out forwards;
+}
+
+/* Disable hover effects on devices that don't support hover */
+@media (hover: none) {
+  .icon-button:hover {
+    background-color: transparent; /* Remove hover background */
+  }
+  /* If you had other hover styles, reset them here too */
 } 
