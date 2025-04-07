@@ -26,6 +26,9 @@
        <a href="https://x.com/raffichill" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="X Profile">
           <img src="svgs/x-link.svg" alt="X Icon" />
        </a>
+       <button type="button" class="icon-button color-toggle-button" aria-label="Toggle Color Regions" onclick="toggleColorRegions()">
+          <div class="color-cycle-indicator"></div>
+       </button>
     </div>
 
     <script>
@@ -53,6 +56,29 @@
       // const OUTER_BEAM_CAP_PX = 180; // REMOVED - Max distance (px) the inner edge of outer beams can be from the viewport edge
       const OUTER_BEAM_OFFSET_PX = 280; // Offset from text edge for outer beams
       const MIN_CENTER_BEAM_WIDTH_PX = 10; // Min width (px) for centermost beams
+
+      // --- Inject CSS Keyframes for Color Cycling ---
+      function injectColorCycleKeyframes() {
+        const numColors = regionColors.length;
+        if (numColors === 0) return 0; // Return 0 duration if no colors
+
+        let keyframesCSS = `@keyframes colorCycle {\n`;
+        const step = 100 / numColors;
+
+        regionColors.forEach((color, index) => {
+            const perc1 = index * step;
+            keyframesCSS += `  ${perc1}% { background-color: ${color}; }\n`;
+        });
+         keyframesCSS += `  100% { background-color: ${regionColors[0]}; }\n`;
+        keyframesCSS += `}`;
+
+        const styleElement = document.createElement('style');
+        styleElement.textContent = keyframesCSS;
+        document.head.appendChild(styleElement);
+
+        // Return the calculated total duration in seconds
+        return numColors; // Each step is effectively 1s, so total duration = numColors * 1s
+      }
 
       // --- Colors for Visualization (Sampled from image) ---
       // RAFFI CHILINGARYAN
@@ -467,7 +493,15 @@
 
       // --- Initial setup and event listeners (MODIFIED) ---
       requestAnimationFrame(() => {
-         calculateRegions();      // Calculates centers, regions & draws SVG
+         calculateLetterCenters(); // Needed first
+         const totalCycleDuration = injectColorCycleKeyframes(); // Inject CSS & get duration
+         // Apply dynamic duration to the indicator
+         const indicator = document.querySelector('.color-cycle-indicator');
+         if (indicator && totalCycleDuration > 0) {
+             indicator.style.animationDuration = `${totalCycleDuration}s`;
+         }
+
+         calculateRegions();      // Calculates regions & draws SVG
          // Apply initial hidden state if needed
          if (!showColorRegions) {
              svgContainer.classList.add('regions-hidden');

@@ -90,6 +90,27 @@ body {
     height: 100%;
     object-fit: contain; /* Scale SVG nicely */
 }
+
+/* Specific styles for color toggle button */
+.color-toggle-button {
+   /* Reset potential button defaults */
+   appearance: none;
+   border: none;
+   padding: 0; /* icon-button handles padding for content */
+   background: none;
+}
+
+.color-cycle-indicator {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%; /* Make it a circle */
+    background-color: #ccc; /* Default/fallback color */
+    /* Apply animation properties separately */
+    animation-name: colorCycle;
+    animation-timing-function: linear; /* Use steps if you want instant color changes */
+    animation-iteration-count: infinite;
+    /* animation-duration is now set by JS */
+}
 /* --- End Links --- */
 
 /* --- SVG Triangle Visualization --- */
