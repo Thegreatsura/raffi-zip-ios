@@ -37,6 +37,9 @@
       let previousFrameMouseX = latestMouseX; // For frame-by-frame diff
       let queueIntervalId = null; // ID for the interval timer
 
+      // --- UI State ---
+      let showColorRegions = false; // Start with regions hidden
+
       // --- Configuration Constants ---
       // const OUTER_BEAM_CAP_PX = 180; // REMOVED - Max distance (px) the inner edge of outer beams can be from the viewport edge
       const OUTER_BEAM_OFFSET_PX = 280; // Offset from text edge for outer beams
@@ -285,6 +288,16 @@
         latestMouseY = event.clientY;
       }
 
+      // --- Toggle Color Regions Visibility ---
+      function toggleColorRegions() {
+         showColorRegions = !showColorRegions; // Flip the state
+         if (showColorRegions) {
+            svgContainer.classList.remove('regions-hidden');
+         } else {
+            svgContainer.classList.add('regions-hidden');
+         }
+      }
+
       // --- Process the next animation in the queue via Interval ---
       const ANIMATION_OVERLAP_DELAY_MS = 20; // Interval check/trigger delay
       // const ANIMATION_CHECK_DELAY_MS = 50; // No longer needed
@@ -446,6 +459,10 @@
       // --- Initial setup and event listeners (MODIFIED) ---
       requestAnimationFrame(() => {
          calculateRegions();      // Calculates centers, regions & draws SVG
+         // Apply initial hidden state if needed
+         if (!showColorRegions) {
+             svgContainer.classList.add('regions-hidden');
+         }
          animationFrameLoop();    // Start the main loop
       }); 
       // Remove the old mousemove handler for triggering animations

@@ -11,7 +11,7 @@ body {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* background-color: #E0E0E0; */ /* REMOVED - SVG will handle background */
+  background-color: #ffffff; /* White background */
   margin: 0;
   overflow: hidden; /* Prevent scrollbars */
   font-family: "Geist Mono", "Courier New", Courier, monospace; /* Use Geist Mono */
@@ -59,6 +59,8 @@ body {
     height: 100%;
     pointer-events: none; /* Make it non-interactive */
     z-index: -1; /* Place it behind the text */
+    opacity: 1; /* Default opacity */
+    transition: opacity 0.3s ease-in-out; /* Smooth fade transition */
 }
 
 .triangle-visualization-svg polygon {
@@ -112,4 +114,9 @@ body {
 .animate-letter {
   /* Apply the animation */
   animation: springUpFloatBack 0.6s ease-out forwards;
+}
+
+/* New class to hide regions */
+.regions-hidden {
+    opacity: 0;
 } 
