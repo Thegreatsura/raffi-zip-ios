@@ -161,7 +161,7 @@ body {
     opacity: 1;
   }
   40% {
-    transform: translateY(-20px); /* Spring up higher */
+    transform: translateY(-10px); /* Reduced bounce height */
     opacity: 1;
   }
   100% {
