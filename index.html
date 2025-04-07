@@ -286,66 +286,86 @@
 
       function animationFrameLoop() {
         const currentMouseX = latestMouseX;
-        // const mouseY = latestMouseY; // No longer needed for simplified check
-        // Initialize previousFrameMouseX on first run
+        const mouseY = latestMouseY;
         if (previousFrameMouseX === null) {
             previousFrameMouseX = currentMouseX;
         }
-
-        // const viewportHeight = window.innerHeight;
-        // const nameCenterY = viewportHeight / 2;
-        // const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
         const minX = Math.min(previousFrameMouseX, currentMouseX);
         const maxX = Math.max(previousFrameMouseX, currentMouseX);
+        const viewportHeight = window.innerHeight;
+        const nameCenterY = viewportHeight / 2;
+        const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
 
-        // Store all indices whose base regions overlap the mouse path this frame
         const overlappedIndices = [];
+        let indexContainingPoint = -1; 
 
-        // Find ALL regions whose base overlaps the mouse path
+        // Find ALL regions whose shape at mouseY overlaps the mouse path OR contains the point
         for (let i = 0; i < numLetters; i++) {
           const region = letterRegions[i];
-          // const letterData = letterCenters[i]; // Not needed for base check
+          const letterData = letterCenters[i];
 
-          // Robust checks for region validity
-          if (!region || typeof region.start !== 'number' || typeof region.end !== 'number' || region.start >= region.end) continue;
+          // Robust checks
+          if (!letterData || typeof letterData.left !== 'number' || !region || typeof region.start !== 'number' || typeof region.end !== 'number') continue;
 
+          const letterLeft = letterData.left;
+          const letterRight = letterData.right;
+          const letterCenterX = letterData.x; 
+          const centerWidth = letterRight - letterLeft; 
           const effectiveBaseStartX = region.start; 
           const effectiveBaseEndX = region.end;
+          if (effectiveBaseStartX >= effectiveBaseEndX) continue; 
+          const effectiveBaseWidth = effectiveBaseEndX - effectiveBaseStartX;
+          const effectiveBaseCenterX = effectiveBaseStartX + effectiveBaseWidth / 2;
+          
+          // Calculate shape boundaries at current mouseY (same as handleMouseMove interpolation)
+          const widthAtY = centerWidth + (effectiveBaseWidth - centerWidth) * verticalFactor;
+          const halfWidthAtY = widthAtY / 2;
+          const centerAtY = letterCenterX + (effectiveBaseCenterX - letterCenterX) * verticalFactor;
+          const shapeStartX = centerAtY - halfWidthAtY;
+          const shapeEndX = centerAtY + halfWidthAtY;
 
-          // Check if the horizontal movement RANGE [minX, maxX] overlaps the region base [start, end]
-          const rangeOverlap = !(effectiveBaseEndX <= minX || effectiveBaseStartX >= maxX);
+          // Check 1: Does the horizontal movement RANGE [minX, maxX] overlap the shape boundaries AT THIS Y [shapeStartX, shapeEndX]?
+          const pathIntersectsShapeAtY = !(shapeEndX <= minX || shapeStartX >= maxX);
 
-          if (rangeOverlap) {
-             overlappedIndices.push(i); // Add all overlapping regions
+          // Check 2: Is the exact point inside the shape boundaries AT THIS Y?
+          const pointInsideShapeAtY = (currentMouseX >= shapeStartX && currentMouseX < shapeEndX);
+
+          // If path intersects OR point is inside, consider it overlapped
+          if (pathIntersectsShapeAtY || pointInsideShapeAtY) {
+             overlappedIndices.push(i); 
+             if (pointInsideShapeAtY) {
+                  indexContainingPoint = i; // Mark if the point is precisely within this one
+             } 
           }
         }
 
-        // Add newly overlapped indices to the queue
-        overlappedIndices.forEach(currentIndex => {
-             // Add to queue if it's different from the very last region processed 
-             // AND it's not already the last element *in* the queue (prevents rapid duplicates)
-             if (currentIndex !== lastRegionIndex && 
-                 (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== currentIndex)) {
-                 
-                 animationQueue.push(currentIndex);
-                 processAnimationQueue(); // Attempt to start processing 
-                 
-                 // Update lastRegionIndex *immediately* when an index is added 
-                 // This helps prevent adding the same index multiple times if the mouse stays within it briefly
-                 lastRegionIndex = currentIndex; 
-             }
-        });
-
-        // If no overlap was found, reset lastRegionIndex so the next overlap triggers
-        if (overlappedIndices.length === 0) {
-             lastRegionIndex = -1;
+        // Determine the primary representative index for this frame
+        let mainIndexThisFrame = -1;
+        if (indexContainingPoint !== -1) {
+            mainIndexThisFrame = indexContainingPoint; // Prioritize region containing the point
+        } else if (overlappedIndices.length > 0) {
+            // If point isn't in any, but path overlaps, use the first one found as representative
+            mainIndexThisFrame = overlappedIndices[0]; 
         }
-        // Optimization: If only one overlap found, we can reliably set lastRegionIndex
-        else if (overlappedIndices.length === 1) {
-             lastRegionIndex = overlappedIndices[0];
-        } 
-        // If multiple overlaps, lastRegionIndex was updated when the *last* of the overlaps was added to queue.
+        // Note: If multiple overlaps but point isn't in any, this frame's 'state' 
+        // is represented by the first overlapped region (lowest index).
 
+        // Add newly overlapped indices to queue IF the primary representative index changed
+        if (mainIndexThisFrame !== -1 && mainIndexThisFrame !== lastRegionIndex) {
+             overlappedIndices.forEach(idx => {
+                 // Add to queue, keep the check for queue[-1] to avoid direct duplicates
+                 if (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== idx) {
+                     animationQueue.push(idx);
+                 }
+             });
+             // Only trigger processing if we actually added something
+             if (overlappedIndices.length > 0) {
+                  processAnimationQueue(); 
+             }
+        }
+
+        // Update lastRegionIndex for the next frame comparison using the primary index found this frame
+        lastRegionIndex = mainIndexThisFrame;
 
         previousFrameMouseX = currentMouseX; // Store for next frame's range calculation
 
@@ -363,5 +383,4 @@
       window.addEventListener('resize', calculateRegions); // Recalculate on resize
     </script>
   </body>
-</html> 
 </html> 
