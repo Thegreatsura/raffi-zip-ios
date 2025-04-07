@@ -24,6 +24,7 @@ body {
     flex-direction: column; /* Stack name and links vertically */
     align-items: center; /* Center items horizontally within wrapper */
     text-align: center; /* Ensure text aligns center if needed */
+    transform: translateY(-24px); /* Final upward shift */
 }
 
 .name-container {

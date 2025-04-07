@@ -47,6 +47,7 @@
       let latestMouseY = window.innerHeight / 2;
       let previousFrameMouseX = latestMouseX; // For frame-by-frame diff
       let queueIntervalId = null; // ID for the interval timer
+      let nameCenterY = window.innerHeight / 2; // Global variable for name's vertical center
 
       // --- UI State ---
       let showColorRegions = false; // Start with regions hidden
@@ -118,9 +119,13 @@
           return !(has_neg && has_pos);
       }
 
-      // --- Calculate Horizontal Letter Positions & Widths --- 
+      // --- Calculate Horizontal Letter Positions & Widths, and Name Vertical Center ---
       function calculateLetterCenters() {
           letterCenters = [];
+          const nameRect = nameContainer.getBoundingClientRect();
+          // Calculate and store the vertical center Y position of the name container
+          nameCenterY = nameRect.top + nameRect.height / 2; 
+          
           letters.forEach(span => {
               const rect = span.getBoundingClientRect();
               letterCenters.push({
@@ -130,7 +135,7 @@
                   right: rect.right
               });
           });
-           // console.log("Letter Centers:", letterCenters);
+           // console.log("Name Center Y:", nameCenterY);
       }
 
       // --- Calculate trigger regions (beam bases) & Draw SVG Shapes (Capped Outer Slant) ---
@@ -233,10 +238,10 @@
         } 
         // console.log("Final Letter Regions (Capped Outer):", letterRegions);
 
-        // 5. Draw SVG polygons (Set CSS Variable for Color)
+        // 5. Draw SVG polygons (using actual nameCenterY)
         svgContainer.innerHTML = ''; // Clear existing polygons
         const viewportHeight = window.innerHeight;
-        const nameCenterY = viewportHeight / 2; 
+        // const nameCenterY = viewportHeight / 2; // REMOVED - Use global value
 
         // --- Draw Background Rects --- 
         let splitPointX = viewportWidth / 2; // Default split at center
@@ -276,7 +281,7 @@
           const letterLeft = letterCenters[index].left;
           const letterRight = letterCenters[index].right;
 
-          // Vertices for polygons
+          // Vertices for polygons - Use the calculated global nameCenterY
           const vTopLeft = { x: region.start, y: 0 };
           const vTopRight = { x: region.end, y: 0 };
           const vCenterLeft = { x: letterLeft, y: nameCenterY }; 
@@ -399,8 +404,11 @@
         const minX = Math.min(previousFrameMouseX, currentMouseX);
         const maxX = Math.max(previousFrameMouseX, currentMouseX);
         const viewportHeight = window.innerHeight;
-        const nameCenterY = viewportHeight / 2;
-        const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
+        // const nameCenterY = viewportHeight / 2; // REMOVED - Use global value
+        // Ensure nameCenterY is valid before calculating verticalFactor
+        const validNameCenterY = nameCenterY || (viewportHeight / 2);
+        const halfViewportHeight = viewportHeight / 2;
+        const verticalFactor = halfViewportHeight > 0 ? Math.abs(mouseY - validNameCenterY) / halfViewportHeight : 0;
 
         const overlappedIndices = [];
         let indexContainingPoint = -1; 
