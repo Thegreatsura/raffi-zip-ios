@@ -12,5 +12,77 @@
       <span class="space"> </span>
       <span>C</span><span>H</span><span>I</span><span>L</span><span>I</span><span>N</span><span>G</span><span>A</span><span>R</span><span>Y</span><span>A</span><span>N</span>
     </div>
+
+    <script>
+      const nameContainer = document.querySelector('.name-container');
+      const letters = Array.from(nameContainer.children); // Get all spans (letters + space)
+      const numLetters = letters.length;
+      let letterRegions = [];
+      let previousLetterIndex = -1; // Track the last animated letter
+
+      // --- Calculate trigger regions based on viewport width ---
+      function calculateRegions() {
+        const viewportWidth = window.innerWidth;
+        letterRegions = []; // Reset regions on resize
+        const firstLastWidth = viewportWidth * 0.20; // 20% for first and last
+        const remainingWidth = viewportWidth - (2 * firstLastWidth);
+        const middleSectionCount = numLetters - 2; // Number of sections between first and last
+        const middleWidth = remainingWidth / middleSectionCount;
+
+        let currentBoundary = 0;
+
+        for (let i = 0; i < numLetters; i++) {
+          let regionWidth;
+          if (i === 0) {
+            regionWidth = firstLastWidth;
+          } else if (i === numLetters - 1) {
+            regionWidth = firstLastWidth;
+          } else {
+            regionWidth = middleWidth;
+          }
+          letterRegions.push({ start: currentBoundary, end: currentBoundary + regionWidth });
+          currentBoundary += regionWidth;
+        }
+         // console.log("Calculated Regions:", letterRegions); // For debugging
+      }
+
+      // --- Handle mouse movement ---
+      function handleMouseMove(event) {
+        const mouseX = event.clientX;
+        let currentLetterIndex = -1;
+
+        // Find which region the mouse is in
+        for (let i = 0; i < letterRegions.length; i++) {
+          if (mouseX >= letterRegions[i].start && mouseX < letterRegions[i].end) {
+            currentLetterIndex = i;
+            break;
+          }
+        }
+
+        // If mouse moved to a *new* letter's region, trigger animation
+        if (currentLetterIndex !== -1 && currentLetterIndex !== previousLetterIndex) {
+          const currentLetterSpan = letters[currentLetterIndex];
+
+          // Add class to trigger animation
+          currentLetterSpan.classList.add('animate-letter');
+
+          // Remove class after animation finishes (600ms based on CSS)
+          // Using 'animationend' event is slightly more robust than setTimeout
+          currentLetterSpan.addEventListener('animationend', () => {
+            currentLetterSpan.classList.remove('animate-letter');
+          }, { once: true }); // Important: listener removes itself after firing once
+
+          previousLetterIndex = currentLetterIndex;
+        } else if (currentLetterIndex === -1) {
+            // Reset if mouse is outside all defined regions (might happen at exact edge)
+            previousLetterIndex = -1;
+        }
+      }
+
+      // --- Initial setup and event listeners ---
+      calculateRegions(); // Calculate initial regions
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('resize', calculateRegions); // Recalculate on resize
+    </script>
   </body>
 </html> 
