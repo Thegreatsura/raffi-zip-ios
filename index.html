@@ -326,10 +326,14 @@
       // --- Toggle Color Regions Visibility ---
       function toggleColorRegions() {
          showColorRegions = !showColorRegions; // Flip the state
+         const indicator = document.querySelector('.color-cycle-indicator');
+
          if (showColorRegions) {
             svgContainer.classList.remove('regions-hidden');
+            indicator?.classList.add('indicator-static'); // Add static class
          } else {
             svgContainer.classList.add('regions-hidden');
+            indicator?.classList.remove('indicator-static'); // Remove static class
          }
       }
 

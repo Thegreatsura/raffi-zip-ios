@@ -101,15 +101,21 @@ body {
 }
 
 .color-cycle-indicator {
-    width: 28px;
-    height: 28px;
+    width: 20px;  /* Changed size */
+    height: 20px; /* Changed size */
     border-radius: 50%; /* Make it a circle */
     background-color: #ccc; /* Default/fallback color */
     /* Apply animation properties separately */
     animation-name: colorCycle;
-    animation-timing-function: linear; /* Use steps if you want instant color changes */
+    animation-timing-function: steps(1, end); /* Hard jumps between colors */
     animation-iteration-count: infinite;
     /* animation-duration is now set by JS */
+}
+
+/* Style when colors are visible */
+.color-cycle-indicator.indicator-static {
+    animation: none; /* Stop the animation */
+    background-color: #000000; /* Set to black */
 }
 /* --- End Links --- */
 
