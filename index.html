@@ -29,6 +29,10 @@
       let previousMouseX = null; // Needed only if we revert to range checking
       const svgContainer = document.querySelector('.triangle-visualization-svg'); // Get SVG container
 
+      // --- Configuration Constants ---
+      const OUTER_BEAM_CAP_PX = 180; // Max distance (px) the inner edge of outer beams can be from the viewport edge
+      const MIN_CENTER_BEAM_WIDTH_PX = 10; // Min width (px) for centermost beams
+
       // --- Colors for Visualization (Sampled from image) ---
       // RAFFI CHILINGARYAN
       const regionColors = [
@@ -105,15 +109,14 @@
            midpoints.push(viewportWidth); // End with right edge
         }
         
-        // 2. Define Outer Region Boundaries WITH CAP (e.g., 100px)
-        const maxOuterInnerEdgeDist = 100; // Cap distance from edge
+        // 2. Define Outer Region Boundaries WITH CAP using constant
         let outerRegion1_start = 0;
         let outerRegion1_end = (numLetters > 1 && midpoints[1]) ? midpoints[1] : viewportWidth / 2; 
-        outerRegion1_end = Math.min(outerRegion1_end, maxOuterInnerEdgeDist);
+        outerRegion1_end = Math.min(outerRegion1_end, OUTER_BEAM_CAP_PX);
 
         let outerRegionLast_start = (numLetters > 1 && midpoints[numLetters - 1]) ? midpoints[numLetters - 1] : viewportWidth / 2; 
         let outerRegionLast_end = viewportWidth;
-        outerRegionLast_start = Math.max(outerRegionLast_start, viewportWidth - maxOuterInnerEdgeDist);
+        outerRegionLast_start = Math.max(outerRegionLast_start, viewportWidth - OUTER_BEAM_CAP_PX);
 
         // Ensure start is less than end for outer regions after capping
         outerRegion1_end = Math.max(outerRegion1_start + 1, outerRegion1_end); // Ensure min width of 1px
@@ -145,14 +148,14 @@
             const theoreticalMiddleMaxWidth = middleAvailableWidth / middleRegionCount; 
 
             for (let i = middleStartIndex; i <= middleEndIndex; i++) {
-                if (!letterCenters[i]) { middleTargetBaseWidths.push(minBaseWidth); continue; }
+                if (!letterCenters[i]) { middleTargetBaseWidths.push(MIN_CENTER_BEAM_WIDTH_PX); continue; }
                 const distanceFromCenter = Math.abs(letterCenters[i].x - viewportCenterX);
                 // Normalize distance relative to the middle section's half-width
                 const middleMaxDistance = middleAvailableWidth / 2; 
                 const normalizedDistance = middleMaxDistance > 0 ? Math.min(1, distanceFromCenter / middleMaxDistance) : 0.5; 
                 const easedNormalizedDistance = easeInQuad(normalizedDistance);
                 // Interpolate between min and theoretical max
-                const targetWidth = minBaseWidth + (theoreticalMiddleMaxWidth - minBaseWidth) * easedNormalizedDistance;
+                const targetWidth = MIN_CENTER_BEAM_WIDTH_PX + (theoreticalMiddleMaxWidth - MIN_CENTER_BEAM_WIDTH_PX) * easedNormalizedDistance;
                 middleTargetBaseWidths.push(targetWidth);
             }
 
