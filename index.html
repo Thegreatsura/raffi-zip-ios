@@ -234,7 +234,7 @@
         } 
         // console.log("Final Letter Regions (Capped Outer):", letterRegions);
 
-        // 5. Draw SVG polygons (including background rects)
+        // 5. Draw SVG polygons (Set CSS Variable for Color)
         svgContainer.innerHTML = ''; // Clear existing polygons
         const viewportHeight = window.innerHeight;
         const nameCenterY = viewportHeight / 2; 
@@ -248,21 +248,19 @@
         }
         const rColor = regionColors[0];
         const nColor = regionColors[numLetters - 1];
-
         const leftBgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         leftBgRect.setAttribute('x', 0);
         leftBgRect.setAttribute('y', 0);
         leftBgRect.setAttribute('width', splitPointX);
         leftBgRect.setAttribute('height', viewportHeight);
-        leftBgRect.setAttribute('fill', rColor);
+        leftBgRect.style.setProperty('--region-color', rColor); // Set CSS Var
         svgContainer.appendChild(leftBgRect);
-
         const rightBgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
         rightBgRect.setAttribute('x', splitPointX);
         rightBgRect.setAttribute('y', 0);
         rightBgRect.setAttribute('width', viewportWidth - splitPointX);
         rightBgRect.setAttribute('height', viewportHeight);
-        rightBgRect.setAttribute('fill', nColor);
+        rightBgRect.style.setProperty('--region-color', nColor); // Set CSS Var
         svgContainer.appendChild(rightBgRect);
         // --- End Background Rects --- 
 
@@ -308,11 +306,11 @@
 
           const topPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
           topPoly.setAttribute('points', `${vTopLeft.x},${vTopLeft.y} ${vTopRight.x},${vTopRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
-          topPoly.setAttribute('fill', color);
+          topPoly.style.setProperty('--region-color', color); // Set CSS Var
           svgContainer.appendChild(topPoly);
           const bottomPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
           bottomPoly.setAttribute('points', `${vBottomLeft.x},${vBottomLeft.y} ${vBottomRight.x},${vBottomRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
-          bottomPoly.setAttribute('fill', color);
+          bottomPoly.style.setProperty('--region-color', color); // Set CSS Var
           svgContainer.appendChild(bottomPoly);
         });
       }
@@ -329,13 +327,13 @@
          const indicator = document.querySelector('.color-cycle-indicator');
 
          if (showColorRegions) {
-            svgContainer.classList.remove('regions-hidden');
+            svgContainer.classList.add('regions-visible'); // Use new class for SVG
             indicator?.classList.add('indicator-static'); 
-            document.body.classList.add('color-mode-active'); // Add body class
+            document.body.classList.add('color-mode-active'); 
          } else {
-            svgContainer.classList.add('regions-hidden');
+            svgContainer.classList.remove('regions-visible'); // Use new class for SVG
             indicator?.classList.remove('indicator-static'); 
-            document.body.classList.remove('color-mode-active'); // Remove body class
+            document.body.classList.remove('color-mode-active'); 
          }
       }
 
@@ -507,11 +505,7 @@
              indicator.style.animationDuration = `${totalCycleDuration}s`;
          }
 
-         calculateRegions();      // Calculates regions & draws SVG
-         // Apply initial hidden state if needed
-         if (!showColorRegions) {
-             svgContainer.classList.add('regions-hidden');
-         }
+         calculateRegions();      // Calculates regions & draws SVG (sets CSS vars)
          animationFrameLoop();    // Start the main loop
       }); 
       // Remove the old mousemove handler for triggering animations
