@@ -350,19 +350,35 @@
         // Note: If multiple overlaps but point isn't in any, this frame's 'state' 
         // is represented by the first overlapped region (lowest index).
 
+        // Add newly overlapped indices to queue, EXCEPT the one we just left
+        let addedToQueue = false;
+        overlappedIndices.forEach(idx => {
+             // Condition 1: Don't queue the index we were primarily in last frame (prevents double bounce)
+             // Condition 2: Don't queue if it's identical to the last element already IN the queue (prevents duplicates)
+             if (idx !== lastRegionIndex && 
+                 (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== idx)) {
+                 
+                 animationQueue.push(idx);
+                 addedToQueue = true;
+             }
+        });
+
+        // Trigger processing only if we actually added something
+        if (addedToQueue) {
+             processAnimationQueue(); 
+        }
+        
+        /* --- OLD LOGIC --- 
         // Add newly overlapped indices to queue IF the primary representative index changed
         if (mainIndexThisFrame !== -1 && mainIndexThisFrame !== lastRegionIndex) {
-             overlappedIndices.forEach(idx => {
-                 // Add to queue, keep the check for queue[-1] to avoid direct duplicates
-                 if (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== idx) {
-                     animationQueue.push(idx);
-                 }
-             });
-             // Only trigger processing if we actually added something
-             if (overlappedIndices.length > 0) {
-                  processAnimationQueue(); 
-             }
+            // Only queue the NEW main index, not all overlaps
+            // Keep the check for queue[-1] to avoid direct duplicates
+            if (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== mainIndexThisFrame) {
+                 animationQueue.push(mainIndexThisFrame);
+                 processAnimationQueue(); // Attempt to start processing
+            }
         }
+        */
 
         // Update lastRegionIndex for the next frame comparison using the primary index found this frame
         lastRegionIndex = mainIndexThisFrame;
