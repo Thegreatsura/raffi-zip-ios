@@ -286,54 +286,68 @@
 
       function animationFrameLoop() {
         const currentMouseX = latestMouseX;
-        const mouseY = latestMouseY;
-        const viewportHeight = window.innerHeight;
-        const nameCenterY = viewportHeight / 2;
-        const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
+        // const mouseY = latestMouseY; // No longer needed for simplified check
+        // Initialize previousFrameMouseX on first run
+        if (previousFrameMouseX === null) {
+            previousFrameMouseX = currentMouseX;
+        }
 
-        let currentRegionIndex = -1; // Region index for THIS frame
+        // const viewportHeight = window.innerHeight;
+        // const nameCenterY = viewportHeight / 2;
+        // const verticalFactor = Math.abs(mouseY - nameCenterY) / (viewportHeight / 2);
+        const minX = Math.min(previousFrameMouseX, currentMouseX);
+        const maxX = Math.max(previousFrameMouseX, currentMouseX);
 
-        // Find which letter's region the CURRENT mouse position is in
+        // Store all indices whose base regions overlap the mouse path this frame
+        const overlappedIndices = [];
+
+        // Find ALL regions whose base overlaps the mouse path
         for (let i = 0; i < numLetters; i++) {
           const region = letterRegions[i];
-          const letterData = letterCenters[i];
+          // const letterData = letterCenters[i]; // Not needed for base check
 
-          if (!letterData || typeof letterData.left !== 'number' || !region || typeof region.start !== 'number' || typeof region.end !== 'number') continue;
+          // Robust checks for region validity
+          if (!region || typeof region.start !== 'number' || typeof region.end !== 'number' || region.start >= region.end) continue;
 
-          const letterLeft = letterData.left;
-          const letterRight = letterData.right;
-          const letterCenterX = letterData.x; 
-          const centerWidth = letterRight - letterLeft; 
           const effectiveBaseStartX = region.start; 
           const effectiveBaseEndX = region.end;
-          if (effectiveBaseStartX >= effectiveBaseEndX) continue; 
-          const effectiveBaseWidth = effectiveBaseEndX - effectiveBaseStartX;
-          const effectiveBaseCenterX = effectiveBaseStartX + effectiveBaseWidth / 2;
-          
-          // Calculate shape boundaries at current mouseY
-          const widthAtY = centerWidth + (effectiveBaseWidth - centerWidth) * verticalFactor;
-          const halfWidthAtY = widthAtY / 2;
-          const centerAtY = letterCenterX + (effectiveBaseCenterX - letterCenterX) * verticalFactor;
-          const shapeStartX = centerAtY - halfWidthAtY;
-          const shapeEndX = centerAtY + halfWidthAtY;
 
-          // Check if CURRENT mouseX is inside
-          if (currentMouseX >= shapeStartX && currentMouseX < shapeEndX) {
-            currentRegionIndex = i;
-            break;
+          // Check if the horizontal movement RANGE [minX, maxX] overlaps the region base [start, end]
+          const rangeOverlap = !(effectiveBaseEndX <= minX || effectiveBaseStartX >= maxX);
+
+          if (rangeOverlap) {
+             overlappedIndices.push(i); // Add all overlapping regions
           }
         }
 
-        // If mouse entered a NEW region since the last frame, add to queue
-        if (currentRegionIndex !== -1 && currentRegionIndex !== lastRegionIndex) {
-            if (!animationQueue.includes(currentRegionIndex)) { // Optional: Prevent adding same index multiple times in a row
-                animationQueue.push(currentRegionIndex);
-                processAnimationQueue(); // Attempt to start processing if not already animating
-            }
-        }
+        // Add newly overlapped indices to the queue
+        overlappedIndices.forEach(currentIndex => {
+             // Add to queue if it's different from the very last region processed 
+             // AND it's not already the last element *in* the queue (prevents rapid duplicates)
+             if (currentIndex !== lastRegionIndex && 
+                 (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== currentIndex)) {
+                 
+                 animationQueue.push(currentIndex);
+                 processAnimationQueue(); // Attempt to start processing 
+                 
+                 // Update lastRegionIndex *immediately* when an index is added 
+                 // This helps prevent adding the same index multiple times if the mouse stays within it briefly
+                 lastRegionIndex = currentIndex; 
+             }
+        });
 
-        lastRegionIndex = currentRegionIndex; // Update for next frame
-        previousFrameMouseX = currentMouseX; // Store for potential future diff logic if needed
+        // If no overlap was found, reset lastRegionIndex so the next overlap triggers
+        if (overlappedIndices.length === 0) {
+             lastRegionIndex = -1;
+        }
+        // Optimization: If only one overlap found, we can reliably set lastRegionIndex
+        else if (overlappedIndices.length === 1) {
+             lastRegionIndex = overlappedIndices[0];
+        } 
+        // If multiple overlaps, lastRegionIndex was updated when the *last* of the overlaps was added to queue.
+
+
+        previousFrameMouseX = currentMouseX; // Store for next frame's range calculation
 
         requestAnimationFrame(animationFrameLoop); // Loop!
       }
@@ -349,4 +363,5 @@
       window.addEventListener('resize', calculateRegions); // Recalculate on resize
     </script>
   </body>
+</html> 
 </html> 
