@@ -25,8 +25,8 @@ body {
 
 .name-container span {
   display: inline-block; /* Allows transform and respects whitespace */
-  font-size: 2rem; /* Adjust size as needed */
-  color: #000000; /* Black text */
+  font-size: 1.7rem; /* Adjust size as needed */
+  color: #373737; /* Updated text color */
   padding: 0 2px; /* Small spacing between letters */
   letter-spacing: 0.03em; /* Add subtle letter spacing */
   transition: transform 0.2s ease-out; /* Smooth transition for hover */
@@ -49,6 +49,48 @@ body {
   transform: none;
 }
 */
+
+/* --- Links / Icons --- */
+.links-container {
+    position: absolute; /* Position relative to body */
+    /* Center horizontally */
+    left: 50%;
+    transform: translateX(-50%); 
+    /* Position below name - adjust top as needed */
+    top: calc(50% + 40px); /* Approx center + offset, assumes name is centered */
+    display: flex;
+    gap: 15px; /* Space between buttons */
+    z-index: 10; /* Ensure links are clickable above SVG */
+}
+
+.icon-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px; /* Increased size */
+    height: 48px; /* Increased size */
+    padding: 8px; /* Padding inside the button */
+    box-sizing: border-box;
+    background-color: transparent; 
+    border: none; /* Removed border */
+    border-radius: 50%; /* Fully rounded corners */
+    cursor: pointer;
+    /* opacity: 1; */ /* Removed default opacity */
+    transition: background-color 0.2s ease; /* Transition background */
+}
+
+.icon-button:hover {
+    /* opacity: 0.2; */ /* Removed hover opacity */
+    background-color: rgba(0, 0, 0, 0.07); /* 7% black background on hover */
+}
+
+.icon-button img {
+    display: block; /* Remove extra space below image */
+    width: 100%; /* Make image fill padding area */
+    height: 100%;
+    object-fit: contain; /* Scale SVG nicely */
+}
+/* --- End Links --- */
 
 /* --- SVG Triangle Visualization --- */
 .triangle-visualization-svg {
