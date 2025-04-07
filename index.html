@@ -31,6 +31,7 @@
 
       // --- Animation Queue & State ---
       let animationQueue = [];
+      let animatingLetters = new Set(); // Track indices currently animating
       let latestMouseX = window.innerWidth / 2; // Initialize center
       let latestMouseY = window.innerHeight / 2;
       let previousFrameMouseX = latestMouseX; // For frame-by-frame diff
@@ -246,36 +247,47 @@
         latestMouseY = event.clientY;
       }
 
-      // --- Process the next animation in the queue with overlap ---
+      // --- Process the next animation in the queue with overlap & delay for active ---
       const ANIMATION_OVERLAP_DELAY_MS = 20; // Delay before starting next queued animation
+      const ANIMATION_CHECK_DELAY_MS = 50; // Delay to re-check queue if head is animating
 
       function processAnimationQueue() {
         if (animationQueue.length === 0) {
             return; // Queue empty
         }
 
-        // Dequeue the next letter index WITHOUT checking isAnimating
+        // Peek at the next item without removing it
+        const nextIndexToAnimate = animationQueue[0];
+
+        // Check if the letter for the next item is *already* animating
+        if (animatingLetters.has(nextIndexToAnimate)) {
+            // Yes, it's still animating. Pause queue processing and check again soon.
+            setTimeout(processAnimationQueue, ANIMATION_CHECK_DELAY_MS);
+            return; 
+        }
+
+        // No, it's not animating. Proceed to dequeue and start.
         const letterIndexToAnimate = animationQueue.shift(); 
         const letterSpan = letters[letterIndexToAnimate];
 
-        if (letterSpan) { // Check if span exists
-            // Clear any potentially stuck class from previous rapid triggers
+        if (letterSpan) { 
+            // Add to tracking set
+            animatingLetters.add(letterIndexToAnimate);
+
             letterSpan.classList.remove('animate-letter');
-            
-            // Force reflow/repaint to ensure animation restarts if class was just removed
             void letterSpan.offsetWidth;
-            
-            // Add class to start animation
             letterSpan.classList.add('animate-letter');
             
-            // Listener ONLY removes class on end, doesn't trigger next
             letterSpan.addEventListener('animationend', () => {
                 letterSpan.classList.remove('animate-letter');
-                // DO NOT set isAnimating or call processAnimationQueue here
+                // Remove from tracking set WHEN animation truly ends
+                animatingLetters.delete(letterIndexToAnimate); 
+                // Immediately try processing queue again, in case it was waiting for this
+                processAnimationQueue(); 
             }, { once: true });
         } 
 
-        // Schedule the next check/dequeue after a short delay, allowing overlap
+        // Schedule the next potential dequeue after the standard overlap delay
         if (animationQueue.length > 0) {
              setTimeout(processAnimationQueue, ANIMATION_OVERLAP_DELAY_MS);
         }
