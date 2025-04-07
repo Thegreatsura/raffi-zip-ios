@@ -1,0 +1,38 @@
+/* style.css */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #ffffff; /* White background */
+  margin: 0;
+  overflow: hidden; /* Prevent scrollbars */
+  font-family: "Courier New", Courier, monospace; /* Monospace font like the image */
+}
+
+.name-container {
+  display: flex; /* Align letters horizontally */
+  cursor: default; /* Default cursor */
+}
+
+.name-container span {
+  display: inline-block; /* Allows transform and respects whitespace */
+  font-size: 2rem; /* Adjust size as needed */
+  color: #000000; /* Black text */
+  padding: 0 2px; /* Small spacing between letters */
+  transition: transform 0.2s ease-out; /* Smooth transition for hover */
+}
+
+.name-container span.space {
+  width: 1ch; /* Give the space character some width */
+}
+
+/* Hover effect: Move the letter up when hovered */
+.name-container span:hover {
+  transform: translateY(-10px); /* Move letter up */
+}
+
+/* Prevent the space from moving */
+.name-container span.space:hover {
+  transform: none;
+} 
