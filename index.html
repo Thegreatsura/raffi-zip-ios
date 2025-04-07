@@ -39,7 +39,7 @@
 
       // --- Configuration Constants ---
       // const OUTER_BEAM_CAP_PX = 180; // REMOVED - Max distance (px) the inner edge of outer beams can be from the viewport edge
-      const OUTER_BEAM_OFFSET_PX = 150; // Offset from text edge for outer beams
+      const OUTER_BEAM_OFFSET_PX = 280; // Offset from text edge for outer beams
       const MIN_CENTER_BEAM_WIDTH_PX = 10; // Min width (px) for centermost beams
 
       // --- Colors for Visualization (Sampled from image) ---
@@ -196,11 +196,39 @@
         } 
         // console.log("Final Letter Regions (Capped Outer):", letterRegions);
 
-        // 5. Draw SVG polygons (using the final regions)
+        // 5. Draw SVG polygons (including background rects)
         svgContainer.innerHTML = ''; // Clear existing polygons
         const viewportHeight = window.innerHeight;
         const nameCenterY = viewportHeight / 2; 
 
+        // --- Draw Background Rects --- 
+        let splitPointX = viewportWidth / 2; // Default split at center
+        const spaceIndex = 5;
+        const cIndex = 6;
+        if (letterCenters[spaceIndex] && letterCenters[cIndex]) {
+            splitPointX = (letterCenters[spaceIndex].x + letterCenters[cIndex].x) / 2;
+        }
+        const rColor = regionColors[0];
+        const nColor = regionColors[numLetters - 1];
+
+        const leftBgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        leftBgRect.setAttribute('x', 0);
+        leftBgRect.setAttribute('y', 0);
+        leftBgRect.setAttribute('width', splitPointX);
+        leftBgRect.setAttribute('height', viewportHeight);
+        leftBgRect.setAttribute('fill', rColor);
+        svgContainer.appendChild(leftBgRect);
+
+        const rightBgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+        rightBgRect.setAttribute('x', splitPointX);
+        rightBgRect.setAttribute('y', 0);
+        rightBgRect.setAttribute('width', viewportWidth - splitPointX);
+        rightBgRect.setAttribute('height', viewportHeight);
+        rightBgRect.setAttribute('fill', nColor);
+        svgContainer.appendChild(rightBgRect);
+        // --- End Background Rects --- 
+
+        // --- Draw Letter Beams (on top of background) --- 
         letterRegions.forEach((region, index) => {
           // More robust checks for valid region and center data before drawing
           if (!region || typeof region.start !== 'number' || typeof region.end !== 'number' || region.start > region.end) {
