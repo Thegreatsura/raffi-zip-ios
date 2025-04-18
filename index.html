@@ -2,7 +2,8 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" 
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>ping me whenever</title>
     <link rel="icon" type="image/png" href="/pngs/1.png">
     <!-- Inline critical background style for instant rendering -->
@@ -214,24 +215,31 @@
           
           // Add function to dynamically align content with first separator
           function alignContentWithSeparator() {
-              const firstSeparator = document.querySelector('.icon-separator');
-              const content = document.querySelector('.main-content-wrapper');
-              
-              if (!firstSeparator) {
-                  console.error("DEBUG: First separator not found!");
-                  return;
+              // Only run alignment logic on desktop
+              if (window.innerWidth > 768) {
+                  const firstSeparator = document.querySelector('.icon-separator');
+                  const content = document.querySelector('.main-content-wrapper');
+                  
+                  if (!firstSeparator) {
+                      console.error("DEBUG: First separator not found!");
+                      return;
+                  }
+                  if (!content) {
+                      console.error("DEBUG: Content wrapper not found!");
+                      return;
+                  }
+                  
+                  const firstSeparatorRect = firstSeparator.getBoundingClientRect();
+                  console.log("DEBUG: First Separator Rect:", firstSeparatorRect);
+                  
+                  const newTop = firstSeparatorRect.top;
+                  content.style.top = `${newTop}px`;
+                  console.log(`DEBUG: Setting content top to: ${newTop}px`);
+              } else {
+                  // On mobile, ensure top style is removed or set to auto
+                  const content = document.querySelector('.main-content-wrapper');
+                  if(content) content.style.top = 'auto'; 
               }
-              if (!content) {
-                  console.error("DEBUG: Content wrapper not found!");
-                  return;
-              }
-              
-              const firstSeparatorRect = firstSeparator.getBoundingClientRect();
-              console.log("DEBUG: First Separator Rect:", firstSeparatorRect);
-              
-              const newTop = firstSeparatorRect.top;
-              content.style.top = `${newTop}px`;
-              console.log(`DEBUG: Setting content top to: ${newTop}px`);
           }
           
           // --- Event Listeners & Initial Setup ---

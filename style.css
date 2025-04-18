@@ -226,4 +226,35 @@ body {
     }
     
     /* ... other mobile styles for content/text ... */
+
+    .title-block .main-title {
+       font-size: 40px; /* Further reduce size to prevent wrapping */
+       line-height: 1.0; /* Adjust line height if needed */
+    }
+
+    .description-block {
+        font-size: 20px; /* Mobile body text size */
+        line-height: 1.5; /* Keep adjusted line height */
+    }
+
+    /* Ensure the overall .title-block doesn't interfere */
+    .title-block {
+        font-size: inherit; /* Reset base font size if needed */
+        height: auto; 
+        margin-bottom: 24px;
+    }
+
+    .main-content-wrapper {
+        position: relative; /* Change from fixed/absolute to flow normally */
+        top: auto; /* Remove JS positioning */
+        left: auto; /* Remove horizontal positioning */
+        transform: none; /* Remove transform */
+        width: auto; /* Let width be determined by padding */
+        max-width: none; /* Remove max-width */
+        padding: 30px; /* Add 30px padding all around */
+        margin-top: 30px; /* Add some space from the top */
+        
+        /* Ensure visible */
+        opacity: 1; 
+    }
 } 
