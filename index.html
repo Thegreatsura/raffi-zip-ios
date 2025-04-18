@@ -160,15 +160,39 @@
       });
       // --- End Navigation --- 
 
+      // Add function to dynamically align content with first separator
+      function alignContentWithSeparator() {
+          const sidebar = document.querySelector('.sidebar-container');
+          const firstSeparator = document.querySelector('.icon-separator');
+          const content = document.querySelector('.main-content-wrapper');
+          
+          if (sidebar && firstSeparator && content) {
+              // Get the actual position of the first separator relative to viewport
+              const sidebarRect = sidebar.getBoundingClientRect();
+              const firstSeparatorRect = firstSeparator.getBoundingClientRect();
+              
+              // Set content top to match first separator's top
+              content.style.top = `${firstSeparatorRect.top}px`;
+              
+              console.log("Content aligned with separator at", firstSeparatorRect.top);
+          }
+      }
+
       // Initial setup 
       requestAnimationFrame(() => {
-         // calculateRegions(); // No longer needed for static layout
-         setInitialState(); // Set dot position and initial content
-      }); 
+          // Wait a moment for DOM to be ready
+          setTimeout(() => {
+              setInitialState(); // Set dot position and initial content
+              alignContentWithSeparator(); // Align content with first separator
+              console.log("Initial state set");
+          }, 100);
+      });
+
+      // Re-align on window resize
       window.addEventListener('resize', () => {
-          // calculateRegions(); // No longer needed for static layout
           // We might need to recalculate dot position if icon spacing changes
           setInitialState(); // Reset dot and content (or just dot if content should persist)
+          alignContentWithSeparator(); // Re-align content with first separator
       });
 
       let queueIntervalId = null; // ID for the interval timer
