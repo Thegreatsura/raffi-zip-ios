@@ -184,9 +184,15 @@
               const mainTitleSpan = titleBlock.querySelector('.main-title');
               const dateRangeSpan = titleBlock.querySelector('.date-range');
 
-              // Update Title
+              // Update Title - Adjust for mobile
               if (mainTitleSpan) {
-                 mainTitleSpan.innerHTML = data.title;
+                 if (window.innerWidth <= 768) {
+                     // On mobile, replace <br/> with a space
+                     mainTitleSpan.innerHTML = data.title.replace(/<br\s*\/?>/gi, ' ');
+                 } else {
+                     // On desktop, use the original title with <br/>
+                     mainTitleSpan.innerHTML = data.title; 
+                 }
               }
 
               // Update Description - Use innerHTML to render links
@@ -284,7 +290,7 @@
 
           // Re-align on window resize
           window.addEventListener('resize', () => {
-              setInitialState();
+              setInitialState(); // This already calls updateContent
               alignContentWithSeparator();
               
               // Ensure content stays visible and in position after resize

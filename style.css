@@ -193,7 +193,7 @@ body {
         
         /* Mobile positioning */
         top: auto;
-        bottom: 20px; 
+        bottom: 30px; /* Increased from 20px to add 10px space below */
         left: 25px; 
         right: 25px; 
         width: calc(100% - 50px); 
@@ -228,8 +228,15 @@ body {
     /* ... other mobile styles for content/text ... */
 
     .title-block .main-title {
-       font-size: 40px; /* Further reduce size to prevent wrapping */
-       line-height: 1.0; /* Adjust line height if needed */
+       font-size: 36px; /* Further reduced size */
+       line-height: 1.0; 
+       display: inline; /* Try inline display to prevent break */
+    }
+    
+    .title-block br { 
+       /* Replace line break with a space on mobile */
+       content: ' '; 
+       display: inline; /* Ensure it behaves like a space */
     }
 
     .description-block {
@@ -251,10 +258,19 @@ body {
         transform: none; /* Remove transform */
         width: auto; /* Let width be determined by padding */
         max-width: none; /* Remove max-width */
-        padding: 30px; /* Add 30px padding all around */
-        margin-top: 30px; /* Add some space from the top */
+        padding: 30px 24px; /* Reduced horizontal padding by 6px */
+        margin-top: 20px; /* Reduced top margin by 10px */
         
         /* Ensure visible */
         opacity: 1; 
+    }
+
+    .description-block a {
+        background-color: var(--text-color);
+        color: var(--bg-color);
+        padding: 0.1em 0.15em; 
+        margin: -0.1em -0.15em; 
+        border-radius: 0; /* Removed corner radius */
+        cursor: pointer; 
     }
 } 
