@@ -70,18 +70,67 @@
 
     <script>
       // --- Configurable Animation Parameters ---
-      const CONTENT_FADE_DELAY = 800; // ms
-      const SIDEBAR_FADE_DELAY = 800; // ms
-      const CONTENT_FADE_DURATION = 2000; // ms
-      const SIDEBAR_FADE_DURATION = 2000; // ms
+      const CONTENT_FADE_DELAY = 600; // ms
+      const SIDEBAR_FADE_DELAY = 600; // ms
+      const CONTENT_FADE_DURATION = 1400; // ms
+      const SIDEBAR_FADE_DURATION = 1400; // ms
       const FADE_EASING = 'ease-in-out'; // CSS easing function
       
-      // Set CSS Variables from JS constants
-      document.documentElement.style.setProperty('--content-fade-duration', `${CONTENT_FADE_DURATION / 1000}s`);
-      document.documentElement.style.setProperty('--sidebar-fade-duration', `${SIDEBAR_FADE_DURATION / 1000}s`);
-      document.documentElement.style.setProperty('--fade-easing', FADE_EASING);
+      // --- Themes --- 
+      const themes = [
+        { name: 'yellow', bgColor: '#FEFF00', textColor: '#000000' },
+        { name: 'black', bgColor: '#000000', textColor: '#FFFFFF' },
+        { name: 'white', bgColor: '#FFFFFF', textColor: '#000000' },
+        { name: 'pink', bgColor: '#FFC0CB', textColor: '#000000' }, // Light Pink
+        { name: 'blue', bgColor: '#ADD8E6', textColor: '#000000' }, // Light Blue
+        { name: 'green', bgColor: '#90EE90', textColor: '#000000' }, // Light Green
+        { name: 'coral', bgColor: '#FF7F50', textColor: '#000000' }, // Coral
+        { name: 'lavender', bgColor: '#E6E6FA', textColor: '#000000' }, // Lavender
+        { name: 'teal', bgColor: '#008080', textColor: '#FFFFFF' }, // Teal
+        { name: 'sky', bgColor: '#87CEEB', textColor: '#000000' } // Sky Blue
+      ];
       
-      // Wait for the DOM and deferred scripts to be ready
+      // Function to convert hex to RGBA
+      function hexToRGBA(hex, alpha) {
+        hex = hex.replace('#', '');
+        const r = parseInt(hex.substring(0, 2), 16);
+        const g = parseInt(hex.substring(2, 4), 16);
+        const b = parseInt(hex.substring(4, 6), 16);
+        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+      }
+      
+      // Function to apply a theme
+      function applyTheme(theme) {
+        let separatorAlpha;
+        if (theme.textColor.toUpperCase() === '#FFFFFF') {
+          separatorAlpha = 0.2;
+        } else {
+          separatorAlpha = 0.1;
+        }
+        const separatorColor = hexToRGBA(theme.textColor, separatorAlpha);
+        
+        // Set CSS Variables
+        document.documentElement.style.setProperty('--bg-color', theme.bgColor);
+        document.documentElement.style.setProperty('--text-color', theme.textColor);
+        document.documentElement.style.setProperty('--separator-color', separatorColor);
+        document.documentElement.style.setProperty('--content-fade-duration', `${CONTENT_FADE_DURATION / 1000}s`);
+        document.documentElement.style.setProperty('--sidebar-fade-duration', `${SIDEBAR_FADE_DURATION / 1000}s`);
+        document.documentElement.style.setProperty('--fade-easing', FADE_EASING);
+        
+        // --- DEBUGGING: Force dot color update --- 
+        const dot = document.querySelector('.indicator-dot');
+        if (dot) {
+          dot.style.backgroundColor = theme.textColor;
+          console.log(`DEBUG: Forcing dot color to ${theme.textColor}`);
+        }
+      }
+      
+      // --- Theme Application (RUNS IMMEDIATELY) ---
+      const randomTheme = themes[Math.floor(Math.random() * themes.length)];
+      applyTheme(randomTheme);
+      console.log("Applied theme:", randomTheme.name);
+      
+      // --- Wait for DOM Ready for remaining logic ---
       document.addEventListener('DOMContentLoaded', () => {
           
           // Get the Motion library functions from the global object
@@ -227,7 +276,7 @@
             { // 0: Home (Index 0, Icon 1)
               title: "Raffi<br/>Chilingaryan",
               dateRange: "",
-              description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to hmu."
+              description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to get in touch."
             },
             { // 1: Steddy (Index 1, Icon 2)
               title: "Steddy",

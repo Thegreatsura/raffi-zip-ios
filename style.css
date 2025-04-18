@@ -22,15 +22,19 @@ body {
   margin: 0;
   font-family: "Inter", sans-serif; 
   font-weight: 400; 
-  color: #000000; 
+  color: var(--text-color); 
   position: relative; 
+  background-color: var(--bg-color);
 }
 
 :root {
-    /* Define CSS variables from JS constants */
-    --content-fade-duration: 0.5s; /* Corresponds to CONTENT_FADE_DURATION */
-    --sidebar-fade-duration: 0.5s; /* Corresponds to SIDEBAR_FADE_DURATION */
-    --fade-easing: ease;  /* Corresponds to FADE_EASING */
+    /* Define base CSS variables - these will be overridden by JS */
+    --bg-color: #FEFF00; /* Default yellow */
+    --text-color: #000000; /* Default black */
+    --separator-color: rgba(0, 0, 0, 0.1); /* Default separator */
+    --content-fade-duration: 0.5s; 
+    --sidebar-fade-duration: 0.5s; 
+    --fade-easing: ease;  
 }
 
 /* Wrapper for main content */
@@ -50,7 +54,7 @@ body {
 
 .title-block {
   font-size: 108px; 
-  color: #000000; 
+  color: var(--text-color); 
   letter-spacing: -0.03em;
   line-height: 0.98; 
   font-weight: 500; 
@@ -79,7 +83,7 @@ body {
 
 .description-block {
     font-size: 32px; 
-    color: #000000; 
+    color: var(--text-color); 
     line-height: 1.4;
     font-weight: 400; 
     overflow-wrap: break-word; /* Allow long strings to wrap */
@@ -89,7 +93,7 @@ body {
 .section-separator {
     border: none; /* Remove default border */
     height: 1px; /* Line thickness */
-    background-color: rgba(0, 0, 0, 0.15); /* Faint black line */
+    background-color: var(--separator-color); /* Faint black line */
     margin: 60px 0; /* Vertical spacing around separator, adjust as needed */
 }
 
@@ -111,9 +115,9 @@ body {
     position: absolute;
     width: 8px;
     height: 8px;
-    background-color: black;
+    background-color: var(--text-color);
     border-radius: 50%;
-    right: -24px; /* Update from -20px to -24px for even spacing */
+    right: -26px; /* Update from -20px to -24px for even spacing */
     top: 0;
 }
 
@@ -154,6 +158,11 @@ body {
     display: block;
     width: 36px; /* Updated from 40px to 36px */
     height: 1px; /* Line height */
-    background-color: rgba(0, 0, 0, 0.10);
+    background-color: var(--separator-color);
     border-radius: 0.5px; /* Fully rounded corners */
+}
+
+/* Ensure any other elements that need themed colors use variables */
+.title-block, .description-block {
+    color: var(--text-color);
 } 
