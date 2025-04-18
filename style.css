@@ -6,79 +6,82 @@
 }
 /* style.css */
 body {
-  /* display: flex; */ /* REMOVED - No longer centering wrapper */
-  /* justify-content: center; */ /* REMOVED */
-  /* align-items: center; */ /* REMOVED */
   min-height: 100vh;
-  background-color: #FEFF00; /* Updated background color */
+  background-color: #FEFF00; 
   margin: 0;
-  overflow: hidden; /* Prevent scrollbars */
-  font-family: "Inter", sans-serif; /* Use Inter font */
-  font-weight: 400; /* Normal weight for description */
-  color: #000000; /* Default text color */
-  /* padding: 5vh 5vw; */ /* REMOVED - Using absolute positioning now */
-  position: relative; /* Needed for absolute children positioning */
+  /* overflow: hidden; */ /* REMOVED - Can interfere with fixed positioning */
+  font-family: "Inter", sans-serif; 
+  font-weight: 400; 
+  color: #000000; 
+  position: relative; 
 }
 
 /* Wrapper for main content */
 .main-content-wrapper {
     position: absolute;
-    top: 50%; /* Center vertically */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Adjust for centering ONLY */
-    width: 65.2vw; /* Keep specific width */
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    width: 65.2vw; 
 }
 
-/* Renamed from .name-container */
 .title-block {
-  /* height: 216px; */ /* REMOVED fixed height */
   font-size: 108px; 
   color: #000000; 
   letter-spacing: -0.03em; 
   line-height: 1.1; 
-  font-weight: 500; /* Medium */
+  font-weight: 500; 
   text-transform: none; 
 }
 
-/* Style for the description text */
 .description-block {
     font-size: 32px; 
     color: #000000; 
-    margin-top: 25px; 
-    /* max-width: 450px; */ /* REMOVED - Allow full width */
     line-height: 1.6;
-    font-weight: 400; /* Regular */
+    font-weight: 400; 
 }
 
-/* --- REMOVED Links / Icons Section --- */
-/* .links-container { ... } */
-/* .icon-button { ... } */
-/* .icon-button:hover { ... } */
-/* .color-mode-active .icon-button:hover { ... } */
-/* .icon-button img { ... } */
-/* .color-toggle-button { ... } */
-/* .color-cycle-indicator { ... } */
-/* .color-cycle-indicator.indicator-static { ... } */
+/* Styles for the new Date Range block */
+.date-range-block {
+    font-size: 32px; /* Match description for now */
+    color: #000000; /* Match description for now */
+    line-height: 1.6;
+    font-weight: 400;
+    margin-top: 10px; /* Space between title and date */
+    margin-bottom: 15px; /* Space between date and description */
+}
 
-/* --- REMOVED SVG Visualization Section --- */
-/* .triangle-visualization-svg { ... } */
-/* .triangle-visualization-svg polygon, .triangle-visualization-svg rect { ... } */
-/* .triangle-visualization-svg.regions-visible polygon, .triangle-visualization-svg.regions-visible rect { ... } */
-
-/* --- REMOVED Letter Animation Section --- */
-/* @keyframes springUpFloatBack { ... } */
-/* .animate-letter { ... } */
+/* Style for section separators */
+.section-separator {
+    border: none; /* Remove default border */
+    height: 1px; /* Line thickness */
+    background-color: rgba(0, 0, 0, 0.15); /* Faint black line */
+    margin: 60px 0; /* Vertical spacing around separator, adjust as needed */
+}
 
 /* --- Sidebar Styles --- */
 .sidebar-container {
     position: fixed;
     right: 30px; 
-    top: 50%; /* Vertically center */
-    transform: translateY(-50%); /* Adjust for vertical centering */
+    top: 50%; 
+    transform: translateY(-50%); 
     display: flex;
     flex-direction: column;
-    gap: 15px; /* Adjusted spacing */
+    gap: 15px; 
     z-index: 20; 
+    /* position: relative; */ /* REMOVED - Interfered with fixed */
+}
+
+.indicator-dot {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: black;
+    border-radius: 50%;
+    /* Position to the right of icons, adjust 'right' as needed */
+    right: -20px; 
+    top: 0; /* Initial position, will be set by JS */
+    transition: top 0.3s ease-in-out; /* Animation */
 }
 
 .sidebar-icon {
@@ -87,7 +90,6 @@ body {
     height: 48px;
     border-radius: 14px; 
     overflow: hidden; 
-    /* box-shadow: 0 3px 8px rgba(0,0,0,0.15); */ /* REMOVED shadow */
     transition: transform 0.15s ease-out;
 }
 
@@ -99,12 +101,9 @@ body {
 }
 
 .sidebar-icon:hover {
-    transform: scale(1.15); /* Adjusted hover scale */
+    /* transform: scale(1.15); */ /* REMOVED hover scale */
 }
 /* --- End Sidebar Styles --- */
-
-/* --- REMOVED Hover Media Query --- */
-/* @media (hover: none) { ... } */
 
 /* --- Debug Borders --- */
 .main-content-wrapper,
@@ -112,5 +111,5 @@ body {
 .description-block,
 .sidebar-container,
 .sidebar-icon {
-    border: 2px solid red !important; /* Use !important to override other borders */
+    border: 2px solid red !important; 
 } 

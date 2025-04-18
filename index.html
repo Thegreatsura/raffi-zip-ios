@@ -26,16 +26,19 @@
             I ship apps on the internet with friends. Tap an icon to learn more about a project. Also feel free to connect.
         </p>
     </div>
+    <hr class="section-separator">
+    <!-- Placeholder for other project sections -->
 
     <div class="sidebar-container">
-        <a href="#" class="sidebar-icon"><img src="pngs/1.png" alt="Icon 1"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/2.png" alt="Icon 2"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/3.png" alt="Icon 3"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/4.png" alt="Icon 4"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/5.png" alt="Icon 5"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/6.png" alt="Icon 6"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/7.png" alt="Icon 7"></a>
-        <a href="#" class="sidebar-icon"><img src="pngs/8.png" alt="Icon 8"></a>
+        <div class="indicator-dot"></div>
+        <a href="#" class="sidebar-icon" data-index="0"><img src="pngs/1.png" alt="Icon 1"></a>
+        <a href="#" class="sidebar-icon" data-index="1"><img src="pngs/2.png" alt="Icon 2"></a>
+        <a href="#" class="sidebar-icon" data-index="2"><img src="pngs/3.png" alt="Icon 3"></a>
+        <a href="#" class="sidebar-icon" data-index="3"><img src="pngs/4.png" alt="Icon 4"></a>
+        <a href="#" class="sidebar-icon" data-index="4"><img src="pngs/5.png" alt="Icon 5"></a>
+        <a href="#" class="sidebar-icon" data-index="5"><img src="pngs/6.png" alt="Icon 6"></a>
+        <a href="#" class="sidebar-icon" data-index="6"><img src="pngs/7.png" alt="Icon 7"></a>
+        <a href="#" class="sidebar-icon" data-index="7"><img src="pngs/8.png" alt="Icon 8"></a>
     </div>
 
     <script>
@@ -57,11 +60,137 @@
          calculateLetterCenters();
       }
 
+      // --- Navigation Indicator Logic ---
+      const sidebarIcons = document.querySelectorAll('.sidebar-icon');
+      const indicatorDot = document.querySelector('.indicator-dot');
+      const contentWrapper = document.querySelector('.main-content-wrapper');
+      const titleBlock = contentWrapper?.querySelector('.title-block');
+      const descriptionBlock = contentWrapper?.querySelector('.description-block');
+
+      function moveIndicator(targetIcon) {
+          if (!targetIcon || !indicatorDot) return;
+
+          // Calculate center position relative to the sidebar container
+          const targetTop = targetIcon.offsetTop;
+          const targetHeight = targetIcon.offsetHeight;
+          const dotHeight = indicatorDot.offsetHeight;
+          const newDotTop = targetTop + (targetHeight / 2) - (dotHeight / 2);
+
+          indicatorDot.style.top = `${newDotTop}px`;
+      }
+
+      // --- NEW: Update Content Function ---
+      function updateContent(index) {
+          if (index < 0 || index >= projectData.length || !contentWrapper || !titleBlock || !descriptionBlock) {
+              console.error("Invalid index or elements not found for content update.");
+              return;
+          }
+
+          const data = projectData[index];
+
+          // Update Title (handle <br> for home)
+          titleBlock.innerHTML = data.title;
+
+          // Update Description
+          descriptionBlock.textContent = data.description;
+
+          // Handle Date Range
+          let dateRangeElement = contentWrapper.querySelector('.date-range-block');
+          if (data.dateRange) {
+              if (!dateRangeElement) {
+                  // Create date range element if it doesn't exist
+                  dateRangeElement = document.createElement('p');
+                  dateRangeElement.className = 'date-range-block';
+                  // Insert after titleBlock
+                  titleBlock.parentNode.insertBefore(dateRangeElement, titleBlock.nextSibling);
+              }
+              dateRangeElement.textContent = data.dateRange;
+          } else {
+              // Remove date range element if it exists and shouldn't
+              dateRangeElement?.remove();
+          }
+      }
+
+      // Set initial position and content
+      function setInitialState() {
+        if (sidebarIcons.length > 0) {
+            moveIndicator(sidebarIcons[0]); 
+            updateContent(0); // Load home content
+        }
+      }
+
+      // Add click listeners
+      sidebarIcons.forEach(icon => {
+        icon.addEventListener('click', (event) => {
+            event.preventDefault(); 
+            moveIndicator(icon); 
+            const index = parseInt(icon.dataset.index, 10); // Get index from data attribute
+            if (!isNaN(index)) {
+                updateContent(index); // Update content based on clicked index
+            }
+        });
+      });
+      // --- End Navigation --- 
+
       // Initial setup 
       requestAnimationFrame(() => {
-         calculateRegions(); 
+         // calculateRegions(); // No longer needed for static layout
+         setInitialState(); // Set dot position and initial content
       }); 
-      window.addEventListener('resize', calculateRegions);
+      window.addEventListener('resize', () => {
+          // calculateRegions(); // No longer needed for static layout
+          // We might need to recalculate dot position if icon spacing changes
+          setInitialState(); // Reset dot and content (or just dot if content should persist)
+      });
+
+      let queueIntervalId = null; // ID for the interval timer
+      let nameCenterY = window.innerHeight / 2; // Global variable for name's vertical center
+
+      // --- Project Data ---
+      const projectData = [
+        { // 0: Home (Index 0, Icon 1)
+          title: "Raffi<br/>Chilingaryan",
+          dateRange: "",
+          description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Also feel free to connect."
+        },
+        { // 1: Steddy (Index 1, Icon 2)
+          title: "Steddy",
+          dateRange: "Jan 2021 - Sep 2022",
+          description: "My first health & fitness app was a weekly routine planner. v1 by Rana, v2 by Christoph, v3 by Enzo. App icon by Michael Flarup."
+        },
+        { // 2: Empty (Index 2, Icon 3)
+          title: "Empty",
+          dateRange: "Jan 2024 - Present",
+          description: "A minimal fasting tracker - motivated by my personal desire to eat less near my bedtime. Dev by Rafael. App icons and illustrations by Hannah, Website by Cory."
+        },
+        { // 3: Numbies (Index 3, Icon 4)
+          title: "Numbies",
+          dateRange: "iOS App",
+          description: "My first social fitness experiment - send a notification blast to your friends and do bodyweight exercises for 5 minutes together. Dev by Anthony and Caleb."
+        },
+        { // 4: Shop (Index 4, Icon 5)
+          title: "Shop",
+          dateRange: "Nov 2024 - Mar 2025", // Dates seem off in screenshot, adjusted based on others
+          description: "I was briefly a Product Designer working on Shop Minis - a platform for third party developers to create unique shopping experiences on top of the Shop mobile app."
+        },
+        { // 5: Shift (Index 5, Icon 6)
+          title: "Shift",
+          dateRange: "Mar 2025 - Present", // Dates seem off in screenshot, adjusted based on others
+          description: "My first health & fitness app was a weekly routine planner. v1 by Rana, v2 by Christoph, v3 by Enzo. App icon by Michael Flarup."
+        },
+        { // 6: Relay (Index 6, Icon 7)
+          title: "Relay",
+          dateRange: "", // No date range in screenshot
+          description: "******\n*** **** ******\n************************************************"
+        },
+        { // 7: SIP (Index 7, Icon 8)
+          title: "SIP",
+          dateRange: "Jul 2024 - Present",
+          description: "Spotted in Prod (SIP for short) is a collection."
+        }
+      ];
+
+      // --- UI State ---
 
     </script>
   </body>
