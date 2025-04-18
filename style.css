@@ -40,8 +40,8 @@ body {
 /* Wrapper for main content */
 .main-content-wrapper {
     position: fixed;
-    /* Vertical position will be set by JS */
-    top: calc(50vh - 184px); 
+    /* Vertical position will be set by JS function alignContentWithSeparator */
+    top: 0; /* Set a default, JS will override */ 
     /* Horizontal position with responsive offset */
     left: max(80px, calc(50vw - 120px + 4vw));
     /* Initial state: Centered horizontally, normal vertical, invisible */
@@ -111,41 +111,53 @@ body {
     margin: 60px 0; /* Vertical spacing around separator, adjust as needed */
 }
 
-/* --- Sidebar Styles --- */
+/* --- Sidebar Styles (Desktop Defaults) --- */
 .sidebar-container {
     position: fixed;
-    right: 56px; /* Increased from 40px to 56px for extra 16px padding */
+    right: 56px; 
     top: 50%; 
     transform: translateY(-50%); 
     display: flex;
     flex-direction: column;
-    gap: 12px; /* Update from 15px to 10px as specified */
+    gap: 12px; 
     z-index: 20; 
-    opacity: 0; /* Start invisible */
+    opacity: 0; 
     transition: opacity var(--sidebar-fade-duration) var(--fade-easing);
 }
 
-.indicator-dot {
-    position: absolute;
-    width: 8px;
+.icon-separator {
+    /* Styles for desktop separators */
+    width: 48px;
     height: 8px;
-    background-color: var(--text-color);
-    border-radius: 50%;
-    right: -26px; /* Update from -20px to -24px for even spacing */
-    top: 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-separator::after {
+    /* Styles for desktop separator line */
+    content: '';
+    display: block;
+    width: 36px; 
+    height: 1px; 
+    background-color: var(--separator-color);
+    border-radius: 0.5px; 
 }
 
 .sidebar-icon {
+    /* Styles for desktop icons */
     display: block;
     width: 48px; 
     height: 48px;
     border-radius: 0;
     clip-path: url(#squircle-clip);
     overflow: hidden; 
-    transition: transform 0.15s ease-out;
+    transition: transform 0.15s ease-out; /* Keep desktop transitions */
 }
 
 .sidebar-icon:hover {
+     /* Keep desktop hover */
     transform: scale(1.07);
 }
 
@@ -158,25 +170,60 @@ body {
     border-radius: 0;
 }
 
-.icon-separator {
-    width: 48px; /* Total width of separator */
-    height: 8px; /* Total height of separator */
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.icon-separator::after {
-    content: '';
-    display: block;
-    width: 36px; /* Updated from 40px to 36px */
-    height: 1px; /* Line height */
-    background-color: var(--separator-color);
-    border-radius: 0.5px; /* Fully rounded corners */
-}
-
 /* Ensure any other elements that need themed colors use variables */
 .title-block, .description-block {
     color: var(--text-color);
+}
+
+/* --- Mobile Styles --- */
+@media (max-width: 768px) {
+    .title-block .date-range, 
+    .indicator-dot, 
+    .icon-separator { 
+        display: none; /* Hide these elements ONLY on mobile */
+    }
+
+    .sidebar-container {
+        /* Mobile specific layout overrides */
+        flex-direction: row; /* Change to row */
+        flex-wrap: wrap; /* Enable wrapping */
+        justify-content: flex-start; /* Align items to start (left) */
+        align-items: center; /* Align items vertically */
+        gap: 16px; /* Spacing between icons */
+        
+        /* Mobile positioning */
+        top: auto;
+        bottom: 20px; 
+        left: 25px; 
+        right: 25px; 
+        width: calc(100% - 50px); 
+        transform: none; 
+
+        /* Mobile appearance */
+        background-color: transparent; 
+        padding: 0;
+        border-radius: 0;
+        opacity: 1; /* Keep it visible on mobile (no fade) */
+        transition: none; /* Remove fade transition for mobile */
+    }
+
+    .sidebar-icon {
+        /* Mobile icon sizing */
+        --icon-size: calc((100vw - 50px - (4 * 16px)) / 5);
+        width: var(--icon-size);
+        height: var(--icon-size);
+        opacity: 0.4; /* Unselected opacity */
+        transition: opacity 0.2s ease; /* Opacity transition only */
+    }
+
+    .sidebar-icon.active {
+        opacity: 1; 
+    }
+
+    .sidebar-icon:hover {
+        transform: none; /* No scale on mobile hover */
+        opacity: 1; 
+    }
+    
+    /* ... other mobile styles for content/text ... */
 } 

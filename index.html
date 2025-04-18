@@ -134,11 +134,24 @@
           const titleBlock = contentWrapper?.querySelector('.title-block');
           const descriptionBlock = contentWrapper?.querySelector('.description-block');
           
+          let currentActiveIcon = null; // Keep track of the active icon
+
           // --- Function Definitions ---
           
+          function setActiveIcon(targetIcon) {
+              // Remove active class from previously active icon
+              if (currentActiveIcon) {
+                  currentActiveIcon.classList.remove('active');
+              }
+              // Add active class to the new target icon
+              if (targetIcon) {
+                  targetIcon.classList.add('active');
+                  currentActiveIcon = targetIcon;
+              }
+          }
+          
           function moveIndicator(targetIcon) {
-              if (!targetIcon || !indicatorDot) return;
-
+              if (!targetIcon || !indicatorDot || window.innerWidth <= 768) return; // Added mobile check
               // Calculate center position relative to the sidebar container
               const targetTop = targetIcon.offsetTop;
               const targetHeight = targetIcon.offsetHeight;
@@ -192,19 +205,33 @@
           
           function setInitialState() {
               if (sidebarIcons.length > 0) {
-                  moveIndicator(sidebarIcons[0]); 
-                  updateContent(0); // Load home content
+                  const firstIcon = sidebarIcons[0];
+                  moveIndicator(firstIcon); 
+                  updateContent(0); 
+                  setActiveIcon(firstIcon); // Set first icon as active
               }
           }
           
+          // Add function to dynamically align content with first separator
           function alignContentWithSeparator() {
               const firstSeparator = document.querySelector('.icon-separator');
               const content = document.querySelector('.main-content-wrapper');
               
-              if (firstSeparator && content) {
-                  const firstSeparatorRect = firstSeparator.getBoundingClientRect();
-                  content.style.top = `${firstSeparatorRect.top}px`;
+              if (!firstSeparator) {
+                  console.error("DEBUG: First separator not found!");
+                  return;
               }
+              if (!content) {
+                  console.error("DEBUG: Content wrapper not found!");
+                  return;
+              }
+              
+              const firstSeparatorRect = firstSeparator.getBoundingClientRect();
+              console.log("DEBUG: First Separator Rect:", firstSeparatorRect);
+              
+              const newTop = firstSeparatorRect.top;
+              content.style.top = `${newTop}px`;
+              console.log(`DEBUG: Setting content top to: ${newTop}px`);
           }
           
           // --- Event Listeners & Initial Setup ---
@@ -214,9 +241,10 @@
               icon.addEventListener('click', (event) => {
                   event.preventDefault(); 
                   moveIndicator(icon); 
-                  const index = parseInt(icon.dataset.index, 10); // Get index from data attribute
+                  setActiveIcon(icon); // Update active icon on click
+                  const index = parseInt(icon.dataset.index, 10); 
                   if (!isNaN(index)) {
-                      updateContent(index); // Update content based on clicked index
+                      updateContent(index); 
                   }
               });
           });
@@ -251,14 +279,11 @@
               setInitialState();
               alignContentWithSeparator();
               
+              // Ensure content stays visible and in position after resize
               const content = document.querySelector('.main-content-wrapper');
-              const sidebar = document.querySelector('.sidebar-container');
               if (content) {
                   content.style.opacity = '1';
                   content.style.transform = 'translate(-50%, 0)'; 
-              }
-              if (sidebar) {
-                  sidebar.style.opacity = '1'; 
               }
           });
           
