@@ -5,520 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ping me whenever</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- Remove Geist Mono -->
+    <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vercel/geist-font@latest/dist/mono/geist-mono.css"> -->
+    <!-- Remove Google Fonts Links -->
+    <!--
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    -->
+    <style>
+      /* Dynamically injected keyframes will go here if needed later */
+    </style>
   </head>
   <body>
-    <svg class="triangle-visualization-svg">
-        <!-- Triangle polygons will be added by JS -->
-    </svg>
     <div class="main-content-wrapper">
-        <div class="name-container">
-            <span>R</span><span>A</span><span>F</span><span>F</span><span>I</span>
-            <span class="space"> </span>
-            <span>C</span><span>H</span><span>I</span><span>L</span><span>I</span><span>N</span><span>G</span><span>A</span><span>R</span><span>Y</span><span>A</span><span>N</span>
+        <div class="title-block">
+            Raffi<br/>Chilingaryan
         </div>
+        <p class="description-block">
+            I ship apps on the internet with friends. Tap an icon to learn more about a project. Also feel free to connect.
+        </p>
+    </div>
 
-        <div class="links-container">
-           <a href="mailto:raffi.chilingaryan@gmail.com" class="icon-button" aria-label="Email">
-              <img src="svgs/email-link.svg" alt="Email Icon" />
-           </a>
-           <a href="https://x.com/raffichill" target="_blank" rel="noopener noreferrer" class="icon-button" aria-label="X Profile">
-              <img src="svgs/x-link.svg" alt="X Icon" />
-           </a>
-           <button type="button" class="icon-button color-toggle-button" aria-label="Toggle Color Regions" onclick="toggleColorRegions()">
-              <div class="color-cycle-indicator"></div>
-           </button>
-        </div>
+    <div class="sidebar-container">
+        <a href="#" class="sidebar-icon"><img src="pngs/1.png" alt="Icon 1"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/2.png" alt="Icon 2"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/3.png" alt="Icon 3"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/4.png" alt="Icon 4"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/5.png" alt="Icon 5"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/6.png" alt="Icon 6"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/7.png" alt="Icon 7"></a>
+        <a href="#" class="sidebar-icon"><img src="pngs/8.png" alt="Icon 8"></a>
     </div>
 
     <script>
+      // Minimal JavaScript - Can add back functionality later if needed
+      
+      // Example: Get references (might not be needed right now)
       const nameContainer = document.querySelector('.name-container');
-      const letters = Array.from(nameContainer.children); // Get all spans (letters + space)
-      const numLetters = letters.length;
-      let letterRegions = []; // Stores { start: x, end: x } boundaries along top/bottom edge
-      let letterCenters = []; // Stores horizontal center { x: x } for each letter span
-      let activeLetterIndex = -1; // Track the index of the letter whose triangles contain the mouse
-      let previousMouseX = null; // Needed only if we revert to range checking
-      const svgContainer = document.querySelector('.triangle-visualization-svg'); // Get SVG container
+      const letters = Array.from(nameContainer?.children || []);
+      const sidebarContainer = document.querySelector('.sidebar-container');
 
-      // --- Animation Queue & State ---
-      let animationQueue = [];
-      let animatingLetters = new Set(); // Track indices currently animating
-      let latestMouseX = window.innerWidth / 2; // Initialize center
-      let latestMouseY = window.innerHeight / 2;
-      let previousFrameMouseX = latestMouseX; // For frame-by-frame diff
-      let queueIntervalId = null; // ID for the interval timer
-      let nameCenterY = window.innerHeight / 2; // Global variable for name's vertical center
-
-      // --- UI State ---
-      let showColorRegions = false; // Start with regions hidden
-
-      // --- Configuration Constants ---
-      // const OUTER_BEAM_CAP_PX = 180; // REMOVED - Max distance (px) the inner edge of outer beams can be from the viewport edge
-      const OUTER_BEAM_OFFSET_PX = 280; // Offset from text edge for outer beams
-      const MIN_CENTER_BEAM_WIDTH_PX = 10; // Min width (px) for centermost beams
-
-      // --- Inject CSS Keyframes for Color Cycling ---
-      function injectColorCycleKeyframes() {
-        const numColors = regionColors.length;
-        if (numColors === 0) return 0; // Return 0 duration if no colors
-
-        let keyframesCSS = `@keyframes colorCycle {\n`;
-        const step = 100 / numColors;
-
-        regionColors.forEach((color, index) => {
-            const perc1 = index * step;
-            keyframesCSS += `  ${perc1}% { background-color: ${color}; }\n`;
-        });
-         keyframesCSS += `  100% { background-color: ${regionColors[0]}; }\n`;
-        keyframesCSS += `}`;
-
-        const styleElement = document.createElement('style');
-        styleElement.textContent = keyframesCSS;
-        document.head.appendChild(styleElement);
-
-        // Return the calculated total duration in seconds
-        return numColors * 1.5; // Each step is effectively 1.5s
-      }
-
-      // --- Colors for Visualization (Sampled from image) ---
-      // RAFFI CHILINGARYAN
-      const regionColors = [
-        '#FF8080', // R (Light Red)
-        '#FFFF80', // A (Light Yellow)
-        '#80FF80', // F (Light Green)
-        '#80FFFF', // F (Light Cyan)
-        '#8080FF', // I (Light Blue)
-        '#FF80FF', // Space (Light Magenta)
-        '#FF0000', // C (Red)
-        '#0000FF', // H (Blue)
-        '#FF00FF', // I (Magenta)
-        '#808080', // L (Gray)
-        '#00FF00', // I (Green)
-        '#008080', // N (Teal)
-        '#FFFF00', // G (Yellow)
-        '#FF8080', // A (Light Red) - Repeat or choose new?
-        '#FFFF80', // R (Light Yellow)
-        '#80FF80', // Y (Light Green)
-        '#80FFFF', // A (Light Cyan)
-        '#8080FF'  // N (Light Blue)
-      ];
-
-      // --- Helper: Calculate Sign for Point-in-Triangle --- 
-      function sign(p1, p2, p3) {
-          return (p1.x - p3.x) * (p2.y - p3.y) - (p2.x - p3.x) * (p1.y - p3.y);
-      }
-
-      // --- Helper: Check if point is in triangle --- 
-      function pointInTriangle(pt, v1, v2, v3) {
-          const d1 = sign(pt, v1, v2);
-          const d2 = sign(pt, v2, v3);
-          const d3 = sign(pt, v3, v1);
-          const has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
-          const has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
-          // Point is inside or on the edge if signs are all non-negative or all non-positive
-          return !(has_neg && has_pos);
-      }
-
-      // --- Calculate Horizontal Letter Positions & Widths, and Name Vertical Center ---
       function calculateLetterCenters() {
-          letterCenters = [];
-          const nameRect = nameContainer.getBoundingClientRect();
-          // Calculate and store the vertical center Y position of the name container
-          nameCenterY = nameRect.top + nameRect.height / 2; 
-          
-          letters.forEach(span => {
-              const rect = span.getBoundingClientRect();
-              letterCenters.push({
-                  x: rect.left + rect.width / 2,
-                  width: rect.width,
-                  left: rect.left, 
-                  right: rect.right
-              });
-          });
-           // console.log("Name Center Y:", nameCenterY);
+          // Placeholder - can be removed if no JS interaction needed
+          // console.log('Calculating letter centers - if needed');
       }
 
-      // --- Calculate trigger regions (beam bases) & Draw SVG Shapes (Capped Outer Slant) ---
       function calculateRegions() {
-        const viewportWidth = window.innerWidth;
-        const viewportCenterX = viewportWidth / 2;
-        letterRegions = new Array(numLetters); // Initialize array
-
-        // 1. Ensure letter positions & widths are calculated first
-        calculateLetterCenters();
-        if (letterCenters.length === 0) return; // Need centers
-
-        // 1b. Remove midpoint calculation - no longer needed for setting boundaries
-        /*
-        const midpoints = [0]; // Start with left edge
-        if (numLetters > 0) { // Need at least one letter
-           for (let i = 0; i < numLetters - 1; i++) {
-               if (!letterCenters[i] || !letterCenters[i+1]) continue; // Skip if missing data
-               const center1 = letterCenters[i].x;
-               const center2 = letterCenters[i+1].x;
-               midpoints.push((center1 + center2) / 2);
-           }
-           midpoints.push(viewportWidth); // End with right edge
-        }
-        */
-        
-        // 2. Define Outer Region Boundaries based on text offset
-        let outerRegion1_start = 0;
-        let outerRegion1_end = 0;
-        let outerRegionLast_start = viewportWidth;
-        let outerRegionLast_end = viewportWidth;
-
-        if (numLetters > 0) {
-            outerRegion1_end = Math.max(1, letterCenters[0].left - OUTER_BEAM_OFFSET_PX); // Ensure min width 1px
-            if (numLetters > 1) {
-                 outerRegionLast_start = Math.min(viewportWidth - 1, letterCenters[numLetters - 1].right + OUTER_BEAM_OFFSET_PX); // Ensure min width 1px
-            } else { // Only 1 letter
-                 outerRegionLast_start = outerRegion1_end; // Prevent overlap calculation issue
-            }
-
-            // Prevent outer regions overlapping on narrow screens
-            if (outerRegion1_end >= outerRegionLast_start) {
-                const midPoint = (outerRegion1_start + outerRegionLast_end) / 2;
-                outerRegion1_end = midPoint;
-                outerRegionLast_start = midPoint;
-            }
-            
-            letterRegions[0] = { start: outerRegion1_start, end: outerRegion1_end };
-            if (numLetters > 1) { 
-                 letterRegions[numLetters - 1] = { start: outerRegionLast_start, end: outerRegionLast_end };
-            } else { // Only 1 letter case revisited
-                 letterRegions[0] = { start: 0, end: viewportWidth };
-                 letterRegions[numLetters - 1] = letterRegions[0]; 
-            }
-        }
-
-        // 3. Calculate Target Base Width for MIDDLE letters ONLY
-        const middleStartIndex = 1;
-        const middleEndIndex = numLetters - 2;
-        const middleRegionCount = Math.max(0, middleEndIndex - middleStartIndex + 1);
-        const minBaseWidth = 10; // Min width for centermost letters (px)
-        // Available width is now strictly between the capped outer regions
-        const middleAvailableWidth = (numLetters > 1) ? Math.max(0, letterRegions[numLetters - 1].start - letterRegions[0].end) : 0; 
-        const easeInQuad = t => t*t;
-        const middleTargetBaseWidths = [];
-
-        if (middleRegionCount > 0 && middleAvailableWidth > 0) {
-            // Estimate max base width possible in the middle if all were widest
-            const theoreticalMiddleMaxWidth = middleAvailableWidth / middleRegionCount; 
-
-            for (let i = middleStartIndex; i <= middleEndIndex; i++) {
-                if (!letterCenters[i]) { middleTargetBaseWidths.push(MIN_CENTER_BEAM_WIDTH_PX); continue; }
-                const distanceFromCenter = Math.abs(letterCenters[i].x - viewportCenterX);
-                // Normalize distance relative to the middle section's half-width
-                const middleMaxDistance = middleAvailableWidth / 2; 
-                const normalizedDistance = middleMaxDistance > 0 ? Math.min(1, distanceFromCenter / middleMaxDistance) : 0.5; 
-                const easedNormalizedDistance = easeInQuad(normalizedDistance);
-                // Interpolate between min and theoretical max
-                const targetWidth = MIN_CENTER_BEAM_WIDTH_PX + (theoreticalMiddleMaxWidth - MIN_CENTER_BEAM_WIDTH_PX) * easedNormalizedDistance;
-                middleTargetBaseWidths.push(targetWidth);
-            }
-
-            // 4. Scale MIDDLE widths to fit available space and define regions
-            const totalMiddleTargetWidth = middleTargetBaseWidths.reduce((sum, w) => sum + w, 0);
-            // Prevent division by zero if total width is zero
-            const scaleFactor = totalMiddleTargetWidth > 0 ? middleAvailableWidth / totalMiddleTargetWidth : 0; 
-            
-            let currentX = letterRegions[0].end; // Start after the first capped region
-            for (let i = 0; i < middleRegionCount; i++) {
-                const actualBaseWidth = middleTargetBaseWidths[i] * scaleFactor;
-                const regionStart = currentX;
-                const regionEnd = currentX + actualBaseWidth;
-                letterRegions[middleStartIndex + i] = { start: regionStart, end: regionEnd };
-                currentX = regionEnd;
-            }
-            // Ensure the last middle region perfectly meets the start of the last outer region
-             if (middleRegionCount > 0 && letterRegions[numLetters-1]) {
-                 letterRegions[middleEndIndex].end = letterRegions[numLetters - 1].start;
-            }
-        } 
-        // console.log("Final Letter Regions (Capped Outer):", letterRegions);
-
-        // 5. Draw SVG polygons (using actual nameCenterY)
-        svgContainer.innerHTML = ''; // Clear existing polygons
-        const viewportHeight = window.innerHeight;
-        // const nameCenterY = viewportHeight / 2; // REMOVED - Use global value
-
-        // --- Draw Background Rects --- 
-        let splitPointX = viewportWidth / 2; // Default split at center
-        const spaceIndex = 5;
-        const cIndex = 6;
-        if (letterCenters[spaceIndex] && letterCenters[cIndex]) {
-            splitPointX = (letterCenters[spaceIndex].x + letterCenters[cIndex].x) / 2;
-        }
-        const rColor = regionColors[0];
-        const nColor = regionColors[numLetters - 1];
-        const leftBgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        leftBgRect.setAttribute('x', 0);
-        leftBgRect.setAttribute('y', 0);
-        leftBgRect.setAttribute('width', splitPointX);
-        leftBgRect.setAttribute('height', viewportHeight);
-        leftBgRect.style.setProperty('--region-color', rColor); // Set CSS Var
-        svgContainer.appendChild(leftBgRect);
-        const rightBgRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        rightBgRect.setAttribute('x', splitPointX);
-        rightBgRect.setAttribute('y', 0);
-        rightBgRect.setAttribute('width', viewportWidth - splitPointX);
-        rightBgRect.setAttribute('height', viewportHeight);
-        rightBgRect.style.setProperty('--region-color', nColor); // Set CSS Var
-        svgContainer.appendChild(rightBgRect);
-        // --- End Background Rects --- 
-
-        // --- Draw Letter Beams (on top of background) --- 
-        letterRegions.forEach((region, index) => {
-          // More robust checks for valid region and center data before drawing
-          if (!region || typeof region.start !== 'number' || typeof region.end !== 'number' || region.start > region.end) {
-              // Allow start == end only if width is meant to be 0
-              if(region.start !== region.end) return;
-          } 
-          if (!letterCenters[index] || typeof letterCenters[index].left !== 'number') return;
-          
-          const color = regionColors[index % regionColors.length]; 
-          const letterLeft = letterCenters[index].left;
-          const letterRight = letterCenters[index].right;
-
-          // Vertices for polygons - Use the calculated global nameCenterY
-          const vTopLeft = { x: region.start, y: 0 };
-          const vTopRight = { x: region.end, y: 0 };
-          const vCenterLeft = { x: letterLeft, y: nameCenterY }; 
-          const vCenterRight = { x: letterRight, y: nameCenterY }; 
-          const vBottomLeft = { x: region.start, y: viewportHeight };
-          const vBottomRight = { x: region.end, y: viewportHeight };
-          
-          // Clamp center points slightly
-          const safeCenterLeftX = Math.min(vCenterLeft.x, vCenterRight.x - 0.1); 
-          const safeCenterRightX = Math.max(vCenterRight.x, vCenterLeft.x + 0.1);
-          vCenterLeft.x = safeCenterLeftX;
-          vCenterRight.x = safeCenterRightX;
-
-          // Check if polygon vertices are valid (e.g., top-left isn't right of top-right)
-          if (vTopLeft.x > vTopRight.x || vCenterLeft.x > vCenterRight.x) {
-              // console.warn("Invalid polygon vertices for index:", index, region, letterCenters[index]);
-              // If vertices cross, try drawing a minimal line at center X if region width allows
-              if (region.end > region.start) { 
-                   const midX = region.start + (region.end - region.start) / 2;
-                   vTopLeft.x = midX; vTopRight.x = midX; 
-                   vBottomLeft.x = midX; vBottomRight.x = midX;
-              } else { // Skip entirely if region width is zero or negative
-                   return; 
-              }
-          }
-
-          const topPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-          topPoly.setAttribute('points', `${vTopLeft.x},${vTopLeft.y} ${vTopRight.x},${vTopRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
-          topPoly.style.setProperty('--region-color', color); // Set CSS Var
-          svgContainer.appendChild(topPoly);
-          const bottomPoly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-          bottomPoly.setAttribute('points', `${vBottomLeft.x},${vBottomLeft.y} ${vBottomRight.x},${vBottomRight.y} ${vCenterRight.x},${vCenterRight.y} ${vCenterLeft.x},${vCenterLeft.y}`);
-          bottomPoly.style.setProperty('--region-color', color); // Set CSS Var
-          svgContainer.appendChild(bottomPoly);
-        });
+         // Placeholder - can be removed if no JS interaction needed
+         // console.log('Calculating regions - if needed');
+         calculateLetterCenters();
       }
 
-      // --- New: Simple listener to just update mouse coords ---
-      function updateMousePosition(event) {
-        latestMouseX = event.clientX;
-        latestMouseY = event.clientY;
-      }
-
-      // --- Toggle Color Regions Visibility ---
-      function toggleColorRegions() {
-         showColorRegions = !showColorRegions; // Flip the state
-         const indicator = document.querySelector('.color-cycle-indicator');
-
-         if (showColorRegions) {
-            svgContainer.classList.add('regions-visible'); // Use new class for SVG
-            indicator?.classList.add('indicator-static'); 
-            document.body.classList.add('color-mode-active'); 
-         } else {
-            svgContainer.classList.remove('regions-visible'); // Use new class for SVG
-            indicator?.classList.remove('indicator-static'); 
-            document.body.classList.remove('color-mode-active'); 
-         }
-      }
-
-      // --- Process the next animation in the queue via Interval ---
-      const ANIMATION_OVERLAP_DELAY_MS = 20; // Interval check/trigger delay
-      // const ANIMATION_CHECK_DELAY_MS = 50; // No longer needed
-
-      function tryProcessQueueItem() {
-        if (animationQueue.length === 0) {
-             // Optional: Stop the interval if queue is empty
-             // if (queueIntervalId) { 
-             //    clearInterval(queueIntervalId);
-             //    queueIntervalId = null;
-             // } 
-            return; // Queue empty
-        }
-
-        // Peek at the next item 
-        const nextIndexToAnimate = animationQueue[0];
-
-        // Check if the letter for the next item is *already* animating
-        if (animatingLetters.has(nextIndexToAnimate)) {
-            // Yes, it's still animating. Do nothing, interval will check again.
-            return; 
-        }
-
-        // No, it's not animating. Dequeue and start.
-        const letterIndexToAnimate = animationQueue.shift(); 
-        const letterSpan = letters[letterIndexToAnimate];
-
-        if (letterSpan) { 
-            animatingLetters.add(letterIndexToAnimate); // Add to tracking
-
-            letterSpan.classList.remove('animate-letter');
-            void letterSpan.offsetWidth;
-            letterSpan.classList.add('animate-letter');
-            
-            // Animation end listener ONLY removes from tracking set
-            letterSpan.addEventListener('animationend', () => {
-                letterSpan.classList.remove('animate-letter');
-                animatingLetters.delete(letterIndexToAnimate); 
-                // We DON'T trigger processing from here anymore
-            }, { once: true });
-        } 
-        // If dequeued item had no span, it's handled; interval continues
-      }
-
-      // --- Start the Queue Processing Interval (if not already running) ---
-      function ensureQueueProcessing() {
-         if (!queueIntervalId) {
-             queueIntervalId = setInterval(tryProcessQueueItem, ANIMATION_OVERLAP_DELAY_MS);
-         }
-      }
-
-      // --- New: Main loop using requestAnimationFrame ---
-      let lastRegionIndex = -1; // Track region index from the previous frame
-
-      function animationFrameLoop() {
-        const currentMouseX = latestMouseX;
-        const mouseY = latestMouseY;
-        if (previousFrameMouseX === null) {
-            previousFrameMouseX = currentMouseX;
-        }
-        const minX = Math.min(previousFrameMouseX, currentMouseX);
-        const maxX = Math.max(previousFrameMouseX, currentMouseX);
-        const viewportHeight = window.innerHeight;
-        // const nameCenterY = viewportHeight / 2; // REMOVED - Use global value
-        // Ensure nameCenterY is valid before calculating verticalFactor
-        const validNameCenterY = nameCenterY || (viewportHeight / 2);
-        const halfViewportHeight = viewportHeight / 2;
-        const verticalFactor = halfViewportHeight > 0 ? Math.abs(mouseY - validNameCenterY) / halfViewportHeight : 0;
-
-        const overlappedIndices = [];
-        let indexContainingPoint = -1; 
-
-        // Find ALL regions whose shape at mouseY overlaps the mouse path OR contains the point
-        for (let i = 0; i < numLetters; i++) {
-          const region = letterRegions[i];
-          const letterData = letterCenters[i];
-
-          // Robust checks
-          if (!letterData || typeof letterData.left !== 'number' || !region || typeof region.start !== 'number' || typeof region.end !== 'number') continue;
-
-          const letterLeft = letterData.left;
-          const letterRight = letterData.right;
-          const letterCenterX = letterData.x; 
-          const centerWidth = letterRight - letterLeft; 
-          const effectiveBaseStartX = region.start; 
-          const effectiveBaseEndX = region.end;
-          if (effectiveBaseStartX >= effectiveBaseEndX) continue; 
-          const effectiveBaseWidth = effectiveBaseEndX - effectiveBaseStartX;
-          const effectiveBaseCenterX = effectiveBaseStartX + effectiveBaseWidth / 2;
-          
-          // Calculate shape boundaries at current mouseY (same as handleMouseMove interpolation)
-          const widthAtY = centerWidth + (effectiveBaseWidth - centerWidth) * verticalFactor;
-          const halfWidthAtY = widthAtY / 2;
-          const centerAtY = letterCenterX + (effectiveBaseCenterX - letterCenterX) * verticalFactor;
-          const shapeStartX = centerAtY - halfWidthAtY;
-          const shapeEndX = centerAtY + halfWidthAtY;
-
-          // Check 1: Does the horizontal movement RANGE [minX, maxX] overlap the shape boundaries AT THIS Y [shapeStartX, shapeEndX]?
-          const pathIntersectsShapeAtY = !(shapeEndX <= minX || shapeStartX >= maxX);
-
-          // Check 2: Is the exact point inside the shape boundaries AT THIS Y?
-          const pointInsideShapeAtY = (currentMouseX >= shapeStartX && currentMouseX < shapeEndX);
-
-          // If path intersects OR point is inside, consider it overlapped
-          if (pathIntersectsShapeAtY || pointInsideShapeAtY) {
-             overlappedIndices.push(i); 
-             if (pointInsideShapeAtY) {
-                  indexContainingPoint = i; // Mark if the point is precisely within this one
-             } 
-          }
-        }
-
-        // Determine the primary representative index for this frame
-        let mainIndexThisFrame = -1;
-        if (indexContainingPoint !== -1) {
-            mainIndexThisFrame = indexContainingPoint; // Prioritize region containing the point
-        } else if (overlappedIndices.length > 0) {
-            // If point isn't in any, but path overlaps, use the first one found as representative
-            mainIndexThisFrame = overlappedIndices[0]; 
-        }
-        // Note: If multiple overlaps but point isn't in any, this frame's 'state' 
-        // is represented by the first overlapped region (lowest index).
-
-        // Add newly overlapped indices to queue, EXCEPT the one we just left
-        let addedToQueue = false;
-        overlappedIndices.forEach(idx => {
-             // Condition 1: Don't queue the index we were primarily in last frame (prevents double bounce)
-             // Condition 2: Don't queue if it's identical to the last element already IN the queue (prevents duplicates)
-             if (idx !== lastRegionIndex && 
-                 (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== idx)) {
-                 
-                 animationQueue.push(idx);
-                 addedToQueue = true;
-             }
-        });
-
-        // Trigger processing only if we actually added something
-        if (addedToQueue) {
-             ensureQueueProcessing(); 
-        }
-        
-        /* --- OLD LOGIC --- 
-        // Add newly overlapped indices to queue IF the primary representative index changed
-        if (mainIndexThisFrame !== -1 && mainIndexThisFrame !== lastRegionIndex) {
-            // Only queue the NEW main index, not all overlaps
-            // Keep the check for queue[-1] to avoid direct duplicates
-            if (animationQueue.length === 0 || animationQueue[animationQueue.length - 1] !== mainIndexThisFrame) {
-                 animationQueue.push(mainIndexThisFrame);
-                 processAnimationQueue(); // Attempt to start processing
-            }
-        }
-        */
-
-        // Update lastRegionIndex for the next frame comparison using the primary index found this frame
-        lastRegionIndex = mainIndexThisFrame;
-
-        previousFrameMouseX = currentMouseX; // Store for next frame's range calculation
-
-        requestAnimationFrame(animationFrameLoop); // Loop!
-      }
-
-      // --- Initial setup and event listeners (MODIFIED) ---
+      // Initial setup 
       requestAnimationFrame(() => {
-         calculateLetterCenters(); // Needed first
-         const totalCycleDuration = injectColorCycleKeyframes(); // Inject CSS & get duration
-         // Apply dynamic duration to the indicator
-         const indicator = document.querySelector('.color-cycle-indicator');
-         if (indicator && totalCycleDuration > 0) {
-             indicator.style.animationDuration = `${totalCycleDuration}s`;
-         }
-
-         calculateRegions();      // Calculates regions & draws SVG (sets CSS vars)
-         animationFrameLoop();    // Start the main loop
+         calculateRegions(); 
       }); 
-      // Remove the old mousemove handler for triggering animations
-      // window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mousemove', updateMousePosition); // NEW: Just update position
-      window.addEventListener('resize', calculateRegions); // Recalculate on resize
+      window.addEventListener('resize', calculateRegions);
+
     </script>
   </body>
 </html> 

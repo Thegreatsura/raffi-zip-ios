@@ -1,184 +1,116 @@
 @font-face {
-  font-family: 'Geist Mono';
-  src: url('./fonts/GeistMono-VariableFont_wght.ttf') format('truetype');
-  font-weight: 100 900; /* Indicate variable weight range */
+  font-family: 'Inter';
+  src: url('./fonts/inter-variable.ttf') format('truetype');
+  font-weight: 100 900; /* Common variable font weight range */
   font-style: normal;
 }
-
 /* style.css */
 body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  /* display: flex; */ /* REMOVED - No longer centering wrapper */
+  /* justify-content: center; */ /* REMOVED */
+  /* align-items: center; */ /* REMOVED */
   min-height: 100vh;
-  background-color: #ffffff; /* White background */
+  background-color: #FEFF00; /* Updated background color */
   margin: 0;
   overflow: hidden; /* Prevent scrollbars */
-  font-family: "Geist Mono", "Courier New", Courier, monospace; /* Use Geist Mono */
-  font-weight: 300; /* Apply light weight */
+  font-family: "Inter", sans-serif; /* Use Inter font */
+  font-weight: 400; /* Normal weight for description */
+  color: #000000; /* Default text color */
+  /* padding: 5vh 5vw; */ /* REMOVED - Using absolute positioning now */
+  position: relative; /* Needed for absolute children positioning */
 }
 
-/* New wrapper to center name and links together */
+/* Wrapper for main content */
 .main-content-wrapper {
-    display: flex;
-    flex-direction: column; /* Stack name and links vertically */
-    align-items: center; /* Center items horizontally within wrapper */
-    text-align: center; /* Ensure text aligns center if needed */
-    transform: translateY(-24px); /* Final upward shift */
-}
-
-.name-container {
-  display: flex; /* Align letters horizontally */
-  cursor: default; /* Default cursor */
-}
-
-.name-container span {
-  display: inline-block; /* Allows transform and respects whitespace */
-  font-size: 1.3rem; /* Adjust size as needed */
-  color: #373737; /* Updated text color */
-  padding: 0 2px; /* Small spacing between letters */
-  letter-spacing: 0.03em; /* Add subtle letter spacing */
-  transition: transform 0.2s ease-out; /* Smooth transition for hover */
-}
-
-.name-container span.space {
-  width: 1ch; /* Give the space character some width */
-}
-
-/* Hover effect: Move the letter up when hovered */
-/*
-.name-container span:hover {
-  transform: translateY(-10px); // Move letter up
-}
-*/
-
-/* Prevent the space from moving */
-/*
-.name-container span.space:hover {
-  transform: none;
-}
-*/
-
-/* --- Links / Icons --- */
-.links-container {
-    margin-top: 25px; /* Add space above the links */
-    display: flex;
-    gap: 15px; /* Space between buttons */
-    z-index: 10; /* Keep links clickable */
-}
-
-.icon-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 48px; /* Increased size */
-    height: 48px; /* Increased size */
-    padding: 8px; /* Padding inside the button */
-    box-sizing: border-box;
-    background-color: transparent; 
-    border: none; /* Removed border */
-    border-radius: 50%; /* Fully rounded corners */
-    cursor: pointer;
-    /* opacity: 1; */ /* Removed default opacity */
-    transition: background-color 0.2s ease; /* Transition background */
-}
-
-.icon-button:hover {
-    /* Default hover (B/W mode): 7% black background */
-    background-color: rgba(0, 0, 0, 0.07); 
-}
-
-/* Hover style when color mode is active */
-.color-mode-active .icon-button:hover {
-    background-color: #ffffff; /* Pure white background */
-}
-
-.icon-button img {
-    display: block; /* Remove extra space below image */
-    width: 100%; /* Make image fill padding area */
-    height: 100%;
-    object-fit: contain; /* Scale SVG nicely */
-}
-
-/* Specific styles for color toggle button */
-.color-toggle-button {
-   /* Reset potential button defaults */
-   appearance: none;
-   border: none;
-   padding: 0; /* icon-button handles padding for content */
-   background: none;
-}
-
-.color-cycle-indicator {
-    width: 18px;  /* Changed size */
-    height: 18px; /* Changed size */
-    border-radius: 50%; /* Make it a circle */
-    background-color: #ccc; /* Default/fallback color */
-    /* Apply animation properties separately */
-    animation-name: colorCycle;
-    animation-timing-function: steps(1, end); /* Hard jumps between colors */
-    animation-iteration-count: infinite;
-    /* animation-duration is now set by JS */
-}
-
-/* Style when colors are visible */
-.color-cycle-indicator.indicator-static {
-    animation: none; /* Stop the animation */
-    background-color: #000000; /* Set to black */
-}
-/* --- End Links --- */
-
-/* --- SVG Triangle Visualization --- */
-.triangle-visualization-svg {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust for centering ONLY */
+    width: 65.2vw; /* Keep specific width */
+}
+
+/* Renamed from .name-container */
+.title-block {
+  /* height: 216px; */ /* REMOVED fixed height */
+  font-size: 108px; 
+  color: #000000; 
+  letter-spacing: -0.03em; 
+  line-height: 1.1; 
+  font-weight: 500; /* Medium */
+  text-transform: none; 
+}
+
+/* Style for the description text */
+.description-block {
+    font-size: 32px; 
+    color: #000000; 
+    margin-top: 25px; 
+    /* max-width: 450px; */ /* REMOVED - Allow full width */
+    line-height: 1.6;
+    font-weight: 400; /* Regular */
+}
+
+/* --- REMOVED Links / Icons Section --- */
+/* .links-container { ... } */
+/* .icon-button { ... } */
+/* .icon-button:hover { ... } */
+/* .color-mode-active .icon-button:hover { ... } */
+/* .icon-button img { ... } */
+/* .color-toggle-button { ... } */
+/* .color-cycle-indicator { ... } */
+/* .color-cycle-indicator.indicator-static { ... } */
+
+/* --- REMOVED SVG Visualization Section --- */
+/* .triangle-visualization-svg { ... } */
+/* .triangle-visualization-svg polygon, .triangle-visualization-svg rect { ... } */
+/* .triangle-visualization-svg.regions-visible polygon, .triangle-visualization-svg.regions-visible rect { ... } */
+
+/* --- REMOVED Letter Animation Section --- */
+/* @keyframes springUpFloatBack { ... } */
+/* .animate-letter { ... } */
+
+/* --- Sidebar Styles --- */
+.sidebar-container {
+    position: fixed;
+    right: 30px; 
+    top: 50%; /* Vertically center */
+    transform: translateY(-50%); /* Adjust for vertical centering */
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Adjusted spacing */
+    z-index: 20; 
+}
+
+.sidebar-icon {
+    display: block;
+    width: 48px; 
+    height: 48px;
+    border-radius: 14px; 
+    overflow: hidden; 
+    /* box-shadow: 0 3px 8px rgba(0,0,0,0.15); */ /* REMOVED shadow */
+    transition: transform 0.15s ease-out;
+}
+
+.sidebar-icon img {
+    display: block;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Make it non-interactive */
-    z-index: -1; /* Place it behind the text */
+    object-fit: cover; 
 }
 
-.triangle-visualization-svg polygon,
-.triangle-visualization-svg rect {
-    fill: #ffffff; /* Default to white fill */
-    stroke: none; 
-    transition: fill 0.3s ease-in-out; /* Add transition */
-    /* stroke-width: 1; */
+.sidebar-icon:hover {
+    transform: scale(1.15); /* Adjusted hover scale */
 }
+/* --- End Sidebar Styles --- */
 
-/* Apply actual colors when visible */
-.triangle-visualization-svg.regions-visible polygon,
-.triangle-visualization-svg.regions-visible rect {
-    fill: var(--region-color); /* Use CSS Variable */
-}
-/* --- End SVG --- */
+/* --- REMOVED Hover Media Query --- */
+/* @media (hover: none) { ... } */
 
-/* Animation for the letter */
-@keyframes springUpFloatBack {
-  0% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-  40% {
-    transform: translateY(-10px); /* Reduced bounce height */
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-.animate-letter {
-  /* Apply the animation */
-  animation: springUpFloatBack 0.6s ease-out forwards;
-}
-
-/* Disable hover effects on devices that don't support hover */
-@media (hover: none) {
-  .icon-button:hover {
-    background-color: transparent; /* Remove hover background */
-  }
-  /* If you had other hover styles, reset them here too */
+/* --- Debug Borders --- */
+.main-content-wrapper,
+.title-block,
+.description-block,
+.sidebar-container,
+.sidebar-icon {
+    border: 2px solid red !important; /* Use !important to override other borders */
 } 
