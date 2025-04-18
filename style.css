@@ -27,19 +27,26 @@ body {
   position: relative; 
 }
 
+:root {
+    /* Define CSS variables from JS constants */
+    --content-fade-duration: 0.5s; /* Corresponds to CONTENT_FADE_DURATION */
+    --sidebar-fade-duration: 0.5s; /* Corresponds to SIDEBAR_FADE_DURATION */
+    --fade-easing: ease;  /* Corresponds to FADE_EASING */
+}
+
 /* Wrapper for main content */
 .main-content-wrapper {
-    position: fixed; /* Change to fixed to use the same positioning context as sidebar */
-    top: calc(50vh - 184px); /* 50% viewport height minus distance to first separator */
-    
-    /* Position with responsive offset from center:
-       - Use max() to ensure content doesn't fall off screen
-       - Ensures at least 80px + half content width from edge
-    */
+    position: fixed;
+    /* Vertical position will be set by JS */
+    top: calc(50vh - 184px); 
+    /* Horizontal position with responsive offset */
     left: max(80px, calc(50vw - 120px + 4vw));
-    transform: translate(-50%, 0); /* Center H, keep vertical alignment */
+    /* Initial state: Centered horizontally, normal vertical, invisible */
+    transform: translate(-50%, 0); 
     width: 65.2vw; 
-    max-width: 760px; /* Add max width constraint */
+    max-width: 760px;
+    opacity: 0; 
+    transition: opacity var(--content-fade-duration) var(--fade-easing);
 }
 
 .title-block {
@@ -97,6 +104,8 @@ body {
     flex-direction: column;
     gap: 12px; /* Update from 15px to 10px as specified */
     z-index: 20; 
+    opacity: 0; /* Start invisible */
+    transition: opacity var(--sidebar-fade-duration) var(--fade-easing);
 }
 
 .indicator-dot {

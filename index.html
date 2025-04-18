@@ -56,6 +56,18 @@
     </div>
 
     <script>
+      // --- Configurable Animation Parameters ---
+      const CONTENT_FADE_DELAY = 0; // ms
+      const SIDEBAR_FADE_DELAY =  0; // ms
+      const CONTENT_FADE_DURATION = 2000; // ms - Duration for content fade
+      const SIDEBAR_FADE_DURATION = 2000; // ms - Duration for sidebar fade
+      const FADE_EASING = 'ease-in-out'; // CSS easing function
+      
+      // Set CSS Variables from JS constants
+      document.documentElement.style.setProperty('--content-fade-duration', `${CONTENT_FADE_DURATION / 1000}s`);
+      document.documentElement.style.setProperty('--sidebar-fade-duration', `${SIDEBAR_FADE_DURATION / 1000}s`);
+      document.documentElement.style.setProperty('--fade-easing', FADE_EASING);
+      
       // Get the Motion library functions from the global object
       const { animate } = Motion;
       
@@ -160,39 +172,84 @@
       });
       // --- End Navigation --- 
 
+      // Function to animate the content entrance
+      function playContentEntranceAnimation() {
+          const content = document.querySelector('.main-content-wrapper');
+          
+          if (!content) return;
+          
+          // Animation: fade in and move up 10px while maintaining horizontal centering
+          animate(
+              content,
+              { 
+                  opacity: 1,
+                  transform: 'translate(-50%, 0)' // Keep horizontal centering, remove vertical offset
+              },
+              { 
+                  type: "spring",
+                  stiffness: 60, 
+                  damping: 15,
+                  mass: 1
+              }
+          );
+      }
+
       // Add function to dynamically align content with first separator
       function alignContentWithSeparator() {
-          const sidebar = document.querySelector('.sidebar-container');
           const firstSeparator = document.querySelector('.icon-separator');
           const content = document.querySelector('.main-content-wrapper');
           
-          if (sidebar && firstSeparator && content) {
-              // Get the actual position of the first separator relative to viewport
-              const sidebarRect = sidebar.getBoundingClientRect();
+          if (firstSeparator && content) {
               const firstSeparatorRect = firstSeparator.getBoundingClientRect();
-              
-              // Set content top to match first separator's top
               content.style.top = `${firstSeparatorRect.top}px`;
-              
-              console.log("Content aligned with separator at", firstSeparatorRect.top);
           }
       }
 
       // Initial setup 
       requestAnimationFrame(() => {
-          // Wait a moment for DOM to be ready
+          // Initial delay for setup
+          const initialSetupDelay = 200;
+          
           setTimeout(() => {
               setInitialState(); // Set dot position and initial content
-              alignContentWithSeparator(); // Align content with first separator
-              console.log("Initial state set");
-          }, 100);
+              alignContentWithSeparator(); // Align content
+
+              // Schedule the content fade-in
+              setTimeout(() => {
+                  const content = document.querySelector('.main-content-wrapper');
+                  if (content) {
+                      content.style.opacity = '1';
+                      console.log("Content faded in");
+                  }
+              }, CONTENT_FADE_DELAY - initialSetupDelay); // Use constant
+
+              // Schedule the sidebar fade-in
+              setTimeout(() => {
+                  const sidebar = document.querySelector('.sidebar-container');
+                  if (sidebar) {
+                      sidebar.style.opacity = '1';
+                      console.log("Sidebar faded in");
+                  }
+              }, SIDEBAR_FADE_DELAY - initialSetupDelay); // Use constant
+
+          }, initialSetupDelay); // Initial 200ms delay for setup
       });
 
       // Re-align on window resize
       window.addEventListener('resize', () => {
-          // We might need to recalculate dot position if icon spacing changes
-          setInitialState(); // Reset dot and content (or just dot if content should persist)
-          alignContentWithSeparator(); // Re-align content with first separator
+          setInitialState();
+          alignContentWithSeparator();
+          
+          // Ensure elements stay visible and in position after resize
+          const content = document.querySelector('.main-content-wrapper');
+          const sidebar = document.querySelector('.sidebar-container');
+          if (content) {
+              content.style.opacity = '1';
+              content.style.transform = 'translate(-50%, 0)'; // Ensure transform is reset
+          }
+          if (sidebar) {
+              sidebar.style.opacity = '1'; // Ensure sidebar stays visible
+          }
       });
 
       let queueIntervalId = null; // ID for the interval timer
@@ -203,7 +260,7 @@
         { // 0: Home (Index 0, Icon 1)
           title: "Raffi<br/>Chilingaryan",
           dateRange: "",
-          description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Also feel free to connect."
+          description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to hmu."
         },
         { // 1: Steddy (Index 1, Icon 2)
           title: "Steddy",
