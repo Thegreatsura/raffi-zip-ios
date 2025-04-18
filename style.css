@@ -1,3 +1,15 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+    overflow: hidden; /* Prevent scrolling */
+    height: 100%;     /* Ensure body takes full height */
+}
+
 @font-face {
   font-family: 'Inter';
   src: url('./fonts/inter-variable.ttf') format('truetype');
@@ -19,9 +31,9 @@ body {
 /* Wrapper for main content */
 .main-content-wrapper {
     position: absolute;
-    top: 50%; 
+    top: 35%; 
     left: 50%; 
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, 0); /* Center H, Align top edge to vertical center */
     width: 65.2vw; 
 }
 
@@ -32,23 +44,33 @@ body {
   line-height: 1.1; 
   font-weight: 500; 
   text-transform: none; 
+  /* Add flex for alignment */
+  display: flex;
+  flex-direction: column;
+  /* Align text block left, center might look odd with multi-line title */
+  align-items: flex-start; 
+  margin-bottom: 25px; /* Add space below the entire title block */
+}
+
+.title-block .main-title {
+    /* Inherits most styles from .title-block */
+    display: block; /* Ensure it takes block space */
+}
+
+.title-block .date-range {
+    display: block; /* Takes its own line */
+    font-size: 56px;  /* Target size */
+    font-weight: 300; /* Light weight */
+    line-height: 1.3; /* Adjust as needed */
+    /* REMOVED margin-top which was set by JS */
 }
 
 .description-block {
     font-size: 32px; 
     color: #000000; 
+    /* margin-top: 25px; */ /* REMOVED */
     line-height: 1.6;
     font-weight: 400; 
-}
-
-/* Styles for the new Date Range block */
-.date-range-block {
-    font-size: 32px; /* Match description for now */
-    color: #000000; /* Match description for now */
-    line-height: 1.6;
-    font-weight: 400;
-    margin-top: 10px; /* Space between title and date */
-    margin-bottom: 15px; /* Space between date and description */
 }
 
 /* Style for section separators */
@@ -100,16 +122,13 @@ body {
     object-fit: cover; 
 }
 
-.sidebar-icon:hover {
-    /* transform: scale(1.15); */ /* REMOVED hover scale */
-}
-/* --- End Sidebar Styles --- */
-
 /* --- Debug Borders --- */
 .main-content-wrapper,
 .title-block,
-.description-block,
+.description-block {
+/* 
 .sidebar-container,
 .sidebar-icon {
+*/
     border: 2px solid red !important; 
 } 

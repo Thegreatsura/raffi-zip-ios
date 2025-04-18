@@ -20,7 +20,8 @@
   <body>
     <div class="main-content-wrapper">
         <div class="title-block">
-            Raffi<br/>Chilingaryan
+            <span class="main-title">Raffi<br/>Chilingaryan</span>
+            <span class="date-range"></span>
         </div>
         <p class="description-block">
             I ship apps on the internet with friends. Tap an icon to learn more about a project. Also feel free to connect.
@@ -87,27 +88,26 @@
           }
 
           const data = projectData[index];
+          const mainTitleSpan = titleBlock.querySelector('.main-title');
+          const dateRangeSpan = titleBlock.querySelector('.date-range');
 
-          // Update Title (handle <br> for home)
-          titleBlock.innerHTML = data.title;
+          // Update Title
+          if (mainTitleSpan) {
+             mainTitleSpan.innerHTML = data.title;
+          }
 
           // Update Description
           descriptionBlock.textContent = data.description;
 
-          // Handle Date Range
-          let dateRangeElement = contentWrapper.querySelector('.date-range-block');
-          if (data.dateRange) {
-              if (!dateRangeElement) {
-                  // Create date range element if it doesn't exist
-                  dateRangeElement = document.createElement('p');
-                  dateRangeElement.className = 'date-range-block';
-                  // Insert after titleBlock
-                  titleBlock.parentNode.insertBefore(dateRangeElement, titleBlock.nextSibling);
+          // Handle Date Range within Title Block
+          if (dateRangeSpan) {
+              if (data.dateRange) {
+                  dateRangeSpan.textContent = data.dateRange;
+                  dateRangeSpan.style.visibility = 'visible';
+              } else {
+                  dateRangeSpan.textContent = ' '; // Keep space for layout
+                  dateRangeSpan.style.visibility = 'hidden';
               }
-              dateRangeElement.textContent = data.dateRange;
-          } else {
-              // Remove date range element if it exists and shouldn't
-              dateRangeElement?.remove();
           }
       }
 
