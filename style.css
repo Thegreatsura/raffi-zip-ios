@@ -203,8 +203,10 @@ body {
         background-color: transparent; 
         padding: 0;
         border-radius: 0;
-        opacity: 1; /* Keep it visible on mobile (no fade) */
-        transition: none; /* Remove fade transition for mobile */
+        /* Remove opacity override - let JS handle fade */
+        /* opacity: 1; */ 
+        /* Ensure transition applies (should inherit, but explicit doesn't hurt) */
+        transition: opacity var(--sidebar-fade-duration) var(--fade-easing);
     }
 
     .sidebar-icon {
@@ -212,8 +214,10 @@ body {
         --icon-size: calc((100vw - 50px - (4 * 16px)) / 5);
         width: var(--icon-size);
         height: var(--icon-size);
-        opacity: 0.4; /* Unselected opacity */
-        transition: opacity 0.2s ease; /* Opacity transition only */
+        opacity: 0.6; /* Updated unselected opacity */
+        transition: opacity 0.2s ease; 
+        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
+        outline: none; /* Also remove focus outline if desired */
     }
 
     .sidebar-icon.active {
@@ -261,8 +265,10 @@ body {
         padding: 30px 24px; /* Reduced horizontal padding by 6px */
         margin-top: 20px; /* Reduced top margin by 10px */
         
-        /* Ensure visible */
-        opacity: 1; 
+        /* Remove opacity override - let JS handle fade */
+        /* opacity: 1; */
+        /* Ensure transition applies (should inherit, but explicit doesn't hurt) */
+        transition: opacity var(--content-fade-duration) var(--fade-easing);
     }
 
     .description-block a {

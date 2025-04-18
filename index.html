@@ -290,14 +290,24 @@
 
           // Re-align on window resize
           window.addEventListener('resize', () => {
-              setInitialState(); // This already calls updateContent
-              alignContentWithSeparator();
+              setInitialState(); // This calls updateContent which handles mobile/desktop title
+              alignContentWithSeparator(); // Handles mobile/desktop alignment
               
-              // Ensure content stays visible and in position after resize
+              // Ensure elements are visible and correctly transformed after resize
               const content = document.querySelector('.main-content-wrapper');
+              const sidebar = document.querySelector('.sidebar-container');
+              
               if (content) {
-                  content.style.opacity = '1';
-                  content.style.transform = 'translate(-50%, 0)'; 
+                  content.style.opacity = '1'; // Make sure it's visible
+                  if (window.innerWidth > 768) {
+                       content.style.transform = 'translate(-50%, 0)'; // Desktop transform
+                  } else {
+                      content.style.transform = 'none'; // Mobile transform
+                  }
+              }
+              if (sidebar) {
+                  sidebar.style.opacity = '1'; // Make sure it's visible
+                  // Sidebar transform is handled by CSS only (desktop vs mobile)
               }
           });
           
