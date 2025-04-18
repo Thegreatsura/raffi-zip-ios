@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
     -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@10.16.4/dist/motion.min.js"></script>
     <style>
       /* Dynamically injected keyframes will go here if needed later */
     </style>
@@ -77,7 +78,22 @@
           const dotHeight = indicatorDot.offsetHeight;
           const newDotTop = targetTop + (targetHeight / 2) - (dotHeight / 2);
 
-          indicatorDot.style.top = `${newDotTop}px`;
+          // Use the motion library for spring animation
+          if (window.Motion) {
+              window.Motion.animate(indicatorDot, 
+                  { top: `${newDotTop}px` }, 
+                  { 
+                      type: "spring",
+                      stiffness: 380,
+                      damping: 28,
+                      mass: 1
+                  }
+              );
+          } else {
+              // Fallback if motion library isn't loaded
+              indicatorDot.style.top = `${newDotTop}px`;
+              console.warn("Motion library not found - using fallback animation");
+          }
       }
 
       // --- NEW: Update Content Function ---

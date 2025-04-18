@@ -106,8 +106,8 @@ body {
     border-radius: 50%;
     right: -20px; 
     top: 0; 
-    /* Use cubic-bezier to mimic spring, adjust duration */
-    transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+    /* REMOVED CSS transition - JS will handle animation */
+    /* transition: top 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); */ 
 }
 
 .sidebar-icon {
