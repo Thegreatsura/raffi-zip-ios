@@ -183,8 +183,8 @@
                  mainTitleSpan.innerHTML = data.title;
               }
 
-              // Update Description
-              descriptionBlock.textContent = data.description;
+              // Update Description - Use innerHTML to render links
+              descriptionBlock.innerHTML = data.description;
 
               // Handle Date Range within Title Block
               if (dateRangeSpan) {
@@ -275,7 +275,7 @@
             { // 0: Home (Index 0, Icon 1)
               title: "Raffi<br/>Chilingaryan",
               dateRange: "",
-              description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to get in touch."
+              description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to <a href='mailto:raffichilingaryan@gmail.com'>get in touch.</a>"
             },
             { // 1: Steddy (Index 1, Icon 2)
               title: "Steddy",

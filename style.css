@@ -89,6 +89,20 @@ body {
     overflow-wrap: break-word; /* Allow long strings to wrap */
 }
 
+.description-block a {
+    color: inherit; /* Start with the same color as surrounding text */
+    text-decoration: none; /* Remove underline */
+    background-color: transparent; /* Start transparent */
+    padding: 0.1em 0.15em; /* Reduced horizontal padding */
+    margin: -0.1em -0.15em; /* Adjusted negative horizontal margin */
+    /* transition: background-color 0.2s ease, color 0.2s ease; */
+}
+
+.description-block a:hover {
+    background-color: var(--text-color); /* Hover background uses text color */
+    color: var(--bg-color); /* Hover text uses background color */
+}
+
 /* Style for section separators */
 .section-separator {
     border: none; /* Remove default border */
