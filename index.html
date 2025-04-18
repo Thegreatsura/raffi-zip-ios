@@ -13,10 +13,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
     -->
-    <script src="https://cdn.jsdelivr.net/npm/motion@10.16.4/dist/motion.min.js"></script>
     <style>
-      /* Dynamically injected keyframes will go here if needed later */
+      /* CSS for smooth animation */
+      .indicator-dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background-color: black;
+        border-radius: 50%;
+        right: -20px; 
+        top: 0;
+      }
     </style>
+    <!-- Use the exact script tag from the Motion documentation -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
   </head>
   <body>
     <div class="main-content-wrapper">
@@ -44,6 +54,9 @@
     </div>
 
     <script>
+      // Get the Motion library functions from the global object
+      const { animate } = Motion;
+      
       // Minimal JavaScript - Can add back functionality later if needed
       
       // Example: Get references (might not be needed right now)
@@ -78,22 +91,19 @@
           const dotHeight = indicatorDot.offsetHeight;
           const newDotTop = targetTop + (targetHeight / 2) - (dotHeight / 2);
 
-          // Use the motion library for spring animation
-          if (window.Motion) {
-              window.Motion.animate(indicatorDot, 
-                  { top: `${newDotTop}px` }, 
-                  { 
-                      type: "spring",
-                      stiffness: 380,
-                      damping: 28,
-                      mass: 1
-                  }
-              );
-          } else {
-              // Fallback if motion library isn't loaded
-              indicatorDot.style.top = `${newDotTop}px`;
-              console.warn("Motion library not found - using fallback animation");
-          }
+          console.log("Moving indicator with spring animation");
+          
+          // Use the spring animation exactly as shown in the docs
+          animate(
+              indicatorDot,
+              { top: `${newDotTop}px` },
+              { 
+                  type: "spring", 
+                  stiffness: 380,
+                  damping: 28,
+                  mass: 1
+              }
+          );
       }
 
       // --- NEW: Update Content Function ---
