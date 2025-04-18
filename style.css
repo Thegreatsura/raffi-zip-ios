@@ -31,8 +31,8 @@ body {
 /* Wrapper for main content */
 .main-content-wrapper {
     position: absolute;
-    top: 35%; 
-    left: 50%; 
+    top: 25%; 
+    left: 35%; 
     transform: translate(-50%, 0); /* Center H, Align top edge to vertical center */
     width: 65.2vw; 
     max-width: 760px; /* Add max width constraint */
@@ -91,7 +91,7 @@ body {
     transform: translateY(-50%); 
     display: flex;
     flex-direction: column;
-    gap: 15px; 
+    gap: 10px; /* Update from 15px to 10px as specified */
     z-index: 20; 
 }
 
@@ -142,3 +142,21 @@ body {
     border: 2px solid red !important; 
 } 
 */ 
+
+.icon-separator {
+    width: 48px; /* Total width of separator */
+    height: 8px; /* Total height of separator */
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-separator::after {
+    content: '';
+    display: block;
+    width: 36px; /* Updated from 40px to 36px */
+    height: 1px; /* Line height */
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 0.5px; /* Fully rounded corners */
+} 
