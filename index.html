@@ -4,6 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ping me whenever</title>
+    <!-- Inline critical background style for instant rendering -->
+    <style>
+      body { background-color: #FEFF00; margin: 0; }
+    </style>
     <link rel="stylesheet" href="style.css" />
     <!-- Remove Geist Mono -->
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/vercel/geist-font@latest/dist/mono/geist-mono.css"> -->
@@ -25,8 +29,16 @@
         top: 0;
       }
     </style>
-    <!-- Use the exact script tag from the Motion documentation -->
-    <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js"></script>
+    <!-- SVG Definitions... -->
+    <svg width="0" height="0" style="position: absolute; z-index: -1;">
+      <defs>
+        <clipPath id="squircle-clip" clipPathUnits="objectBoundingBox">
+          <path d="M0.532 0C0.727 0 0.824 0.000007 0.893 0.050C0.915 0.066 0.934 0.085 0.950 0.107C1 0.176 1 0.273 1 0.468V0.532C1 0.727 1 0.824 0.950 0.893C0.934 0.915 0.915 0.934 0.893 0.950C0.824 1 0.727 1 0.532 1H0.468C0.273 1 0.176 1 0.107 0.950C0.085 0.934 0.066 0.915 0.050 0.893C0.000007 0.824 0 0.727 0 0.532V0.468C0 0.273 0.000007 0.176 0.050 0.107C0.066 0.085 0.085 0.066 0.107 0.050C0.176 0.000007 0.273 0 0.468 0H0.532Z" />
+        </clipPath>
+      </defs>
+    </svg>
+    <!-- Defer Motion script to prevent blocking render -->
+    <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js" defer></script>
   </head>
   <body>
     <div class="main-content-wrapper">
@@ -57,10 +69,10 @@
 
     <script>
       // --- Configurable Animation Parameters ---
-      const CONTENT_FADE_DELAY = 1000; // ms
-      const SIDEBAR_FADE_DELAY =  1000; // ms
-      const CONTENT_FADE_DURATION = 2000; // ms - Duration for content fade
-      const SIDEBAR_FADE_DURATION = 2000; // ms - Duration for sidebar fade
+      const CONTENT_FADE_DELAY = 800; // ms
+      const SIDEBAR_FADE_DELAY = 800; // ms
+      const CONTENT_FADE_DURATION = 2000; // ms
+      const SIDEBAR_FADE_DURATION = 2000; // ms
       const FADE_EASING = 'ease-in-out'; // CSS easing function
       
       // Set CSS Variables from JS constants
@@ -68,248 +80,191 @@
       document.documentElement.style.setProperty('--sidebar-fade-duration', `${SIDEBAR_FADE_DURATION / 1000}s`);
       document.documentElement.style.setProperty('--fade-easing', FADE_EASING);
       
-      // Get the Motion library functions from the global object
-      const { animate } = Motion;
-      
-      // Minimal JavaScript - Can add back functionality later if needed
-      
-      // Example: Get references (might not be needed right now)
-      const nameContainer = document.querySelector('.name-container');
-      const letters = Array.from(nameContainer?.children || []);
-      const sidebarContainer = document.querySelector('.sidebar-container');
-
-      function calculateLetterCenters() {
-          // Placeholder - can be removed if no JS interaction needed
-          // console.log('Calculating letter centers - if needed');
-      }
-
-      function calculateRegions() {
-         // Placeholder - can be removed if no JS interaction needed
-         // console.log('Calculating regions - if needed');
-         calculateLetterCenters();
-      }
-
-      // --- Navigation Indicator Logic ---
-      const sidebarIcons = document.querySelectorAll('.sidebar-icon');
-      const indicatorDot = document.querySelector('.indicator-dot');
-      const contentWrapper = document.querySelector('.main-content-wrapper');
-      const titleBlock = contentWrapper?.querySelector('.title-block');
-      const descriptionBlock = contentWrapper?.querySelector('.description-block');
-
-      function moveIndicator(targetIcon) {
-          if (!targetIcon || !indicatorDot) return;
-
-          // Calculate center position relative to the sidebar container
-          const targetTop = targetIcon.offsetTop;
-          const targetHeight = targetIcon.offsetHeight;
-          const dotHeight = indicatorDot.offsetHeight;
-          const newDotTop = targetTop + (targetHeight / 2) - (dotHeight / 2);
-
-          console.log("Moving indicator with spring animation");
+      // Wait for the DOM and deferred scripts to be ready
+      document.addEventListener('DOMContentLoaded', () => {
           
-          // Use the spring animation exactly as shown in the docs
-          animate(
-              indicatorDot,
-              { top: `${newDotTop}px` },
-              { 
-                  type: "spring", 
-                  stiffness: 380,
-                  damping: 28,
-                  mass: 1
+          // Get the Motion library functions from the global object
+          const { animate } = Motion;
+          
+          // Get DOM elements
+          const sidebarIcons = document.querySelectorAll('.sidebar-icon');
+          const indicatorDot = document.querySelector('.indicator-dot');
+          const contentWrapper = document.querySelector('.main-content-wrapper');
+          const titleBlock = contentWrapper?.querySelector('.title-block');
+          const descriptionBlock = contentWrapper?.querySelector('.description-block');
+          
+          // --- Function Definitions ---
+          
+          function moveIndicator(targetIcon) {
+              if (!targetIcon || !indicatorDot) return;
+
+              // Calculate center position relative to the sidebar container
+              const targetTop = targetIcon.offsetTop;
+              const targetHeight = targetIcon.offsetHeight;
+              const dotHeight = indicatorDot.offsetHeight;
+              const newDotTop = targetTop + (targetHeight / 2) - (dotHeight / 2);
+
+              console.log("Moving indicator with spring animation");
+              
+              // Use the spring animation exactly as shown in the docs
+              animate(
+                  indicatorDot,
+                  { top: `${newDotTop}px` },
+                  { 
+                      type: "spring", 
+                      stiffness: 380,
+                      damping: 28,
+                      mass: 1
+                  }
+              );
+          }
+          
+          function updateContent(index) {
+              if (index < 0 || index >= projectData.length || !contentWrapper || !titleBlock || !descriptionBlock) {
+                  console.error("Invalid index or elements not found for content update.");
+                  return;
               }
-          );
-      }
 
-      // --- NEW: Update Content Function ---
-      function updateContent(index) {
-          if (index < 0 || index >= projectData.length || !contentWrapper || !titleBlock || !descriptionBlock) {
-              console.error("Invalid index or elements not found for content update.");
-              return;
-          }
+              const data = projectData[index];
+              const mainTitleSpan = titleBlock.querySelector('.main-title');
+              const dateRangeSpan = titleBlock.querySelector('.date-range');
 
-          const data = projectData[index];
-          const mainTitleSpan = titleBlock.querySelector('.main-title');
-          const dateRangeSpan = titleBlock.querySelector('.date-range');
+              // Update Title
+              if (mainTitleSpan) {
+                 mainTitleSpan.innerHTML = data.title;
+              }
 
-          // Update Title
-          if (mainTitleSpan) {
-             mainTitleSpan.innerHTML = data.title;
-          }
+              // Update Description
+              descriptionBlock.textContent = data.description;
 
-          // Update Description
-          descriptionBlock.textContent = data.description;
-
-          // Handle Date Range within Title Block
-          if (dateRangeSpan) {
-              if (data.dateRange) {
-                  dateRangeSpan.textContent = data.dateRange;
-                  dateRangeSpan.style.visibility = 'visible';
-              } else {
-                  dateRangeSpan.textContent = ' '; // Keep space for layout
-                  dateRangeSpan.style.visibility = 'hidden';
+              // Handle Date Range within Title Block
+              if (dateRangeSpan) {
+                  if (data.dateRange) {
+                      dateRangeSpan.textContent = data.dateRange;
+                      dateRangeSpan.style.visibility = 'visible';
+                  } else {
+                      dateRangeSpan.textContent = ' '; // Keep space for layout
+                      dateRangeSpan.style.visibility = 'hidden';
+                  }
               }
           }
-      }
+          
+          function setInitialState() {
+              if (sidebarIcons.length > 0) {
+                  moveIndicator(sidebarIcons[0]); 
+                  updateContent(0); // Load home content
+              }
+          }
+          
+          function alignContentWithSeparator() {
+              const firstSeparator = document.querySelector('.icon-separator');
+              const content = document.querySelector('.main-content-wrapper');
+              
+              if (firstSeparator && content) {
+                  const firstSeparatorRect = firstSeparator.getBoundingClientRect();
+                  content.style.top = `${firstSeparatorRect.top}px`;
+              }
+          }
+          
+          // --- Event Listeners & Initial Setup ---
+          
+          // Add click listeners
+          sidebarIcons.forEach(icon => {
+              icon.addEventListener('click', (event) => {
+                  event.preventDefault(); 
+                  moveIndicator(icon); 
+                  const index = parseInt(icon.dataset.index, 10); // Get index from data attribute
+                  if (!isNaN(index)) {
+                      updateContent(index); // Update content based on clicked index
+                  }
+              });
+          });
+          
+          // Initial setup 
+          requestAnimationFrame(() => {
+              const initialSetupDelay = 200;
+              setTimeout(() => {
+                  setInitialState(); 
+                  alignContentWithSeparator(); 
 
-      // Set initial position and content
-      function setInitialState() {
-        if (sidebarIcons.length > 0) {
-            moveIndicator(sidebarIcons[0]); 
-            updateContent(0); // Load home content
-        }
-      }
+                  setTimeout(() => {
+                      const content = document.querySelector('.main-content-wrapper');
+                      if (content) {
+                          content.style.opacity = '1';
+                          console.log("Content faded in");
+                      }
+                  }, CONTENT_FADE_DELAY - initialSetupDelay); 
 
-      // Add click listeners
-      sidebarIcons.forEach(icon => {
-        icon.addEventListener('click', (event) => {
-            event.preventDefault(); 
-            moveIndicator(icon); 
-            const index = parseInt(icon.dataset.index, 10); // Get index from data attribute
-            if (!isNaN(index)) {
-                updateContent(index); // Update content based on clicked index
+                  setTimeout(() => {
+                      const sidebar = document.querySelector('.sidebar-container');
+                      if (sidebar) {
+                          sidebar.style.opacity = '1';
+                          console.log("Sidebar faded in");
+                      }
+                  }, SIDEBAR_FADE_DELAY - initialSetupDelay); 
+              }, initialSetupDelay); 
+          });
+
+          // Re-align on window resize
+          window.addEventListener('resize', () => {
+              setInitialState();
+              alignContentWithSeparator();
+              
+              const content = document.querySelector('.main-content-wrapper');
+              const sidebar = document.querySelector('.sidebar-container');
+              if (content) {
+                  content.style.opacity = '1';
+                  content.style.transform = 'translate(-50%, 0)'; 
+              }
+              if (sidebar) {
+                  sidebar.style.opacity = '1'; 
+              }
+          });
+          
+          // --- Project Data ---
+          const projectData = [
+            { // 0: Home (Index 0, Icon 1)
+              title: "Raffi<br/>Chilingaryan",
+              dateRange: "",
+              description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to hmu."
+            },
+            { // 1: Steddy (Index 1, Icon 2)
+              title: "Steddy",
+              dateRange: "Jan 2021 - Sep 2022",
+              description: "My first health & fitness app was a weekly routine planner. v1 by Rana, v2 by Christoph, v3 by Enzo. App icon by Michael Flarup."
+            },
+            { // 2: Empty (Index 2, Icon 3)
+              title: "Empty",
+              dateRange: "Jan 2024 - Present",
+              description: "A minimal fasting tracker - motivated by my personal desire to eat less near my bedtime. Dev by Rafael. App icons and illustrations by Hannah, Website by Cory."
+            },
+            { // 3: Numbies (Index 3, Icon 4)
+              title: "Numbies",
+              dateRange: "iOS App",
+              description: "My first social fitness experiment - send a notification blast to your friends and do bodyweight exercises for 5 minutes together. Dev by Anthony and Caleb."
+            },
+            { // 4: Shop (Index 4, Icon 5)
+              title: "Shop",
+              dateRange: "Nov 2024 - Mar 2025", // Dates seem off in screenshot, adjusted based on others
+              description: "I was briefly a Product Designer working on Shop Minis - a platform for third party developers to create unique shopping experiences on top of the Shop mobile app."
+            },
+            { // 5: Shift (Index 5, Icon 6)
+              title: "Shift",
+              dateRange: "Mar 2025 - Present", // Dates seem off in screenshot, adjusted based on others
+              description: "My first health & fitness app was a weekly routine planner. v1 by Rana, v2 by Christoph, v3 by Enzo. App icon by Michael Flarup."
+            },
+            { // 6: Relay (Index 6, Icon 7)
+              title: "******",
+              dateRange: "*** **** * ******",
+              description: "*****************************************************************************************************************"
+            },
+            { // 7: SIP (Index 7, Icon 8)
+              title: "SIP",
+              dateRange: "Jul 2024 - Present",
+              description: "Spotted in Prod (SIP for short) is a collection."
             }
-        });
+          ];
       });
-      // --- End Navigation --- 
-
-      // Function to animate the content entrance
-      function playContentEntranceAnimation() {
-          const content = document.querySelector('.main-content-wrapper');
-          
-          if (!content) return;
-          
-          // Animation: fade in and move up 10px while maintaining horizontal centering
-          animate(
-              content,
-              { 
-                  opacity: 1,
-                  transform: 'translate(-50%, 0)' // Keep horizontal centering, remove vertical offset
-              },
-              { 
-                  type: "spring",
-                  stiffness: 60, 
-                  damping: 15,
-                  mass: 1
-              }
-          );
-      }
-
-      // Add function to dynamically align content with first separator
-      function alignContentWithSeparator() {
-          const firstSeparator = document.querySelector('.icon-separator');
-          const content = document.querySelector('.main-content-wrapper');
-          
-          if (firstSeparator && content) {
-              const firstSeparatorRect = firstSeparator.getBoundingClientRect();
-              content.style.top = `${firstSeparatorRect.top}px`;
-          }
-      }
-
-      // Initial setup 
-      requestAnimationFrame(() => {
-          // Initial delay for setup
-          const initialSetupDelay = 200;
-          
-          setTimeout(() => {
-              setInitialState(); // Set dot position and initial content
-              alignContentWithSeparator(); // Align content
-
-              // Schedule the content fade-in
-              setTimeout(() => {
-                  const content = document.querySelector('.main-content-wrapper');
-                  if (content) {
-                      content.style.opacity = '1';
-                      console.log("Content faded in");
-                  }
-              }, CONTENT_FADE_DELAY - initialSetupDelay); // Use constant
-
-              // Schedule the sidebar fade-in
-              setTimeout(() => {
-                  const sidebar = document.querySelector('.sidebar-container');
-                  if (sidebar) {
-                      sidebar.style.opacity = '1';
-                      console.log("Sidebar faded in");
-                  }
-              }, SIDEBAR_FADE_DELAY - initialSetupDelay); // Use constant
-
-          }, initialSetupDelay); // Initial 200ms delay for setup
-      });
-
-      // Re-align on window resize
-      window.addEventListener('resize', () => {
-          setInitialState();
-          alignContentWithSeparator();
-          
-          // Ensure elements stay visible and in position after resize
-          const content = document.querySelector('.main-content-wrapper');
-          const sidebar = document.querySelector('.sidebar-container');
-          if (content) {
-              content.style.opacity = '1';
-              content.style.transform = 'translate(-50%, 0)'; // Ensure transform is reset
-          }
-          if (sidebar) {
-              sidebar.style.opacity = '1'; // Ensure sidebar stays visible
-          }
-      });
-
-      let queueIntervalId = null; // ID for the interval timer
-      let nameCenterY = window.innerHeight / 2; // Global variable for name's vertical center
-
-      // --- Project Data ---
-      const projectData = [
-        { // 0: Home (Index 0, Icon 1)
-          title: "Raffi<br/>Chilingaryan",
-          dateRange: "",
-          description: "I ship apps on the internet with friends. Tap an icon to learn more about a project. Always feel free to hmu."
-        },
-        { // 1: Steddy (Index 1, Icon 2)
-          title: "Steddy",
-          dateRange: "Jan 2021 - Sep 2022",
-          description: "My first health & fitness app was a weekly routine planner. v1 by Rana, v2 by Christoph, v3 by Enzo. App icon by Michael Flarup."
-        },
-        { // 2: Empty (Index 2, Icon 3)
-          title: "Empty",
-          dateRange: "Jan 2024 - Present",
-          description: "A minimal fasting tracker - motivated by my personal desire to eat less near my bedtime. Dev by Rafael. App icons and illustrations by Hannah, Website by Cory."
-        },
-        { // 3: Numbies (Index 3, Icon 4)
-          title: "Numbies",
-          dateRange: "iOS App",
-          description: "My first social fitness experiment - send a notification blast to your friends and do bodyweight exercises for 5 minutes together. Dev by Anthony and Caleb."
-        },
-        { // 4: Shop (Index 4, Icon 5)
-          title: "Shop",
-          dateRange: "Nov 2024 - Mar 2025", // Dates seem off in screenshot, adjusted based on others
-          description: "I was briefly a Product Designer working on Shop Minis - a platform for third party developers to create unique shopping experiences on top of the Shop mobile app."
-        },
-        { // 5: Shift (Index 5, Icon 6)
-          title: "Shift",
-          dateRange: "Mar 2025 - Present", // Dates seem off in screenshot, adjusted based on others
-          description: "My first health & fitness app was a weekly routine planner. v1 by Rana, v2 by Christoph, v3 by Enzo. App icon by Michael Flarup."
-        },
-        { // 6: Relay (Index 6, Icon 7)
-          title: "******",
-          dateRange: "*** **** * ******",
-          description: "*****************************************************************************************************************"
-        },
-        { // 7: SIP (Index 7, Icon 8)
-          title: "SIP",
-          dateRange: "Jul 2024 - Present",
-          description: "Spotted in Prod (SIP for short) is a collection."
-        }
-      ];
-
-      // --- UI State ---
-
     </script>
-    
-    <!-- SVG Definitions - moved to end of body for better loading -->
-    <svg width="0" height="0" style="position: absolute; z-index: -1;">
-      <defs>
-        <clipPath id="squircle-clip" clipPathUnits="objectBoundingBox">
-          <path d="M0.532 0C0.727 0 0.824 0.000007 0.893 0.050C0.915 0.066 0.934 0.085 0.950 0.107C1 0.176 1 0.273 1 0.468V0.532C1 0.727 1 0.824 0.950 0.893C0.934 0.915 0.915 0.934 0.893 0.950C0.824 1 0.727 1 0.532 1H0.468C0.273 1 0.176 1 0.107 0.950C0.085 0.934 0.066 0.915 0.050 0.893C0.000007 0.824 0 0.727 0 0.532V0.468C0 0.273 0.000007 0.176 0.050 0.107C0.066 0.085 0.085 0.066 0.107 0.050C0.176 0.000007 0.273 0 0.468 0H0.532Z" />
-        </clipPath>
-      </defs>
-    </svg>
   </body>
 </html> 
