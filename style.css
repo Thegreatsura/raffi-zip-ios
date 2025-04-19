@@ -25,6 +25,12 @@ body {
   color: var(--text-color); 
   position: relative; 
   background-color: var(--bg-color);
+  /* Disable text selection */
+  user-select: none; /* Standard */
+  -webkit-user-select: none; /* Safari/Chrome */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE/Edge */
+  cursor: default; /* Change cursor to default arrow */
 }
 
 :root {
