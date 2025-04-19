@@ -89,6 +89,16 @@ body {
     overflow-wrap: break-word; /* Allow long strings to wrap */
 }
 
+/* Add margin below paragraphs inside the description block */
+.description-block p {
+    margin-bottom: 8px; 
+}
+
+/* Remove bottom margin from the *last* paragraph to avoid extra space */
+.description-block p:last-child {
+    margin-bottom: 0;
+}
+
 .description-block a {
     color: inherit; 
     text-decoration: none; 
