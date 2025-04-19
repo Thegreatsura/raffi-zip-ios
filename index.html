@@ -89,12 +89,7 @@
       
       // Function to apply a theme
       function applyTheme(theme) {
-        let separatorAlpha;
-        if (theme.textColor.toUpperCase() === '#FFFFFF') {
-          separatorAlpha = 0.2;
-        } else {
-          separatorAlpha = 0.1;
-        }
+        let separatorAlpha = 0.35;
         const separatorColor = hexToRGBA(theme.textColor, separatorAlpha);
         
         // Set CSS Variables
@@ -337,7 +332,7 @@
             {
               title: "Shift",
               dateRange: "Mar 2025 - Present",
-              description: "An alarm app that helps you get up earlier by shifting your wake up time by small increments. By me + Cursor :)"
+              description: "An alarm app that helps you get up earlier by shifting your wake up time by small increments. If you're on the Apple Developer Support team, please grant me Critical Alerts entitlements so I can launch this."
             },
             {
               title: "******",
