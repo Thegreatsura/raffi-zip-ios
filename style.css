@@ -95,7 +95,7 @@ body {
     background-color: transparent; 
     padding: 0.1em 0.15em; 
     margin: -0.1em -0.15em; 
-    opacity: 0.5; /* Updated default opacity */
+    opacity: 0.6; /* Updated default opacity to 60% */
 }
 
 .description-block a:hover {

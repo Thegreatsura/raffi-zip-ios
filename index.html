@@ -201,12 +201,57 @@
               }
           }
           
+          // --- Event Listeners & Initial Setup ---
+          
+          // Add click listeners
+          sidebarIcons.forEach(icon => {
+              icon.addEventListener('click', (event) => {
+                  event.preventDefault(); 
+                  handleIconSelection(icon);
+              });
+          });
+
+          // Add Keyboard Navigation Listener
+          document.addEventListener('keydown', (event) => {
+              // Check for any of the four arrow keys
+              if (['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
+                  event.preventDefault(); // Prevent default page scrolling
+                  
+                  if (!currentActiveIcon) return; // Do nothing if no icon is active
+                  
+                  const currentIndex = parseInt(currentActiveIcon.dataset.index, 10);
+                  let nextIndex;
+                  const numIcons = sidebarIcons.length;
+
+                  // Right and Down increment, Left and Up decrement
+                  if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
+                      nextIndex = (currentIndex + 1) % numIcons; // Wrap around to the start
+                  } else { // ArrowUp or ArrowLeft
+                      nextIndex = (currentIndex - 1 + numIcons) % numIcons; // Wrap around to the end
+                  }
+
+                  const nextIcon = document.querySelector(`.sidebar-icon[data-index="${nextIndex}"]`);
+                  if (nextIcon) {
+                      handleIconSelection(nextIcon);
+                  }
+              }
+          });
+
+          // Helper function to handle selecting an icon (click or key)
+          function handleIconSelection(icon) {
+              moveIndicator(icon); 
+              setActiveIcon(icon); 
+              const index = parseInt(icon.dataset.index, 10); 
+              if (!isNaN(index)) {
+                  updateContent(index); 
+              }
+          }
+          
           function setInitialState() {
               if (sidebarIcons.length > 0) {
                   const firstIcon = sidebarIcons[0];
-                  moveIndicator(firstIcon); 
-                  updateContent(0); 
-                  setActiveIcon(firstIcon); // Set first icon as active
+                  // Use the helper function for initial state
+                  handleIconSelection(firstIcon); 
               }
           }
           
@@ -238,21 +283,6 @@
                   if(content) content.style.top = 'auto'; 
               }
           }
-          
-          // --- Event Listeners & Initial Setup ---
-          
-          // Add click listeners
-          sidebarIcons.forEach(icon => {
-              icon.addEventListener('click', (event) => {
-                  event.preventDefault(); 
-                  moveIndicator(icon); 
-                  setActiveIcon(icon); // Update active icon on click
-                  const index = parseInt(icon.dataset.index, 10); 
-                  if (!isNaN(index)) {
-                      updateContent(index); 
-                  }
-              });
-          });
           
           // Initial setup 
           requestAnimationFrame(() => {
