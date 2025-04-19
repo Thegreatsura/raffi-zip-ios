@@ -6,9 +6,31 @@
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
     <title>Raffi Chilingaryan</title>
     <link rel="icon" type="image/png" href="/pngs/1.png">
-    <!-- Inline critical background style for instant rendering -->
+    <!-- ** EARLY THEME SCRIPT START ** -->
+    <script>
+      // Minimal script to set initial theme colors ASAP
+      const earlyThemes = [
+        { name: 'yellow', bgColor: '#FEFF00', textColor: '#000000' },
+        { name: 'forest', bgColor: '#014421', textColor: '#FFFFFF' },
+        { name: 'facebook', bgColor: '#0062FF', textColor: '#FFFFFF' },
+        { name: 'white', bgColor: '#FFFFFF', textColor: '#000000' },
+        { name: 'ramp', bgColor: '#DDFF00', textColor: '#353822' },
+        { name: 'uniswap', bgColor: '#FF0098', textColor: '#FFFFFF' },
+        { name: 'mint', bgColor: '#98FF98', textColor: '#204620' },
+        { name: 'critical', bgColor: '#FF0000', textColor: '#FFFFFF' },
+        { name: 'bos', bgColor: '#B1AA8F', textColor: '#29230B' }
+      ];
+      const earlyRandomTheme = earlyThemes[Math.floor(Math.random() * earlyThemes.length)];
+      document.documentElement.style.setProperty('--bg-color', earlyRandomTheme.bgColor);
+      document.documentElement.style.setProperty('--text-color', earlyRandomTheme.textColor);
+      window.initialTheme = earlyRandomTheme; // Store for main script
+      // We set defaults in :root too, so separator/transitions have *some* value initially
+      // The main script will apply the final separator/transition vars later.
+    </script>
+    <!-- ** EARLY THEME SCRIPT END ** -->
+    <!-- Inline critical background style (less critical now, but safe fallback) -->
     <style>
-      body { background-color: #FEFF00; margin: 0; }
+      body { background-color: var(--bg-color, #FEFF00); margin: 0; color: var(--text-color, #000000); }
     </style>
     <link rel="stylesheet" href="style.css" />
     <style>
@@ -63,10 +85,10 @@
 
     <script>
       // --- Configurable Animation Parameters ---
-      const CONTENT_FADE_DELAY = 400; // ms
-      const SIDEBAR_FADE_DELAY = 400; // ms
-      const CONTENT_FADE_DURATION = 1200; // ms
-      const SIDEBAR_FADE_DURATION = 1200; // ms
+      const CONTENT_FADE_DELAY = 550; // ms
+      const SIDEBAR_FADE_DELAY = 550; // ms
+      const CONTENT_FADE_DURATION = 1300; // ms
+      const SIDEBAR_FADE_DURATION = 1300; // ms
       const FADE_EASING = 'ease-in-out'; // CSS easing function
       
       // --- Themes --- 
@@ -77,6 +99,7 @@
         { name: 'mint', bgColor: '#98FF98', textColor: '#204620' },
         { name: 'bos', bgColor: '#B1AA8F', textColor: '#29230B' }
       ];
+      let currentThemeIndex = -1; 
       
       // Function to convert hex to RGBA
       function hexToRGBA(hex, alpha) {
@@ -108,10 +131,21 @@
         }
       }
       
-      // --- Theme Application (RUNS IMMEDIATELY) ---
-      const randomTheme = themes[Math.floor(Math.random() * themes.length)];
-      applyTheme(randomTheme);
-      console.log("Applied theme:", randomTheme.name);
+      // --- Theme Application (INITIAL - Runs after Head Script) ---
+      // Use the theme chosen by the early script
+      if (window.initialTheme) {
+          applyTheme(window.initialTheme);
+          // Find the index of the initial theme to start cycling correctly
+          currentThemeIndex = themes.findIndex(t => t.name === window.initialTheme.name);
+          if (currentThemeIndex === -1) currentThemeIndex = 0; // Fallback if name mismatch
+          console.log("Applied initial theme details:", window.initialTheme.name);
+      } else {
+          // Fallback if head script failed (shouldn't happen)
+          const fallbackTheme = themes[0];
+          applyTheme(fallbackTheme);
+          currentThemeIndex = 0;
+          console.warn("Initial theme from head script not found, using fallback.");
+      }
       
       // --- Wait for DOM Ready for remaining logic ---
       document.addEventListener('DOMContentLoaded', () => {
