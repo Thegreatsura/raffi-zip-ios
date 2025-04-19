@@ -291,4 +291,8 @@ body {
         cursor: pointer; 
         opacity: 1; /* Ensure full opacity on mobile */
     }
+
+    .desktop-only-hint {
+        display: none; /* Hide the arrow key hint text on mobile */
+    }
 } 
