@@ -1,411 +1,441 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" 
-          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
-    <title>Raffi Chilingaryan</title>
-    <link rel="icon" type="image/png" href="/pngs/1.png?v=2">
-    <!-- ** EARLY THEME SCRIPT START ** -->
-    <script>
-      // Minimal script to set initial theme colors ASAP
-      const earlyThemes = [
-        { name: 'facebook', bgColor: '#0062FF', textColor: '#FFFFFF' },
-        { name: 'ramp', bgColor: '#DDFF00', textColor: '#353822' },
-        { name: 'uniswap', bgColor: '#FF0098', textColor: '#FFFFFF' },
-        { name: 'mint', bgColor: '#98FF98', textColor: '#204620' },
-        { name: 'bos', bgColor: '#B1AA8F', textColor: '#29230B' }
-      ];
-      const earlyRandomTheme = earlyThemes[Math.floor(Math.random() * earlyThemes.length)];
-      document.documentElement.style.setProperty('--bg-color', earlyRandomTheme.bgColor);
-      document.documentElement.style.setProperty('--text-color', earlyRandomTheme.textColor);
-      window.initialTheme = earlyRandomTheme; // Store for main script
-      // We set defaults in :root too, so separator/transitions have *some* value initially
-      // The main script will apply the final separator/transition vars later.
-    </script>
-    <!-- ** EARLY THEME SCRIPT END ** -->
-    <!-- Inline critical background style (less critical now, but safe fallback) -->
-    <style>
-      body { background-color: var(--bg-color, #FEFF00); margin: 0; color: var(--text-color, #000000); }
-    </style>
-    <link rel="stylesheet" href="style.css" />
-    <style>
-      /* CSS for smooth animation */
-      .indicator-dot {
-        position: absolute;
-        width: 8px;
-        height: 8px;
-        background-color: black;
-        border-radius: 50%;
-        right: -20px; 
-        top: 0;
-      }
-    </style>
-    <!-- SVG Definitions... -->
-    <svg width="0" height="0" style="position: absolute; z-index: -1;">
-      <defs>
-        <clipPath id="squircle-clip" clipPathUnits="objectBoundingBox">
-          <path d="M0.532 0C0.727 0 0.824 0.000007 0.893 0.050C0.915 0.066 0.934 0.085 0.950 0.107C1 0.176 1 0.273 1 0.468V0.532C1 0.727 1 0.824 0.950 0.893C0.934 0.915 0.915 0.934 0.893 0.950C0.824 1 0.727 1 0.532 1H0.468C0.273 1 0.176 1 0.107 0.950C0.085 0.934 0.066 0.915 0.050 0.893C0.000007 0.824 0 0.727 0 0.532V0.468C0 0.273 0.000007 0.176 0.050 0.107C0.066 0.085 0.085 0.066 0.107 0.050C0.176 0.000007 0.273 0 0.468 0H0.532Z" />
-        </clipPath>
-      </defs>
-    </svg>
-    <!-- Defer Motion script to prevent blocking render -->
-    <script src="https://cdn.jsdelivr.net/npm/motion@latest/dist/motion.js" defer></script>
-  </head>
-  <body>
-    <div class="main-content-wrapper">
-        <div class="title-block">
-            <span class="main-title">Raffi<br/>Chilingaryan</span>
-            <span class="date-range"></span>
-        </div>
-        <p class="description-block">
-            I ship apps on the internet with friends. Tap an icon to learn more about a project. Also feel free to connect.
-        </p>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Raffi Chilingaryan</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/motion@12.7.4/dist/motion.js"></script>
+</head>
+<body>
+  <!-- Desktop View -->
+  <div class="desktop-view">
+    <!-- Intro Section -->
+    <div class="intro-section">
+      <h1>Raffi Chilingaryan</h1>
+      <div class="intro-text">
+        <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them.</p>
+        <p>I also build fitness apps on my own and with friends.</p>
+        <p>Here's what's currently on my home screen:</p>
+      </div>
     </div>
 
-    <div class="sidebar-container">
-        <div class="indicator-dot"></div>
-        <a href="#" class="sidebar-icon" data-index="0"><img src="pngs/1.png" alt="Icon 1"></a>
-        <div class="icon-separator"></div>
-        <a href="#" class="sidebar-icon" data-index="1"><img src="pngs/2.png" alt="Icon 2"></a>
-        <a href="#" class="sidebar-icon" data-index="2"><img src="pngs/3.png" alt="Icon 3"></a>
-        <a href="#" class="sidebar-icon" data-index="3"><img src="pngs/4.png" alt="Icon 4"></a>
-        <div class="icon-separator"></div>
-        <a href="#" class="sidebar-icon" data-index="4"><img src="pngs/5.png" alt="Icon 5"></a>
-        <div class="icon-separator"></div>
-        <a href="#" class="sidebar-icon" data-index="5"><img src="pngs/6.png" alt="Icon 6"></a>
-        <a href="#" class="sidebar-icon" data-index="6"><img src="pngs/7.png" alt="Icon 7"></a>
-        <div class="icon-separator"></div>
-        <a href="#" class="sidebar-icon" data-index="7"><img src="pngs/8.png" alt="Icon 8"></a>
+    <!-- Phone Mockup with Tap Targets -->
+    <div class="phone-container">
+      <div class="phone-frame">
+        <!-- Phone mockup background image -->
+        <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
+
+        <!-- Invisible tap target overlays -->
+        <div class="tap-target tap-widget-github" data-app="github"></div>
+        <div class="tap-target tap-widget-spotify" data-app="spotify"></div>
+
+        <div class="tap-target tap-app-notes" data-app="notes"></div>
+        <div class="tap-target tap-app-photos" data-app="photos"></div>
+        <div class="tap-target tap-app-retro" data-app="retro"></div>
+        <div class="tap-target tap-app-icamera" data-app="icamera"></div>
+
+        <div class="tap-target tap-folder-vibes" data-folder="vibes"></div>
+        <div class="tap-target tap-folder-social" data-folder="social"></div>
+        <div class="tap-target tap-folder-health" data-folder="health"></div>
+        <div class="tap-target tap-folder-tools" data-folder="tools"></div>
+
+        <div class="tap-target tap-dock-claude" data-app="claude"></div>
+        <div class="tap-target tap-dock-safari" data-app="safari"></div>
+        <div class="tap-target tap-dock-maps" data-app="maps"></div>
+      </div>
     </div>
 
-    <script>
-      // --- Configurable Animation Parameters ---
-      const CONTENT_FADE_DELAY = 550; // ms
-      const SIDEBAR_FADE_DELAY = 550; // ms
-      const CONTENT_FADE_DURATION = 1300; // ms
-      const SIDEBAR_FADE_DURATION = 1300; // ms
-      const FADE_EASING = 'ease-in-out'; // CSS easing function
-      
-      // --- Themes --- 
-      const themes = [
-        { name: 'facebook', bgColor: '#0062FF', textColor: '#FFFFFF' },
-        { name: 'ramp', bgColor: '#DDFF00', textColor: '#353822' },
-        { name: 'uniswap', bgColor: '#FF37C7', textColor: '#FFFFFF' },
-        { name: 'mint', bgColor: '#98FF98', textColor: '#204620' },
-        { name: 'bos', bgColor: '#B1AA8F', textColor: '#29230B' }
-      ];
-      let currentThemeIndex = -1; 
-      
-      // Function to convert hex to RGBA
-      function hexToRGBA(hex, alpha) {
-        hex = hex.replace('#', '');
-        const r = parseInt(hex.substring(0, 2), 16);
-        const g = parseInt(hex.substring(2, 4), 16);
-        const b = parseInt(hex.substring(4, 6), 16);
-        return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-      }
-      
-      // Function to apply a theme
-      function applyTheme(theme) {
-        let separatorAlpha = 0.35;
-        const separatorColor = hexToRGBA(theme.textColor, separatorAlpha);
-        
-        // Set CSS Variables
-        document.documentElement.style.setProperty('--bg-color', theme.bgColor);
-        document.documentElement.style.setProperty('--text-color', theme.textColor);
-        document.documentElement.style.setProperty('--separator-color', separatorColor);
-        document.documentElement.style.setProperty('--content-fade-duration', `${CONTENT_FADE_DURATION / 1000}s`);
-        document.documentElement.style.setProperty('--sidebar-fade-duration', `${SIDEBAR_FADE_DURATION / 1000}s`);
-        document.documentElement.style.setProperty('--fade-easing', FADE_EASING);
-        
-        // --- DEBUGGING: Force dot color update --- 
-        const dot = document.querySelector('.indicator-dot');
-        if (dot) {
-          dot.style.backgroundColor = theme.textColor;
-          console.log(`DEBUG: Forcing dot color to ${theme.textColor}`);
+    <!-- Footer Section -->
+    <div class="footer-section">
+      <div class="credits">
+        <p>I'm hoping that this will reduce my constant impulse to</p>
+        <p>My layout is inspired by <span class="credit-name">Christina/Gavin</span>, palette by <span class="credit-name">Laurent</span>, and device frame for this website by <span class="credit-name">Luhang</span>.</p>
+        <p>Thanks people &lt;3</p>
+      </div>
+
+      <div class="social-icons">
+        <a href="https://x.com" target="_blank" class="social-icon"></a>
+        <a href="https://instagram.com" target="_blank" class="social-icon"></a>
+        <a href="https://github.com" target="_blank" class="social-icon"></a>
+      </div>
+    </div>
+
+    <!-- Sidebar for app/folder details -->
+    <div class="sidebar hidden">
+      <div class="sidebar-content"></div>
+    </div>
+  </div>
+
+  <!-- Mobile View -->
+  <div class="mobile-view">
+    <!-- Intro at top -->
+    <div class="mobile-intro">
+      <h1>Raffi Chilingaryan</h1>
+      <div class="mobile-intro-text">
+        <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+        <p>Here's what's currently on my home screen:</p>
+      </div>
+    </div>
+
+    <!-- Full-width fake home screen -->
+    <div class="mobile-home-screen">
+      <img src="assets/phone-mockups/home-mobile.jpg" alt="Home Screen" class="mobile-mockup-image">
+
+      <!-- Mobile tap targets -->
+      <div class="mobile-tap mobile-tap-widget-github" data-app="github"></div>
+      <div class="mobile-tap mobile-tap-widget-spotify" data-app="spotify"></div>
+
+      <div class="mobile-tap mobile-tap-app-notes" data-app="notes"></div>
+      <div class="mobile-tap mobile-tap-app-photos" data-app="photos"></div>
+      <div class="mobile-tap mobile-tap-app-retro" data-app="retro"></div>
+      <div class="mobile-tap mobile-tap-app-icamera" data-app="icamera"></div>
+
+      <div class="mobile-tap mobile-tap-folder-vibes" data-folder="vibes"></div>
+      <div class="mobile-tap mobile-tap-folder-social" data-folder="social"></div>
+      <div class="mobile-tap mobile-tap-folder-health" data-folder="health"></div>
+      <div class="mobile-tap mobile-tap-folder-tools" data-folder="tools"></div>
+    </div>
+
+    <!-- Mobile overlay for folders/apps -->
+    <div class="mobile-overlay hidden">
+      <div class="mobile-overlay-content"></div>
+    </div>
+  </div>
+
+  <script>
+    // App data structure based on Figma
+    const appData = {
+      apps: {
+        retro: {
+          name: 'Retro',
+          icon: 'assets/icons/retro.png',
+          video: 'assets/videos/retro.mp4',
+          qrCode: 'assets/qr-codes/retro.png',
+          appStoreURL: 'https://apps.apple.com/retro',
+          longDescription: 'Retro is the social app that I wish everyone used instead of Instagram. I use it as a personal photo journal and try to get whoever I can to download it.\n\nYou can send people postcards directly from the app too :) Give it a try with the QR code below.'
+        },
+        notes: {
+          name: 'Notes',
+          icon: 'assets/icons/notes.png',
+          video: 'assets/videos/notes.mp4',
+          qrCode: 'assets/qr-codes/notes.png',
+          appStoreURL: 'https://apps.apple.com/notes',
+          longDescription: 'Notes app description...'
+        },
+        photos: {
+          name: 'Photos',
+          icon: 'assets/icons/photos.png',
+          video: 'assets/videos/photos.mp4',
+          qrCode: 'assets/qr-codes/photos.png',
+          appStoreURL: 'https://apps.apple.com/photos',
+          longDescription: 'Photos app description...'
+        },
+        icamera: {
+          name: '!camera',
+          icon: 'assets/icons/icamera.png',
+          video: 'assets/videos/icamera.mp4',
+          qrCode: 'assets/qr-codes/icamera.png',
+          appStoreURL: 'https://apps.apple.com/icamera',
+          longDescription: '!camera app description...'
+        },
+        claude: {
+          name: 'Claude',
+          icon: 'assets/icons/claude.png',
+          video: 'assets/videos/claude.mp4',
+          qrCode: 'assets/qr-codes/claude.png',
+          appStoreURL: 'https://apps.apple.com/claude',
+          longDescription: 'Claude app description...'
+        },
+        safari: {
+          name: 'Safari',
+          icon: 'assets/icons/safari.png',
+          video: 'assets/videos/safari.mp4',
+          qrCode: 'assets/qr-codes/safari.png',
+          appStoreURL: 'https://apps.apple.com/safari',
+          longDescription: 'Safari browser description...'
+        },
+        maps: {
+          name: 'Google Maps',
+          icon: 'assets/icons/maps.png',
+          video: 'assets/videos/maps.mp4',
+          qrCode: 'assets/qr-codes/maps.png',
+          appStoreURL: 'https://apps.apple.com/maps',
+          longDescription: 'Google Maps description...'
+        },
+        github: {
+          name: 'GitHub',
+          appStoreURL: 'https://apps.apple.com/github'
+        },
+        spotify: {
+          name: 'Spotify',
+          appStoreURL: 'https://apps.apple.com/spotify'
+        }
+      },
+
+      folders: {
+        vibes: {
+          name: '(vibes)',
+          emoji: '🌏',
+          apps: [
+            { name: 'Fotmob', icon: 'assets/icons/fotmob.jpg', description: 'Fotmob is how I keep up with the beautiful game.' },
+            { name: 'Radio Garden', icon: 'assets/icons/radiogarden.jpg', description: 'Radio Garden has stations from all over the world.' },
+            { name: 'Pokemon', icon: 'assets/icons/pokemontcgp.jpg', description: 'Pokemon artwork will never not give me nostalgia.' },
+            { name: 'Anki', icon: 'assets/icons/anki.jpg', description: 'Anki is a studying method that smart people sweat by.' },
+            { name: 'Particle', icon: 'assets/icons/particle.jpg', description: 'Particle is a beautiful and free AI news app.' },
+            { name: 'GOAT', icon: 'assets/icons/goat.jpg', description: 'GOAT has all the sneakers and cleats I could ever dream of.' },
+            { name: 'Arena', icon: 'assets/icons/arena.jpg', description: "Arena is where I've been stashing all of my favorite internet tidbits." },
+            { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe.' },
+            { name: 'Poolsuite', icon: 'assets/icons/poolsuite.jpg', description: 'Poolsuite has a lovely set of playlists and immaculate UI.' }
+          ]
+        },
+        social: {
+          name: 'Social',
+          emoji: '💬',
+          apps: [
+            { name: 'Messages', icon: 'assets/icons/messages.png', description: 'Send messages to friends and family.' },
+            { name: 'WhatsApp', icon: 'assets/icons/whatsapp.png', description: 'Free messaging and calls worldwide.' }
+          ]
+        },
+        health: {
+          name: 'Health',
+          emoji: '❤️',
+          apps: []
+        },
+        tools: {
+          name: 'Tools',
+          emoji: '🔧',
+          apps: []
         }
       }
-      
-      // --- Theme Application (INITIAL - Runs after Head Script) ---
-      // Use the theme chosen by the early script
-      if (window.initialTheme) {
-          applyTheme(window.initialTheme);
-          // Find the index of the initial theme to start cycling correctly
-          currentThemeIndex = themes.findIndex(t => t.name === window.initialTheme.name);
-          if (currentThemeIndex === -1) currentThemeIndex = 0; // Fallback if name mismatch
-          console.log("Applied initial theme details:", window.initialTheme.name);
-      } else {
-          // Fallback if head script failed (shouldn't happen)
-          const fallbackTheme = themes[0];
-          applyTheme(fallbackTheme);
-          currentThemeIndex = 0;
-          console.warn("Initial theme from head script not found, using fallback.");
-      }
-      
-      // --- Wait for DOM Ready for remaining logic ---
-      document.addEventListener('DOMContentLoaded', () => {
-          
-          // Get the Motion library functions from the global object
-          const { animate } = Motion;
-          
-          // Get DOM elements
-          const sidebarIcons = document.querySelectorAll('.sidebar-icon');
-          const indicatorDot = document.querySelector('.indicator-dot');
-          const contentWrapper = document.querySelector('.main-content-wrapper');
-          const titleBlock = contentWrapper?.querySelector('.title-block');
-          const descriptionBlock = contentWrapper?.querySelector('.description-block');
-          
-          let currentActiveIcon = null; // Keep track of the active icon
+    };
 
-          // --- Function Definitions ---
-          
-          function setActiveIcon(targetIcon) {
-              // Remove active class from previously active icon
-              if (currentActiveIcon) {
-                  currentActiveIcon.classList.remove('active');
-              }
-              // Add active class to the new target icon
-              if (targetIcon) {
-                  targetIcon.classList.add('active');
-                  currentActiveIcon = targetIcon;
-              }
-          }
-          
-          function moveIndicator(targetIcon) {
-              if (!targetIcon || !indicatorDot || window.innerWidth <= 768) return; // Added mobile check
-              // Calculate center position relative to the sidebar container
-              const targetTop = targetIcon.offsetTop;
-              const targetHeight = targetIcon.offsetHeight;
-              const dotHeight = indicatorDot.offsetHeight;
-              const newDotTop = targetTop + (targetHeight / 2) - (dotHeight / 2);
+    // DOM elements
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarContent = document.querySelector('.sidebar-content');
+    const mobileOverlay = document.querySelector('.mobile-overlay');
+    const mobileOverlayContent = document.querySelector('.mobile-overlay-content');
+    const phoneContainer = document.querySelector('.phone-container');
 
-              console.log("Moving indicator with spring animation");
-              
-              // Use the spring animation exactly as shown in the docs
-              animate(
-                  indicatorDot,
-                  { top: `${newDotTop}px` },
-                  { 
-                      type: "spring", 
-                      stiffness: 380,
-                      damping: 28,
-                      mass: 1
-                  }
-              );
-          }
-          
-          function updateContent(index) {
-              if (index < 0 || index >= projectData.length || !contentWrapper || !titleBlock || !descriptionBlock) {
-                  console.error("Invalid index or elements not found for content update.");
-                  return;
-              }
+    // Initialize
+    function init() {
+      attachEventListeners();
+    }
 
-              const data = projectData[index];
-              const mainTitleSpan = titleBlock.querySelector('.main-title');
-              const dateRangeSpan = titleBlock.querySelector('.date-range');
-
-              // Update Title - Adjust for mobile
-              if (mainTitleSpan) {
-                 if (window.innerWidth <= 768) {
-                     // On mobile, replace <br/> with a space
-                     mainTitleSpan.innerHTML = data.title.replace(/<br\s*\/?>/gi, ' ');
-                 } else {
-                     // On desktop, use the original title with <br/>
-                     mainTitleSpan.innerHTML = data.title; 
-                 }
-              }
-
-              // Update Description - Use innerHTML to render links
-              descriptionBlock.innerHTML = data.description;
-
-              // Handle Date Range within Title Block
-              if (dateRangeSpan) {
-                  if (data.dateRange) {
-                      dateRangeSpan.textContent = data.dateRange;
-                      dateRangeSpan.style.visibility = 'visible';
-                  } else {
-                      dateRangeSpan.textContent = ' '; // Keep space for layout
-                      dateRangeSpan.style.visibility = 'hidden';
-                  }
-              }
-          }
-          
-          // --- Event Listeners & Initial Setup ---
-          
-          // Add click listeners
-          sidebarIcons.forEach(icon => {
-              icon.addEventListener('click', (event) => {
-                  event.preventDefault(); 
-                  handleIconSelection(icon);
-              });
-          });
-
-          // Add Keyboard Navigation Listener
-          document.addEventListener('keydown', (event) => {
-              // Check for any of the four arrow keys
-              if (['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'].includes(event.key)) {
-                  event.preventDefault(); // Prevent default page scrolling
-                  
-                  if (!currentActiveIcon) return; // Do nothing if no icon is active
-                  
-                  const currentIndex = parseInt(currentActiveIcon.dataset.index, 10);
-                  let nextIndex;
-                  const numIcons = sidebarIcons.length;
-
-                  // Right and Down increment, Left and Up decrement
-                  if (event.key === 'ArrowDown' || event.key === 'ArrowRight') {
-                      nextIndex = (currentIndex + 1) % numIcons; // Wrap around to the start
-                  } else { // ArrowUp or ArrowLeft
-                      nextIndex = (currentIndex - 1 + numIcons) % numIcons; // Wrap around to the end
-                  }
-
-                  const nextIcon = document.querySelector(`.sidebar-icon[data-index="${nextIndex}"]`);
-                  if (nextIcon) {
-                      handleIconSelection(nextIcon);
-                  }
-              }
-          });
-
-          // Helper function to handle selecting an icon (click or key)
-          function handleIconSelection(icon) {
-              moveIndicator(icon); 
-              setActiveIcon(icon); 
-              const index = parseInt(icon.dataset.index, 10); 
-              if (!isNaN(index)) {
-                  updateContent(index); 
-              }
-          }
-          
-          function setInitialState() {
-              if (sidebarIcons.length > 0) {
-                  const firstIcon = sidebarIcons[0];
-                  // Use the helper function for initial state
-                  handleIconSelection(firstIcon); 
-              }
-          }
-          
-          // Add function to dynamically align content with first separator
-          function alignContentWithSeparator() {
-              // Only run alignment logic on desktop
-              if (window.innerWidth > 768) {
-                  const firstSeparator = document.querySelector('.icon-separator');
-                  const content = document.querySelector('.main-content-wrapper');
-                  
-                  if (!firstSeparator) {
-                      console.error("DEBUG: First separator not found!");
-                      return;
-                  }
-                  if (!content) {
-                      console.error("DEBUG: Content wrapper not found!");
-                      return;
-                  }
-                  
-                  const firstSeparatorRect = firstSeparator.getBoundingClientRect();
-                  console.log("DEBUG: First Separator Rect:", firstSeparatorRect);
-                  
-                  const newTop = firstSeparatorRect.top;
-                  content.style.top = `${newTop}px`;
-                  console.log(`DEBUG: Setting content top to: ${newTop}px`);
-              } else {
-                  // On mobile, ensure top style is removed or set to auto
-                  const content = document.querySelector('.main-content-wrapper');
-                  if(content) content.style.top = 'auto'; 
-              }
-          }
-          
-          // Initial setup 
-          requestAnimationFrame(() => {
-              const initialSetupDelay = 200;
-              setTimeout(() => {
-                  setInitialState(); 
-                  alignContentWithSeparator(); 
-
-                  setTimeout(() => {
-                      const content = document.querySelector('.main-content-wrapper');
-                      if (content) {
-                          content.style.opacity = '1';
-                          console.log("Content faded in");
-                      }
-                  }, CONTENT_FADE_DELAY - initialSetupDelay); 
-
-                  setTimeout(() => {
-                      const sidebar = document.querySelector('.sidebar-container');
-                      if (sidebar) {
-                          sidebar.style.opacity = '1';
-                          console.log("Sidebar faded in");
-                      }
-                  }, SIDEBAR_FADE_DELAY - initialSetupDelay); 
-              }, initialSetupDelay); 
-          });
-
-          // Re-align on window resize
-          window.addEventListener('resize', () => {
-              setInitialState(); // This calls updateContent which handles mobile/desktop title
-              alignContentWithSeparator(); // Handles mobile/desktop alignment
-              
-              // Ensure elements are visible and correctly transformed after resize
-              const content = document.querySelector('.main-content-wrapper');
-              const sidebar = document.querySelector('.sidebar-container');
-              
-              if (content) {
-                  content.style.opacity = '1'; // Make sure it's visible
-                  if (window.innerWidth > 768) {
-                       content.style.transform = 'translate(-50%, 0)'; // Desktop transform
-                  } else {
-                      content.style.transform = 'none'; // Mobile transform
-                  }
-              }
-              if (sidebar) {
-                  sidebar.style.opacity = '1'; // Make sure it's visible
-                  // Sidebar transform is handled by CSS only (desktop vs mobile)
-              }
-          });
-          
-          // --- Project Data ---
-          const projectData = [
-            {
-              title: "Raffi<br/>Chilingaryan",
-              dateRange: "",
-              description: "<p>I make apps with friends and curate <a href='https://www.x.com/spottedinprod'>Spotted in Prod.</a> <span class=\"desktop-only-hint\">You can use your arrow keys to get around here.</span></p><p>Feel free to <a href='mailto:raffichilingaryan@gmail.com'>get in touch.</a></p><p>Back to <a href='https://www.x.com/raffichill'>X.</a></p>"
-            },
-            {
-              title: "Steddy",
-              dateRange: "Jul 2021 - Dec 2023",
-              description: "<p>My first <a href='https://apps.apple.com/us/app/steddy-stay-consistent/id1579825538?platform=iphone'>app</a> was a weekly routine planner.</p><p>v1 dev by <a href='https://x.com/ChristophPader'>Christoph.</a> <p>v2 dev by <a href='https://x.com/reactiive_'>Enzo.</a></p><p>App icon by <a href='https://x.com/flarup'>Michael.</a></p>"
-            },
-            {
-              title: "Empty",
-              dateRange: "Jan 2024 - Present",
-              description: "<p>A fasting <a href='https://apps.apple.com/us/app/empty-fasting/id6475213946'>tracker</a> motivated by my goal to snack less before bed.</p><p>Dev by <a href='https://x.com/rarfell'>Rafael.</a></p><p>Icons & illustrations by <a href='https://hannahlee.ca/'>Hannah.</a></p>"
-            },
-            {
-              title: "Numbies",
-              dateRange: "Apr 2024 - Aug 2024",
-              description: "<p>A social fitness <a href='https://apps.apple.com/us/app/numbies-work-out-with-friends/id6448198083'>experiment</a> that allows you to send a notification blast to your friends and exercise live together in real time.</p><p>Dev by <a href='https://x.com/antfroze'>Anthony</a> and <a href='https://x.com/ViperScripts'>Caleb.</a></p>"
-            },
-            {
-              title: "Shop",
-              dateRange: "Nov 2024 - Mar 2025",
-              description: "<p>I worked briefly as a designer on Shop Minis - a <a href='https://shop.app/minis/'>platform</a> for third party developers to create unique shopping experiences on top of the Shop mobile app.</p>"
-            },
-            {
-              title: "Shift",
-              dateRange: "Mar 2025 - Present",
-              description: "<p>An alarm app that helps you get up earlier by shifting your wake up time by small increments. If you're on the Entitlements team at Apple, please grant me critical alerts entitlements so I can launch this.</p>"
-            },
-            {
-              title: "******",
-              dateRange: "*** **** * ******",
-              description: "*****************************************************************************************************************"
-            },
-            {
-              title: "SIP",
-              dateRange: "Jul 2024 - Present",
-              description: "<p><a href='https://www.x.com/spottedinprod'>Spotted in Prod</a> (SIP for short) is a curation of my favorite moments across iOS apps that I've tried.</p>"
-            }
-          ];
+    function attachEventListeners() {
+      // Desktop: App tap targets
+      document.querySelectorAll('.desktop-view .tap-target[data-app]').forEach(el => {
+        el.addEventListener('click', () => handleAppClick(el.dataset.app));
       });
-    </script>
-  </body>
-</html> 
+
+      // Desktop: Folder tap targets
+      document.querySelectorAll('.desktop-view .tap-target[data-folder]').forEach(el => {
+        el.addEventListener('click', () => handleFolderClick(el.dataset.folder));
+      });
+
+      // Desktop: Phone hover effect (1% scale with spring)
+      if (phoneContainer) {
+        let isHovering = false;
+        phoneContainer.addEventListener('mouseenter', () => {
+          isHovering = true;
+          if (window.Motion && window.Motion.animate) {
+            window.Motion.animate(phoneContainer, { scale: 1.01 }, {
+              duration: 0.08,
+              easing: window.Motion.spring({ stiffness: 400, damping: 30 })
+            });
+          } else {
+            phoneContainer.style.transform = 'scale(1.01)';
+          }
+        });
+        phoneContainer.addEventListener('mouseleave', () => {
+          isHovering = false;
+          if (window.Motion && window.Motion.animate) {
+            window.Motion.animate(phoneContainer, { scale: 1 }, {
+              duration: 0.08,
+              easing: window.Motion.spring({ stiffness: 400, damping: 30 })
+            });
+          } else {
+            phoneContainer.style.transform = 'scale(1)';
+          }
+        });
+      }
+
+      // Show tap targets on hover
+      document.querySelectorAll('.tap-target').forEach(target => {
+        target.addEventListener('mouseenter', () => {
+          target.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
+          target.style.border = '2px solid rgba(255, 255, 255, 0.4)';
+        });
+        target.addEventListener('mouseleave', () => {
+          target.style.backgroundColor = 'transparent';
+          target.style.border = 'none';
+        });
+      });
+
+      // Mobile: Widget/app clicks (redirect to App Store)
+      document.querySelectorAll('.mobile-tap[data-app]').forEach(el => {
+        el.addEventListener('click', () => {
+          const app = appData.apps[el.dataset.app];
+          if (app && app.appStoreURL) {
+            window.location.href = app.appStoreURL;
+          }
+        });
+      });
+
+      // Mobile: Folder clicks (show overlay)
+      document.querySelectorAll('.mobile-tap[data-folder]').forEach(el => {
+        el.addEventListener('click', () => handleMobileFolderClick(el.dataset.folder));
+      });
+
+      // Close overlay on ESC
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeOverlay();
+        }
+      });
+
+      // Close on deadspace click
+      document.addEventListener('click', (e) => {
+        const desktopView = document.querySelector('.desktop-view');
+        if (desktopView.classList.contains('detail-active')) {
+          // Check if click is outside phone and sidebar
+          if (!phoneContainer.contains(e.target) &&
+              !sidebar.contains(e.target) &&
+              e.target !== phoneContainer &&
+              e.target !== sidebar) {
+            closeOverlay();
+          }
+        }
+      });
+
+      if (mobileOverlay) {
+        mobileOverlay.addEventListener('click', (e) => {
+          if (e.target === mobileOverlay) {
+            closeOverlay();
+          }
+        });
+      }
+    }
+
+    function handleAppClick(appName) {
+      const app = appData.apps[appName];
+      if (!app || !app.longDescription) return;
+
+      const html = `
+        <div class="app-detail">
+          <div class="app-header">
+            <img src="${app.icon}" alt="${app.name}" class="app-icon-large">
+            <h2>${app.name}</h2>
+          </div>
+          <div class="app-content">
+            <p class="app-description">${app.longDescription.replace(/\n/g, '<br><br>')}</p>
+            <p class="back-link" onclick="closeOverlay()">Back to home</p>
+          </div>
+          <div class="qr-container">
+            <img src="${app.qrCode}" alt="QR Code" class="qr-code">
+          </div>
+        </div>
+      `;
+
+      // Animate to detail state
+      const desktopView = document.querySelector('.desktop-view');
+      const introSection = document.querySelector('.intro-section');
+
+      desktopView.classList.add('detail-active');
+      introSection.classList.add('hidden');
+      phoneContainer.classList.add('detail-mode');
+
+      sidebarContent.innerHTML = html;
+      sidebar.classList.remove('hidden');
+    }
+
+    function handleFolderClick(folderName) {
+      const folder = appData.folders[folderName];
+      if (!folder) return;
+
+      let appsHtml = folder.apps.map(app => `
+        <div class="folder-app-item">
+          <img src="${app.icon}" alt="${app.name}" class="folder-app-icon">
+          <p class="folder-app-description"><span class="app-name">${app.name}</span> ${app.description.replace(app.name, '')}</p>
+        </div>
+      `).join('');
+
+      const html = `
+        <div class="folder-detail">
+          <div class="folder-header">
+            <span class="folder-emoji">${folder.emoji}</span>
+            <h2>${folder.name}</h2>
+          </div>
+          <div class="folder-apps-list">
+            ${appsHtml}
+          </div>
+          <div class="folder-fade"></div>
+        </div>
+      `;
+
+      // Animate to detail state
+      const desktopView = document.querySelector('.desktop-view');
+      const introSection = document.querySelector('.intro-section');
+
+      desktopView.classList.add('detail-active');
+      introSection.classList.add('hidden');
+      phoneContainer.classList.add('detail-mode');
+
+      sidebarContent.innerHTML = html;
+      sidebar.classList.remove('hidden');
+    }
+
+    function handleMobileFolderClick(folderName) {
+      const folder = appData.folders[folderName];
+      if (!folder) return;
+
+      let appsHtml = folder.apps.map(app => {
+        const shortDesc = app.description.split('.')[0];
+        return `<p><span class="app-name">${app.name}</span> ${shortDesc.replace(app.name, '')}</p>`;
+      }).join('');
+
+      const html = `
+        <div class="mobile-folder-widget">
+          <h3>${folder.name} ${folder.emoji}</h3>
+          <div class="mobile-folder-text">
+            ${appsHtml}
+          </div>
+        </div>
+      `;
+
+      mobileOverlayContent.innerHTML = html;
+      mobileOverlay.classList.remove('hidden');
+      Motion.animate(mobileOverlay, { opacity: [0, 1] }, { duration: 0.3, easing: 'ease-out' });
+    }
+
+    function closeOverlay() {
+      // Desktop
+      if (sidebar) {
+        const desktopView = document.querySelector('.desktop-view');
+        const introSection = document.querySelector('.intro-section');
+
+        // Animate back to home state
+        desktopView.classList.remove('detail-active');
+        introSection.classList.remove('hidden');
+        phoneContainer.classList.remove('detail-mode');
+        sidebar.classList.add('hidden');
+
+        setTimeout(() => {
+          sidebarContent.innerHTML = '';
+        }, 180);
+      }
+
+      // Mobile
+      if (mobileOverlay) {
+        mobileOverlay.classList.add('hidden');
+        setTimeout(() => {
+          mobileOverlayContent.innerHTML = '';
+        }, 180);
+      }
+    }
+
+    // Start the app
+    init();
+  </script>
+</body>
+</html>

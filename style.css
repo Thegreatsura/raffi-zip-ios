@@ -1,304 +1,599 @@
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-html, body {
-    overflow: hidden; /* Prevent scrolling */
-    height: 100%;     /* Ensure body takes full height */
-}
-
 @font-face {
   font-family: 'Inter';
-  src: url('./fonts/inter-variable.ttf') format('truetype');
-  font-weight: 100 900; /* Common variable font weight range */
+  src: url('fonts/inter-variable.ttf') format('truetype');
+  font-weight: 100 900;
   font-style: normal;
 }
-/* style.css */
-body {
-  min-height: 100vh;
+
+* {
   margin: 0;
-  font-family: "Inter", sans-serif; 
-  font-weight: 400; 
-  color: var(--text-color); 
-  position: relative; 
-  background-color: var(--bg-color);
-  /* Disable text selection */
-  user-select: none; /* Standard */
-  -webkit-user-select: none; /* Safari/Chrome */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE/Edge */
-  cursor: default; /* Change cursor to default arrow */
+  padding: 0;
+  box-sizing: border-box;
 }
 
-:root {
-    /* Define base CSS variables - these will be overridden by JS */
-    --bg-color: #FEFF00; /* Default yellow */
-    --text-color: #000000; /* Default black */
-    --separator-color: rgba(0, 0, 0, 0.1); /* Default separator */
-    --content-fade-duration: 0.5s; 
-    --sidebar-fade-duration: 0.5s; 
-    --fade-easing: ease;  
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #433d35;
+  color: #ffffff;
+  overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* Wrapper for main content */
-.main-content-wrapper {
-    position: fixed;
-    /* Vertical position will be set by JS function alignContentWithSeparator */
-    top: 0; /* Set a default, JS will override */ 
-    /* Horizontal position with responsive offset */
-    left: max(80px, calc(50vw - 120px + 4vw));
-    /* Initial state: Centered horizontally, normal vertical, invisible */
-    transform: translate(-50%, 0); 
-    width: 65.2vw; 
-    max-width: 760px;
-    opacity: 0; 
-    transition: opacity var(--content-fade-duration) var(--fade-easing);
-}
-
-.title-block {
-  font-size: 108px; 
-  color: var(--text-color); 
-  letter-spacing: -0.03em;
-  line-height: 0.98; 
-  font-weight: 500; 
-  text-transform: none; 
+/* Desktop View */
+.desktop-view {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; 
-  margin-bottom: 48px; /* Space below the entire title block */
-  height: 216px; /* Re-add fixed height */
-  justify-content: flex-start; /* Align content to top within fixed height */
+  min-height: 100vh;
+  padding: 223px 0 60px 0;
+  gap: 64px;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  overflow-y: auto;
+  transition: padding 300ms ease-out, gap 300ms ease-out;
 }
 
-.title-block .main-title {
-    /* Inherits most styles from .title-block */
-    display: block; /* Ensure it takes block space */
+.desktop-view.detail-active {
+  overflow: hidden;
+  height: 100vh;
+  padding: 0;
+  flex-direction: row;
+  gap: 60px;
+  justify-content: center;
 }
 
-.title-block .date-range {
-    display: block; /* Takes its own line */
-    font-size: 56px;  /* Target size */
-    font-weight: 300; /* Light weight */
-    letter-spacing: -0.01em;
-    line-height: 1.3; /* Adjust as needed */
-    margin-top: 32px; /* Add fixed top margin for spacing */
+.desktop-view.detail-active .footer-section {
+  display: none;
 }
 
-.description-block {
-    font-size: 32px; 
-    color: var(--text-color); 
-    line-height: 1.4;
-    font-weight: 400; 
-    overflow-wrap: break-word; /* Allow long strings to wrap */
+.mobile-view {
+  display: none;
 }
 
-/* Add margin below paragraphs inside the description block */
-.description-block p {
-    margin-bottom: 8px; 
+/* Intro Section */
+.intro-section {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  transition: opacity 250ms ease-out;
 }
 
-/* Remove bottom margin from the *last* paragraph to avoid extra space */
-.description-block p:last-child {
-    margin-bottom: 0;
+.intro-section.hidden {
+  opacity: 0;
+  pointer-events: none;
 }
 
-.description-block a {
-    color: inherit; 
-    text-decoration: none; 
-    background-color: transparent; 
-    padding: 0.1em 0.15em; 
-    margin: -0.1em -0.15em; 
-    opacity: 0.6; /* Updated default opacity to 60% */
+.intro-section h1 {
+  font-size: 24px;
+  font-weight: 400;
+  color: #ffffff;
+  margin-bottom: 0;
+  line-height: normal;
 }
 
-.description-block a:hover {
-    background-color: var(--text-color); 
-    color: var(--bg-color); 
-    opacity: 1; 
+.intro-text p {
+  font-size: 20px;
+  font-weight: 400;
+  color: #ccc6bf;
+  line-height: normal;
+  margin-bottom: 12px;
 }
 
-/* Style for section separators */
-.section-separator {
-    border: none; /* Remove default border */
-    height: 1px; /* Line thickness */
-    background-color: var(--separator-color); /* Faint black line */
-    margin: 60px 0; /* Vertical spacing around separator, adjust as needed */
+.intro-text p:last-child {
+  margin-bottom: 0;
 }
 
-/* --- Sidebar Styles (Desktop Defaults) --- */
-.sidebar-container {
-    position: fixed;
-    right: 56px; 
-    top: 50%; 
-    transform: translateY(-50%); 
-    display: flex;
-    flex-direction: column;
-    gap: 12px; 
-    z-index: 20; 
-    opacity: 0; 
-    transition: opacity var(--sidebar-fade-duration) var(--fade-easing);
+/* Footer Section */
+.footer-section {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.icon-separator {
-    /* Styles for desktop separators */
-    width: 48px;
-    height: 8px;
+.credits {
+  font-size: 20px;
+  color: #ccc6bf;
+  line-height: normal;
+}
+
+.credits p {
+  margin-bottom: 12px;
+}
+
+.credits .credit-name {
+  color: #ffffff;
+}
+
+.social-icons {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.social-icon {
+  width: 36px;
+  height: 36px;
+  display: block;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Phone Container */
+.phone-container {
+  position: relative;
+  width: 316px;
+  height: 666px;
+  cursor: default;
+  transition: transform 300ms ease-out;
+}
+
+.phone-frame {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: linear-gradient(180deg, rgba(132, 126, 118, 0.5) 0%, rgba(122, 109, 91, 0.5) 100%);
+  border-radius: 44px;
+  box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 4px 4px 0px rgba(255, 255, 255, 0.25);
+  padding: 8px;
+  overflow: hidden;
+}
+
+.phone-mockup-image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 36px;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Tap Targets - positioned absolutely over the phone image */
+.tap-target {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  border-radius: 12px;
+  transition: background-color 120ms ease-out, border 120ms ease-out;
+}
+
+/* Widget tap targets (2x2 grid spots) */
+.tap-widget-github {
+  top: 70px;
+  left: 20px;
+  width: 135px;
+  height: 135px;
+}
+
+.tap-widget-spotify {
+  top: 70px;
+  right: 20px;
+  width: 135px;
+  height: 135px;
+}
+
+/* App icons (row below widgets) */
+.tap-app-notes {
+  top: 220px;
+  left: 20px;
+  width: 62px;
+  height: 62px;
+}
+
+.tap-app-photos {
+  top: 220px;
+  left: 95px;
+  width: 62px;
+  height: 62px;
+}
+
+.tap-app-retro {
+  top: 220px;
+  left: 170px;
+  width: 62px;
+  height: 62px;
+}
+
+.tap-app-icamera {
+  top: 220px;
+  right: 20px;
+  width: 62px;
+  height: 62px;
+}
+
+/* Folder icons */
+.tap-folder-vibes {
+  top: 295px;
+  left: 20px;
+  width: 62px;
+  height: 62px;
+}
+
+.tap-folder-social {
+  top: 295px;
+  left: 95px;
+  width: 62px;
+  height: 62px;
+}
+
+.tap-folder-health {
+  top: 295px;
+  left: 170px;
+  width: 62px;
+  height: 62px;
+}
+
+.tap-folder-tools {
+  top: 295px;
+  right: 20px;
+  width: 62px;
+  height: 62px;
+}
+
+/* Dock apps */
+.tap-dock-claude {
+  bottom: 30px;
+  left: 55px;
+  width: 60px;
+  height: 60px;
+}
+
+.tap-dock-safari {
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+}
+
+.tap-dock-maps {
+  bottom: 30px;
+  right: 55px;
+  width: 60px;
+  height: 60px;
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  left: calc(50% + 158px + 60px);
+  top: 50%;
+  transform: translateY(-50%) translateY(20px);
+  width: 360px;
+  height: 655px;
+  background-color: transparent;
+  overflow: hidden;
+  z-index: 100;
+  opacity: 0;
+  transition: opacity 300ms ease-out 150ms, transform 300ms ease-out 150ms;
+  pointer-events: none;
+}
+
+.sidebar:not(.hidden) {
+  opacity: 1;
+  transform: translateY(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.sidebar.hidden {
+  opacity: 0;
+  transform: translateY(-50%) translateY(20px);
+  pointer-events: none;
+}
+
+.sidebar-content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+/* App Detail View */
+.app-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 48px;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.app-icon-large {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+}
+
+.app-header h2 {
+  font-family: 'Figma Hand', 'Comic Sans MS', cursive;
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: normal;
+  letter-spacing: -0.36px;
+}
+
+.app-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.app-description {
+  font-size: 18px;
+  font-weight: 400;
+  color: #ccc6bf;
+  line-height: normal;
+}
+
+.app-description .app-name {
+  color: #ffffff;
+}
+
+.back-link {
+  font-size: 18px;
+  color: #ffffff;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.qr-container {
+  display: flex;
+  justify-content: flex-start;
+  padding-bottom: 40px;
+}
+
+.qr-code {
+  width: 132px;
+  height: 132px;
+  border-radius: 12px;
+  border: 1px solid #ffffff;
+  padding: 12px;
+}
+
+/* Folder Detail View */
+.folder-detail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  position: relative;
+}
+
+.folder-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.folder-emoji {
+  font-family: 'Figma Hand', 'Comic Sans MS', cursive;
+  font-size: 48px;
+  line-height: normal;
+  text-align: center;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folder-header h2 {
+  font-family: 'Figma Hand', 'Comic Sans MS', cursive;
+  font-size: 36px;
+  font-weight: bold;
+  color: #ffffff;
+  line-height: normal;
+  letter-spacing: -0.36px;
+}
+
+.folder-apps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 10px;
+}
+
+.folder-app-item {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.folder-app-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.folder-app-description {
+  font-size: 18px;
+  font-weight: 400;
+  color: #ccc6bf;
+  line-height: normal;
+  flex: 1;
+}
+
+.folder-app-description .app-name {
+  color: #ffffff;
+}
+
+.folder-fade {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 123px;
+  background: linear-gradient(180deg, rgba(67, 61, 53, 0) 0%, #433d35 100%);
+  pointer-events: none;
+}
+
+/* Scrollbar styling for folder list */
+.folder-apps-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.folder-apps-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.folder-apps-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.folder-apps-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+
+  .mobile-view {
+    display: block;
+    min-height: 100vh;
+    background-color: #302c24;
+    padding-bottom: 100px;
+  }
+
+  /* Mobile intro */
+  .mobile-intro {
+    padding: 100px 37px 0 37px;
+  }
+
+  .mobile-intro h1 {
+    font-size: 24px;
+    font-weight: 400;
+    color: #ffffff;
+    margin-bottom: 20px;
+  }
+
+  .mobile-intro-text p {
+    font-size: 22px;
+    font-weight: 400;
+    color: #ccc6bf;
+    line-height: normal;
+    margin-bottom: 12px;
+  }
+
+  /* Mobile home screen */
+  .mobile-home-screen {
     position: relative;
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .mobile-mockup-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  /* Mobile tap targets - will need specific positioning based on your mockup */
+  .mobile-tap {
+    position: absolute;
+    cursor: pointer;
+  }
+
+  /* Mobile Overlay */
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(180deg, rgba(49, 43, 36, 0) 0%, #312b24 100%);
+    backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: center;
-}
+    padding: 20px;
+    z-index: 1000;
+  }
 
-.icon-separator::after {
-    /* Styles for desktop separator line */
-    content: '';
-    display: block;
-    width: 36px; 
-    height: 1px; 
-    background-color: var(--separator-color);
-    border-radius: 0.5px; 
-}
+  .mobile-overlay.hidden {
+    display: none;
+  }
 
-.sidebar-icon {
-    /* Styles for desktop icons */
-    display: block;
-    width: 48px; 
-    height: 48px;
-    border-radius: 0;
-    clip-path: url(#squircle-clip);
-    overflow: hidden; 
-    transition: transform 0.15s ease-out; /* Keep desktop transitions */
-}
-
-.sidebar-icon:hover {
-     /* Keep desktop hover */
-    transform: scale(1.07);
-}
-
-.sidebar-icon img {
-    display: block;
+  .mobile-overlay-content {
     width: 100%;
-    height: 100%;
-    object-fit: cover;
-    /* Remove any border-radius that might be on the img */
-    border-radius: 0;
+    max-width: 345px;
+  }
+
+  /* Mobile Folder Widget */
+  .mobile-folder-widget {
+    background: linear-gradient(180deg, #5a554d 0%, #564d41 100%);
+    border-radius: 29px;
+    box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 1px 3px 0px rgba(255, 255, 255, 0.25);
+    padding: 19px;
+  }
+
+  .mobile-folder-widget h3 {
+    font-family: 'Figma Hand', 'Comic Sans MS', cursive;
+    font-size: 18px;
+    font-weight: bold;
+    color: #ffffff;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+
+  .mobile-folder-text {
+    font-size: 15px;
+    color: #ccc6bf;
+    line-height: 1.3;
+  }
+
+  .mobile-folder-text p {
+    margin-bottom: 4px;
+  }
+
+  .mobile-folder-text .app-name {
+    color: #ffffff;
+  }
+
+  /* Bottom gradient mask */
+  .mobile-view::after {
+    content: '';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 158px;
+    background: linear-gradient(180deg, rgba(48, 44, 36, 0) 0%, #302c24 100%);
+    pointer-events: none;
+  }
 }
 
-/* Ensure any other elements that need themed colors use variables */
-.title-block, .description-block {
-    color: var(--text-color);
+/* Responsive breakpoints */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .desktop-view {
+    gap: 40px;
+    padding: 40px;
+  }
+
+  .intro-section {
+    width: 280px;
+  }
+
+  .sidebar {
+    width: 320px;
+  }
 }
-
-/* --- Mobile Styles --- */
-@media (max-width: 768px) {
-    .title-block .date-range, 
-    .indicator-dot, 
-    .icon-separator { 
-        display: none; /* Hide these elements ONLY on mobile */
-    }
-
-    .sidebar-container {
-        /* Mobile specific layout overrides */
-        flex-direction: row; /* Change to row */
-        flex-wrap: wrap; /* Enable wrapping */
-        justify-content: flex-start; /* Align items to start (left) */
-        align-items: center; /* Align items vertically */
-        gap: 16px; /* Spacing between icons */
-        
-        /* Mobile positioning */
-        top: auto;
-        bottom: 30px; /* Increased from 20px to add 10px space below */
-        left: 25px; 
-        right: 25px; 
-        width: calc(100% - 50px); 
-        transform: none; 
-
-        /* Mobile appearance */
-        background-color: transparent; 
-        padding: 0;
-        border-radius: 0;
-        /* Remove opacity override - let JS handle fade */
-        /* opacity: 1; */ 
-        /* Ensure transition applies (should inherit, but explicit doesn't hurt) */
-        transition: opacity var(--sidebar-fade-duration) var(--fade-easing);
-    }
-
-    .sidebar-icon {
-        /* Mobile icon sizing */
-        --icon-size: calc((100vw - 50px - (4 * 16px)) / 5);
-        width: var(--icon-size);
-        height: var(--icon-size);
-        opacity: 0.6; /* Updated unselected opacity */
-        transition: opacity 0.2s ease; 
-        -webkit-tap-highlight-color: transparent; /* Remove tap highlight */
-        outline: none; /* Also remove focus outline if desired */
-    }
-
-    .sidebar-icon.active {
-        opacity: 1; 
-    }
-
-    .sidebar-icon:hover {
-        transform: none; /* No scale on mobile hover */
-        opacity: 1; 
-    }
-    
-    /* ... other mobile styles for content/text ... */
-
-    .title-block .main-title {
-       font-size: 36px; /* Further reduced size */
-       line-height: 1.0; 
-       display: inline; /* Try inline display to prevent break */
-    }
-    
-    .title-block br { 
-       /* Replace line break with a space on mobile */
-       content: ' '; 
-       display: inline; /* Ensure it behaves like a space */
-    }
-
-    .description-block {
-        font-size: 20px; /* Mobile body text size */
-        line-height: 1.5; /* Keep adjusted line height */
-    }
-
-    /* Ensure the overall .title-block doesn't interfere */
-    .title-block {
-        font-size: inherit; /* Reset base font size if needed */
-        height: auto; 
-        margin-bottom: 24px;
-    }
-
-    .main-content-wrapper {
-        position: relative; /* Change from fixed/absolute to flow normally */
-        top: auto; /* Remove JS positioning */
-        left: auto; /* Remove horizontal positioning */
-        transform: none; /* Remove transform */
-        width: auto; /* Let width be determined by padding */
-        max-width: none; /* Remove max-width */
-        padding: 30px 24px; /* Reduced horizontal padding by 6px */
-        margin-top: 20px; /* Reduced top margin by 10px */
-        
-        /* Remove opacity override - let JS handle fade */
-        /* opacity: 1; */
-        /* Ensure transition applies (should inherit, but explicit doesn't hurt) */
-        transition: opacity var(--content-fade-duration) var(--fade-easing);
-    }
-
-    .description-block a {
-        background-color: var(--text-color);
-        color: var(--bg-color);
-        padding: 0.1em 0.15em; 
-        margin: -0.1em -0.15em; 
-        border-radius: 0; 
-        cursor: pointer; 
-        opacity: 1; /* Ensure full opacity on mobile */
-    }
-
-    .desktop-only-hint {
-        display: none; /* Hide the arrow key hint text on mobile */
-    }
-} 
