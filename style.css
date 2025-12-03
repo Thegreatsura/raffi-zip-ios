@@ -5,6 +5,28 @@
   font-style: normal;
 }
 
+:root {
+  /* Phone frame constants */
+  --phone-frame-padding: 8px;
+  --phone-content-inset: 11px;
+  --phone-tap-inset: calc(var(--phone-frame-padding) + var(--phone-content-inset)); /* 19px */
+
+  /* Tap target dimensions */
+  --widget-width: 139px;
+  --widget-height: 152px;
+  --app-width: 69.5px;
+  --app-height: 75px;
+  --dock-width: 66px;
+  --dock-height: 66px;
+
+  /* Vertical positioning */
+  --tap-offset-top: 60px;
+  --dock-offset-bottom: 27px;
+
+  /* Horizontal dock inset (additional 40px from content edge) */
+  --dock-extra-inset: 40px;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -40,8 +62,11 @@ body {
   flex-direction: row;
   gap: 60px;
   justify-content: center;
+  align-items: center;
+  border: 3px solid red;
 }
 
+.desktop-view.detail-active .intro-section,
 .desktop-view.detail-active .footer-section {
   display: none;
 }
@@ -127,6 +152,7 @@ body {
   width: 316px;
   height: 666px;
   cursor: default;
+  flex-shrink: 0;
   transition: transform 300ms ease-out;
 }
 
@@ -137,7 +163,7 @@ body {
   background: linear-gradient(180deg, rgba(132, 126, 118, 0.5) 0%, rgba(122, 109, 91, 0.5) 100%);
   border-radius: 44px;
   box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 4px 4px 0px rgba(255, 255, 255, 0.25);
-  padding: 8px;
+  padding: var(--phone-frame-padding);
   overflow: hidden;
 }
 
@@ -155,131 +181,143 @@ body {
   position: absolute;
   cursor: pointer;
   z-index: 10;
-  border-radius: 12px;
+  border-radius: 20px;
   transition: background-color 120ms ease-out, border 120ms ease-out;
+
+  /* Column positions - derived from phone-tap-inset (19px) */
+  --col-1: var(--phone-tap-inset);
+  --col-2: calc(var(--phone-tap-inset) + var(--app-width));
+  --col-3: calc(var(--phone-tap-inset) + var(--widget-width));
+  --col-4: calc(var(--phone-tap-inset) + var(--widget-width) + var(--app-width));
+
+  /* Dock column positions - additional inset from edge */
+  --dock-col-1: calc(var(--phone-tap-inset) + var(--dock-extra-inset));
+  --dock-col-2: calc(var(--phone-tap-inset) + var(--dock-extra-inset) + var(--dock-width));
+  --dock-col-3: calc(var(--phone-tap-inset) + var(--dock-extra-inset) + (var(--dock-width) * 2));
 }
 
-/* Widget tap targets (2x2 grid spots) */
+/* Widget tap targets */
 .tap-widget-github {
-  top: 70px;
-  left: 20px;
-  width: 135px;
-  height: 135px;
+  top: var(--tap-offset-top);
+  left: var(--col-1);
+  width: var(--widget-width);
+  height: var(--widget-height);
 }
 
 .tap-widget-spotify {
-  top: 70px;
-  right: 20px;
-  width: 135px;
-  height: 135px;
+  top: var(--tap-offset-top);
+  left: var(--col-3);
+  width: var(--widget-width);
+  height: var(--widget-height);
 }
 
 /* App icons (row below widgets) */
 .tap-app-notes {
-  top: 220px;
-  left: 20px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height));
+  left: var(--col-1);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 .tap-app-photos {
-  top: 220px;
-  left: 95px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height));
+  left: var(--col-2);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 .tap-app-retro {
-  top: 220px;
-  left: 170px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height));
+  left: var(--col-3);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 .tap-app-icamera {
-  top: 220px;
-  right: 20px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height));
+  left: var(--col-4);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 /* Folder icons */
 .tap-folder-vibes {
-  top: 295px;
-  left: 20px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height) + var(--app-height));
+  left: var(--col-1);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 .tap-folder-social {
-  top: 295px;
-  left: 95px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height) + var(--app-height));
+  left: var(--col-2);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 .tap-folder-health {
-  top: 295px;
-  left: 170px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height) + var(--app-height));
+  left: var(--col-3);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
 .tap-folder-tools {
-  top: 295px;
-  right: 20px;
-  width: 62px;
-  height: 62px;
+  top: calc(var(--tap-offset-top) + var(--widget-height) + var(--app-height));
+  left: var(--col-4);
+  width: var(--app-width);
+  height: var(--app-height);
 }
 
-/* Dock apps */
+/* Dock apps: 66w x 66h */
 .tap-dock-claude {
-  bottom: 30px;
-  left: 55px;
-  width: 60px;
-  height: 60px;
+  bottom: var(--dock-offset-bottom);
+  left: var(--dock-col-1);
+  width: var(--dock-width);
+  height: var(--dock-height);
 }
 
 .tap-dock-safari {
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 60px;
+  bottom: var(--dock-offset-bottom);
+  left: var(--dock-col-2);
+  width: var(--dock-width);
+  height: var(--dock-height);
 }
 
 .tap-dock-maps {
-  bottom: 30px;
-  right: 55px;
-  width: 60px;
-  height: 60px;
+  bottom: var(--dock-offset-bottom);
+  left: var(--dock-col-3);
+  width: var(--dock-width);
+  height: var(--dock-height);
 }
 
 /* Sidebar */
 .sidebar {
-  position: fixed;
-  left: calc(50% + 158px + 60px);
-  top: 50%;
-  transform: translateY(-50%) translateY(20px);
   width: 360px;
   height: 655px;
   background-color: transparent;
   overflow: hidden;
-  z-index: 100;
+  flex-shrink: 0;
   opacity: 0;
+  transform: translateY(20px);
   transition: opacity 300ms ease-out 150ms, transform 300ms ease-out 150ms;
   pointer-events: none;
+  display: none;
+}
+
+.desktop-view.detail-active .sidebar {
+  display: block;
 }
 
 .sidebar:not(.hidden) {
   opacity: 1;
-  transform: translateY(-50%) translateY(0);
+  transform: translateY(0);
   pointer-events: auto;
 }
 
 .sidebar.hidden {
   opacity: 0;
-  transform: translateY(-50%) translateY(20px);
+  transform: translateY(20px);
   pointer-events: none;
 }
 
@@ -405,6 +443,16 @@ body {
   overflow-y: auto;
   flex: 1;
   padding-right: 10px;
+}
+
+/* Hide scrollbar */
+.folder-apps-list {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.folder-apps-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .folder-app-item {
