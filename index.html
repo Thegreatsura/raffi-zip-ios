@@ -10,60 +10,59 @@
 <body>
   <!-- Desktop View -->
   <div class="desktop-view">
-    <!-- Intro Section -->
-    <div class="intro-section">
-      <h1>Raffi Chilingaryan</h1>
-      <div class="intro-text">
-        <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them.</p>
-        <p>I also build fitness apps on my own and with friends.</p>
-        <p>Here's what's currently on my home screen:</p>
-      </div>
-    </div>
+    <div class="main-container">
+      <!-- Phone Mockup with Tap Targets -->
+      <div class="phone-container">
+        <div class="phone-frame">
+          <!-- Phone mockup background image -->
+          <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
 
-    <!-- Phone Mockup with Tap Targets -->
-    <div class="phone-container">
-      <div class="phone-frame">
-        <!-- Phone mockup background image -->
-        <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
+          <!-- Invisible tap target overlays -->
+          <div class="tap-target tap-widget-github" data-app="github"></div>
+          <div class="tap-target tap-widget-spotify" data-app="spotify"></div>
 
-        <!-- Invisible tap target overlays -->
-        <div class="tap-target tap-widget-github" data-app="github"></div>
-        <div class="tap-target tap-widget-spotify" data-app="spotify"></div>
+          <div class="tap-target tap-app-notes" data-app="notes"></div>
+          <div class="tap-target tap-app-photos" data-app="photos"></div>
+          <div class="tap-target tap-app-retro" data-app="retro"></div>
+          <div class="tap-target tap-app-icamera" data-app="icamera"></div>
 
-        <div class="tap-target tap-app-notes" data-app="notes"></div>
-        <div class="tap-target tap-app-photos" data-app="photos"></div>
-        <div class="tap-target tap-app-retro" data-app="retro"></div>
-        <div class="tap-target tap-app-icamera" data-app="icamera"></div>
+          <div class="tap-target tap-folder-vibes" data-folder="vibes"></div>
+          <div class="tap-target tap-folder-social" data-folder="social"></div>
+          <div class="tap-target tap-folder-health" data-folder="health"></div>
+          <div class="tap-target tap-folder-tools" data-folder="tools"></div>
 
-        <div class="tap-target tap-folder-vibes" data-folder="vibes"></div>
-        <div class="tap-target tap-folder-social" data-folder="social"></div>
-        <div class="tap-target tap-folder-health" data-folder="health"></div>
-        <div class="tap-target tap-folder-tools" data-folder="tools"></div>
-
-        <div class="tap-target tap-dock-claude" data-app="claude"></div>
-        <div class="tap-target tap-dock-safari" data-app="safari"></div>
-        <div class="tap-target tap-dock-maps" data-app="maps"></div>
-      </div>
-    </div>
-
-    <!-- Footer Section -->
-    <div class="footer-section">
-      <div class="credits">
-        <p>I'm hoping that this will reduce my constant impulse to</p>
-        <p>My layout is inspired by <span class="credit-name">Christina/Gavin</span>, palette by <span class="credit-name">Laurent</span>, and device frame for this website by <span class="credit-name">Luhang</span>.</p>
-        <p>Thanks people &lt;3</p>
+          <div class="tap-target tap-dock-claude" data-app="claude"></div>
+          <div class="tap-target tap-dock-safari" data-app="safari"></div>
+          <div class="tap-target tap-dock-maps" data-app="maps"></div>
+        </div>
       </div>
 
-      <div class="social-icons">
-        <a href="https://x.com" target="_blank" class="social-icon"></a>
-        <a href="https://instagram.com" target="_blank" class="social-icon"></a>
-        <a href="https://github.com" target="_blank" class="social-icon"></a>
+      <!-- Content Area (Right Column) -->
+      <div class="content-area">
+        <div class="content-area-inner">
+          <div class="content-header">
+            <h1>Raffi Chilingaryan</h1>
+          </div>
+          <div class="content-body">
+            <div class="content-text">
+              <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+              <p>I think our Home Screen setups show our true preferences about what apps are actually good, so here's mine.</p>
+              <p>You can tap around and explore :)</p>
+            </div>
+            <div class="social-icons">
+              <a href="https://x.com" target="_blank" class="social-icon">
+                <img src="assets/social/x.svg" alt="X" />
+              </a>
+              <a href="https://instagram.com" target="_blank" class="social-icon">
+                <img src="assets/social/instagram.svg" alt="Instagram" />
+              </a>
+              <a href="https://github.com" target="_blank" class="social-icon">
+                <img src="assets/social/github.svg" alt="GitHub" />
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- Sidebar for app/folder details -->
-    <div class="sidebar hidden">
-      <div class="sidebar-content"></div>
     </div>
   </div>
 
@@ -235,15 +234,60 @@
     };
 
     // DOM elements
-    const sidebar = document.querySelector('.sidebar');
-    const sidebarContent = document.querySelector('.sidebar-content');
+    const contentAreaInner = document.querySelector('.content-area-inner');
     const mobileOverlay = document.querySelector('.mobile-overlay');
     const mobileOverlayContent = document.querySelector('.mobile-overlay-content');
     const phoneContainer = document.querySelector('.phone-container');
 
+    // Store home content HTML for returning to home
+    const homeContentHTML = `
+      <div class="content-header">
+        <h1>Raffi Chilingaryan</h1>
+      </div>
+      <div class="content-body">
+        <div class="content-text">
+          <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+          <p>I think our Home Screen setups show our true preferences about what apps are actually good, so here's mine.</p>
+          <p>You can tap around and explore :)</p>
+        </div>
+        <div class="social-icons">
+          <a href="https://x.com" target="_blank" class="social-icon">
+            <img src="assets/social/x.svg" alt="X" />
+          </a>
+          <a href="https://instagram.com" target="_blank" class="social-icon">
+            <img src="assets/social/instagram.svg" alt="Instagram" />
+          </a>
+          <a href="https://github.com" target="_blank" class="social-icon">
+            <img src="assets/social/github.svg" alt="GitHub" />
+          </a>
+        </div>
+      </div>
+    `;
+
     // Initialize
     function init() {
       attachEventListeners();
+    }
+
+    // Content swapping with blur/fade/Y-offset transitions
+    function swapContent(newHTML) {
+      // Add transitioning-out class (blur + fade out + -4px Y offset)
+      contentAreaInner.classList.add('transitioning-out');
+
+      // Wait 200ms for exit animation
+      setTimeout(() => {
+        // Swap content
+        contentAreaInner.innerHTML = newHTML;
+
+        // Remove transitioning-out and add transitioning-in
+        contentAreaInner.classList.remove('transitioning-out');
+        contentAreaInner.classList.add('transitioning-in');
+
+        // Remove transitioning-in after animation completes
+        setTimeout(() => {
+          contentAreaInner.classList.remove('transitioning-in');
+        }, 200);
+      }, 200);
     }
 
     function attachEventListeners() {
@@ -318,19 +362,6 @@
         }
       });
 
-      // Close on deadspace click
-      document.addEventListener('click', (e) => {
-        const desktopView = document.querySelector('.desktop-view');
-        if (desktopView.classList.contains('detail-active')) {
-          // Check if click is outside phone and sidebar
-          if (!phoneContainer.contains(e.target) &&
-              !sidebar.contains(e.target) &&
-              e.target !== phoneContainer &&
-              e.target !== sidebar) {
-            closeOverlay();
-          }
-        }
-      });
 
       if (mobileOverlay) {
         mobileOverlay.addEventListener('click', (e) => {
@@ -361,16 +392,7 @@
         </div>
       `;
 
-      // Animate to detail state
-      const desktopView = document.querySelector('.desktop-view');
-      const introSection = document.querySelector('.intro-section');
-
-      desktopView.classList.add('detail-active');
-      introSection.classList.add('hidden');
-      phoneContainer.classList.add('detail-mode');
-
-      sidebarContent.innerHTML = html;
-      sidebar.classList.remove('hidden');
+      swapContent(html);
     }
 
     function handleFolderClick(folderName) {
@@ -393,20 +415,12 @@
           <div class="folder-apps-list">
             ${appsHtml}
           </div>
+          <p class="back-link" onclick="closeOverlay()">Back to home</p>
           <div class="folder-fade"></div>
         </div>
       `;
 
-      // Animate to detail state
-      const desktopView = document.querySelector('.desktop-view');
-      const introSection = document.querySelector('.intro-section');
-
-      desktopView.classList.add('detail-active');
-      introSection.classList.add('hidden');
-      phoneContainer.classList.add('detail-mode');
-
-      sidebarContent.innerHTML = html;
-      sidebar.classList.remove('hidden');
+      swapContent(html);
     }
 
     function handleMobileFolderClick(folderName) {
@@ -433,21 +447,8 @@
     }
 
     function closeOverlay() {
-      // Desktop
-      if (sidebar) {
-        const desktopView = document.querySelector('.desktop-view');
-        const introSection = document.querySelector('.intro-section');
-
-        // Animate back to home state
-        desktopView.classList.remove('detail-active');
-        introSection.classList.remove('hidden');
-        phoneContainer.classList.remove('detail-mode');
-        sidebar.classList.add('hidden');
-
-        setTimeout(() => {
-          sidebarContent.innerHTML = '';
-        }, 180);
-      }
+      // Desktop: Return to home content
+      swapContent(homeContentHTML);
 
       // Mobile
       if (mobileOverlay) {
