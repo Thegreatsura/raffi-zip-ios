@@ -47,9 +47,9 @@
           </div>
           <div class="content-body">
             <div class="content-text">
-              <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
-              <p>I think our Home Screen setups show our true preferences about what apps are actually good, so here's mine.</p>
-              <p>You can tap around and explore :)</p>
+              <p>I'm the founder of Spotted in Prod - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+              <p>I think our Home Screen setups say a lot about our true preferences, so here's mine.</p>
+              <p>Feel free to tap around or get in touch, and thanks for stopping by.</p>
             </div>
             <div class="social-icons">
               <a href="https://x.com" target="_blank" class="social-icon">
@@ -74,7 +74,7 @@
     <div class="mobile-intro">
       <h1>Raffi Chilingaryan</h1>
       <div class="mobile-intro-text">
-        <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+        <p>I'm the founder and curator of Spotted in Prod - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
         <p>Here's what's currently on my home screen:</p>
       </div>
     </div>
@@ -251,7 +251,7 @@
       </div>
       <div class="content-body">
         <div class="content-text">
-          <p>I'm the founder and curator of Spotted in Prod, a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+          <p>I'm the founder of Spotted in Prod - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
           <p>I think our Home Screen setups show our true preferences about what apps are actually good, so here's mine.</p>
           <p>You can tap around and explore :)</p>
         </div>
@@ -276,6 +276,13 @@
 
     // Content swapping with Motion animations
     function swapContent(newHTML) {
+      // Remove any leftover clones from previous transitions
+      const parent = contentAreaInner.parentElement;
+      const existingClones = Array.from(parent.children).filter(el =>
+        el !== contentAreaInner && el.style.position === 'absolute'
+      );
+      existingClones.forEach(clone => clone.remove());
+
       // Get exact position of content-area-inner before cloning
       const rect = contentAreaInner.getBoundingClientRect();
       const parentRect = contentAreaInner.parentElement.getBoundingClientRect();
@@ -297,100 +304,173 @@
       // Swap content immediately
       contentAreaInner.innerHTML = newHTML;
 
-      // Set initial state for new content
-      contentAreaInner.style.opacity = '0';
-      contentAreaInner.style.transform = 'translateY(0px)';
-      contentAreaInner.style.filter = 'blur(0px)';
-
-      // Folder-to-folder: Slot machine emoji animation
+      // Folder-to-folder: Separate header and content animations
       if (oldIsFolder && newIsFolder) {
-        // Get folder indices
-        const oldFolderIndex = parseInt(oldContent.querySelector('.folder-container').dataset.folderIndex);
-        const newFolderIndex = parseInt(contentAreaInner.querySelector('.folder-container').dataset.folderIndex);
+        // Get folder info
+        const oldFolderName = oldContent.querySelector('.folder-container').dataset.currentFolder;
+        const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
 
-        // Get emoji slots and tracks (3 columns)
-        const oldSlots = oldContent.querySelectorAll('.emoji-slot');
+        // Get scroll areas (content part only)
+        const oldScrollArea = oldContent.querySelector('.folder-scroll-area');
+        const newScrollArea = contentAreaInner.querySelector('.folder-scroll-area');
+
+        // Get emoji slots from new content (these are the persistent tracks we'll animate)
         const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
-        const oldTracks = oldContent.querySelectorAll('.emoji-track');
-        const newTracks = contentAreaInner.querySelectorAll('.emoji-track');
 
-        // Prevent emojis from fading and blurring with content
-        [...oldSlots, ...newSlots].forEach(slot => {
-          slot.style.opacity = '1';
-          slot.style.filter = 'blur(0)';
-        });
+        const emojiHeight = 48;
+        const folderKeys = Object.keys(appData.folders);
 
-        // Calculate positions
-        const emojiHeight = 48; // px
-        const oldPosition = -oldFolderIndex * emojiHeight;
-        const newPosition = -newFolderIndex * emojiHeight;
-        const newStartPosition = newPosition + emojiHeight; // Start one emoji higher
+        // Set initial state for new scroll area only
+        newScrollArea.style.opacity = '0';
+        newScrollArea.style.filter = 'blur(12px)';
 
-        // Set initial position for new tracks (above final position, ready to slide down)
-        newTracks.forEach(track => {
-          track.style.transform = `translateY(${newStartPosition}px)`;
-        });
+        // Keep containers fully visible (no fade/blur on entire container)
+        contentAreaInner.style.opacity = '1';
+        contentAreaInner.style.filter = 'none';
+        oldContent.style.opacity = '1';
+        oldContent.style.filter = 'none';
 
-        // Randomize animation order
-        const indices = [0, 1, 2].sort(() => Math.random() - 0.5);
-        const staggerDelay = 30; // ms between each track
+        // Randomize slot animation order (0, 1, 2 for three columns)
+        const slotIndices = [0, 1, 2].sort(() => Math.random() - 0.5);
+        const staggerDelay = 100; // ms between each slot
 
-        indices.forEach((trackIndex, order) => {
+        // Animate each slot's emojis
+        slotIndices.forEach((slotIndex, order) => {
           const delay = order * staggerDelay;
+          const slot = newSlots[slotIndex];
+          const track = slot.querySelector('.emoji-track');
+          const emojiContainers = track.querySelectorAll('.folder-emoji-container');
 
-          // Animate old track out (push down)
+          // Find current and target emoji containers
+          const currentEmoji = Array.from(emojiContainers).find(e => e.dataset.folder === oldFolderName);
+          const targetEmoji = Array.from(emojiContainers).find(e => e.dataset.folder === newFolderName);
+
+          if (!currentEmoji || !targetEmoji) return;
+
+          // Get target's starting position (its data-position tells us where it is)
+          const targetStartPosition = parseInt(targetEmoji.dataset.position);
+          const targetStartY = targetStartPosition * emojiHeight;
+
+          // Animate ONLY the current and target emojis
           setTimeout(() => {
-            Motion.animate(oldTracks[trackIndex], {
-              transform: [`translateY(${oldPosition}px)`, `translateY(${oldPosition - emojiHeight}px)`]
+            // Animate current emoji UP and out (to -48px)
+            const currentAnimation = Motion.animate(currentEmoji, {
+              transform: ['translateY(0px)', 'translateY(-48px)']
             }, {
               duration: 0.4,
-              easing: [0.34, 1.8, 0.64, 1] // bouncier spring
+              easing: [0.34, 1.8, 0.64, 1] // spring with bounce
             });
-          }, delay);
 
-          // Animate new track in (slide down from above)
-          setTimeout(() => {
-            Motion.animate(newTracks[trackIndex], {
-              transform: [`translateY(${newStartPosition}px)`, `translateY(${newPosition}px)`]
+            // Animate target emoji UP into view (from its position to 0)
+            const targetAnimation = Motion.animate(targetEmoji, {
+              transform: [`translateY(${targetStartY}px)`, 'translateY(0px)']
             }, {
               duration: 0.4,
-              easing: [0.34, 1.8, 0.64, 1] // bouncier spring
+              easing: [0.34, 1.8, 0.64, 1] // spring with bounce
+            });
+
+            // After both animations complete, reset the track
+            Promise.all([currentAnimation.finished, targetAnimation.finished]).then(() => {
+              // RESET: Rebuild track with new order
+              const newTrackOrder = [
+                newFolderName, // Now at position 0
+                ...folderKeys.filter(k => k !== newFolderName) // Others below
+              ];
+
+              const newEmojisHtml = newTrackOrder.map((key, position) => `
+                <div class="folder-emoji-container" data-folder="${key}" data-position="${position}">
+                  <span class="folder-emoji">${appData.folders[key].emoji}</span>
+                </div>
+              `).join('');
+
+              track.innerHTML = newEmojisHtml;
+              track.dataset.currentFolder = newFolderName;
             });
           }, delay);
+        });
+
+        // Animate scroll areas (content fade/blur)
+        Motion.animate(oldScrollArea, {
+          opacity: [1, 0],
+          filter: ['blur(0)', 'blur(0px)']
+        }, {
+          duration: 0.4,
+          easing: 'ease-out'
+        });
+
+        Motion.animate(newScrollArea, {
+          opacity: [0, 1],
+          filter: ['blur(12px)', 'blur(0)']
+        }, {
+          duration: 0.4,
+          easing: 'ease-in'
+        }).finished.then(() => {
+          newScrollArea.style.opacity = '';
+          newScrollArea.style.filter = '';
+          oldContent.remove();
+        });
+
+      } else {
+        // Normal animation for non-folder transitions
+
+        // If new content is a folder (but old wasn't), position tracks appropriately
+        if (newIsFolder) {
+          const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
+          const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
+
+          // Position all tracks: target folder visible, others hidden
+          newSlots.forEach(slot => {
+            const tracks = slot.querySelectorAll('.emoji-track');
+            tracks.forEach(track => {
+              const trackFolder = track.dataset.folder;
+              if (trackFolder === newFolderName) {
+                // Target folder: show first emoji
+                track.style.transform = 'translateY(0)';
+              } else {
+                // Other folders: hide far below
+                track.style.transform = 'translateY(96px)';
+              }
+            });
+          });
+        }
+
+        // Set initial state for new content
+        contentAreaInner.style.opacity = '0';
+        contentAreaInner.style.transform = 'translateY(0px)';
+        contentAreaInner.style.filter = 'blur(0px)';
+
+        // Exit animation on clone: 400ms, ease-out
+        Motion.animate(oldContent, {
+          opacity: [1, 0],
+          transform: ['translateY(0)', 'translateY(0px)'],
+          filter: ['blur(0)', 'blur(0px)']
+        }, {
+          duration: 0.4,
+          easing: 'ease-out'
+        }).finished.then(() => {
+          oldContent.remove();
+        });
+
+        // Entrance animation on new content: 400ms
+        Motion.animate(contentAreaInner, {
+          transform: ['translateY(0px)', 'translateY(0)']
+        }, {
+          duration: 0.4,
+          easing: [0.34, 1.56, 0.64, 1]
+        });
+
+        Motion.animate(contentAreaInner, {
+          opacity: [0, 1],
+          filter: ['blur(12px)', 'blur(0)']
+        }, {
+          duration: 0.4,
+          easing: 'ease-in'
+        }).finished.then(() => {
+          contentAreaInner.style.opacity = '';
+          contentAreaInner.style.transform = '';
+          contentAreaInner.style.filter = '';
         });
       }
-
-      // Exit animation on clone: 400ms, ease-out
-      Motion.animate(oldContent, {
-        opacity: [1, 0],
-        transform: ['translateY(0)', 'translateY(0px)'],
-        filter: ['blur(0)', 'blur(0px)']
-      }, {
-        duration: 0.4,
-        easing: 'ease-out'
-      }).finished.then(() => {
-        oldContent.remove();
-      });
-
-      // Entrance animation on new content: 400ms
-      Motion.animate(contentAreaInner, {
-        transform: ['translateY(0px)', 'translateY(0)']
-      }, {
-        duration: 0.4,
-        easing: [0.34, 1.56, 0.64, 1]
-      });
-
-      Motion.animate(contentAreaInner, {
-        opacity: [0, 1],
-        filter: ['blur(12px)', 'blur(0)']
-      }, {
-        duration: 0.4,
-        easing: 'ease-in'
-      }).finished.then(() => {
-        contentAreaInner.style.opacity = '';
-        contentAreaInner.style.transform = '';
-        contentAreaInner.style.filter = '';
-      });
     }
 
     function attachEventListeners() {
@@ -537,18 +617,29 @@
       const folderKeys = Object.keys(appData.folders); // ['money', 'work', 'social', 'vibes']
       const folderIndex = folderKeys.indexOf(folderName);
 
-      // Generate emoji slots (3 columns, each with all 4 folder emojis)
-      const emojiSlotsHtml = [0, 1, 2].map(colIndex => `
-        <div class="emoji-slot" data-column="${colIndex}">
-          <div class="emoji-track" style="transform: translateY(-${folderIndex * 48}px)">
-            ${folderKeys.map(key => `
-              <div class="folder-emoji-container" data-folder="${key}">
-                <span class="folder-emoji">${appData.folders[key].emoji}</span>
-              </div>
-            `).join('')}
+      // Generate emoji slots (3 columns, each with ONE track containing 4 emojis)
+      // Current emoji at position 0 (visible), 3 others below (ready to push up)
+      const emojiSlotsHtml = [0, 1, 2].map(colIndex => {
+        // Order: current folder first, then all others below it
+        const orderedFolders = [
+          folderName, // Current at position 0 (visible)
+          ...folderKeys.filter(k => k !== folderName) // Others at 48px, 96px, 144px (hidden below)
+        ];
+
+        const emojisHtml = orderedFolders.map((key, position) => `
+          <div class="folder-emoji-container" data-folder="${key}" data-position="${position}">
+            <span class="folder-emoji">${appData.folders[key].emoji}</span>
           </div>
-        </div>
-      `).join('');
+        `).join('');
+
+        return `
+          <div class="emoji-slot" data-column="${colIndex}">
+            <div class="emoji-track" data-current-folder="${folderName}">
+              ${emojisHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
 
       // Complete folder component with persistent emoji system
       const html = `
