@@ -80,42 +80,6 @@
     </div>
   </div>
 
-  <!-- Mobile View -->
-  <div class="mobile-view">
-    <!-- Intro at top -->
-    <div class="mobile-intro">
-      <h1>Raffi Chilingaryan</h1>
-      <div class="mobile-intro-text">
-        <p>I'm the founder and curator of Spotted in Prod - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
-        <p>Here's what's currently on my home screen:</p>
-      </div>
-    </div>
-
-    <!-- Full-width fake home screen -->
-    <div class="mobile-home-screen">
-      <img src="assets/phone-mockups/home-mobile.jpg" alt="Home Screen" class="mobile-mockup-image">
-
-      <!-- Mobile tap targets -->
-      <div class="mobile-tap mobile-tap-widget-github" data-app="github"></div>
-      <div class="mobile-tap mobile-tap-widget-spotify" data-app="spotify"></div>
-
-      <div class="mobile-tap mobile-tap-app-notes" data-app="notes"></div>
-      <div class="mobile-tap mobile-tap-app-photos" data-app="photos"></div>
-      <div class="mobile-tap mobile-tap-app-retro" data-app="retro"></div>
-      <div class="mobile-tap mobile-tap-app-icamera" data-app="icamera"></div>
-
-      <div class="mobile-tap mobile-tap-folder-vibes" data-folder="vibes"></div>
-      <div class="mobile-tap mobile-tap-folder-social" data-folder="social"></div>
-      <div class="mobile-tap mobile-tap-folder-health" data-folder="health"></div>
-      <div class="mobile-tap mobile-tap-folder-tools" data-folder="tools"></div>
-    </div>
-
-    <!-- Mobile overlay for folders/apps -->
-    <div class="mobile-overlay hidden">
-      <div class="mobile-overlay-content"></div>
-    </div>
-  </div>
-
   <script>
     // App data structure based on Figma
     const appData = {
@@ -252,8 +216,6 @@
 
     // DOM elements
     const contentAreaInner = document.querySelector('.content-area-inner');
-    const mobileOverlay = document.querySelector('.mobile-overlay');
-    const mobileOverlayContent = document.querySelector('.mobile-overlay-content');
     const phoneContainer = document.querySelector('.phone-container');
     const phoneScreen = document.querySelector('.phone-screen');
     const videoSheets = document.querySelectorAll('.video-sheet');
@@ -407,6 +369,24 @@
       // Add click handlers to video sheets for dismiss
       videoSheets.forEach(video => {
         video.addEventListener('click', closeVideoSheet);
+      });
+
+      // Reset to home content when phone hides (720px breakpoint)
+      let wasPhoneHidden = window.innerWidth <= 720;
+      window.addEventListener('resize', () => {
+        const isPhoneHidden = window.innerWidth <= 720;
+        if (isPhoneHidden && !wasPhoneHidden) {
+          // Just crossed into phone-hidden state - instantly show home content
+          contentAreaInner.innerHTML = homeContentHTML;
+          // Close any open video
+          if (activeVideoSheet) {
+            activeVideoSheet.pause();
+            activeVideoSheet.style.transform = 'translateY(650px)';
+            phoneScreen.style.transform = 'scale(1)';
+            activeVideoSheet = null;
+          }
+        }
+        wasPhoneHidden = isPhoneHidden;
       });
     }
 
@@ -607,36 +587,12 @@
         target.addEventListener('mouseleave', () => clearHoverEffect());
       });
 
-      // Mobile: Widget/app clicks (redirect to App Store)
-      document.querySelectorAll('.mobile-tap[data-app]').forEach(el => {
-        el.addEventListener('click', () => {
-          const app = appData.apps[el.dataset.app];
-          if (app && app.appStoreURL) {
-            window.location.href = app.appStoreURL;
-          }
-        });
-      });
-
-      // Mobile: Folder clicks (show overlay)
-      document.querySelectorAll('.mobile-tap[data-folder]').forEach(el => {
-        el.addEventListener('click', () => handleMobileFolderClick(el.dataset.folder));
-      });
-
       // Close overlay on ESC
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeOverlay();
         }
       });
-
-
-      if (mobileOverlay) {
-        mobileOverlay.addEventListener('click', (e) => {
-          if (e.target === mobileOverlay) {
-            closeOverlay();
-          }
-        });
-      }
     }
 
     function handleAppClick(appName) {
@@ -712,40 +668,9 @@
       swapContent(html);
     }
 
-    function handleMobileFolderClick(folderName) {
-      const folder = appData.folders[folderName];
-      if (!folder) return;
-
-      let appsHtml = folder.apps.map(app => {
-        const shortDesc = app.description.split('.')[0];
-        return `<p><span class="app-name">${app.name}</span> ${shortDesc.replace(app.name, '')}</p>`;
-      }).join('');
-
-      const html = `
-        <div class="mobile-folder-widget">
-          <h3>${folder.name} ${folder.emoji}</h3>
-          <div class="mobile-folder-text">
-            ${appsHtml}
-          </div>
-        </div>
-      `;
-
-      mobileOverlayContent.innerHTML = html;
-      mobileOverlay.classList.remove('hidden');
-      Motion.animate(mobileOverlay, { opacity: [0, 1] }, { duration: 0.3, easing: 'ease-out' });
-    }
-
     function closeOverlay() {
-      // Desktop: Return to home content
+      // Return to home content
       swapContent(homeContentHTML);
-
-      // Mobile
-      if (mobileOverlay) {
-        mobileOverlay.classList.add('hidden');
-        setTimeout(() => {
-          mobileOverlayContent.innerHTML = '';
-        }, 180);
-      }
     }
 
     // Start the app

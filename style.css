@@ -113,9 +113,7 @@ body {
   overscroll-behavior: none;
 }
 
-.mobile-view {
-  display: none;
-}
+/* Mobile view removed - using responsive desktop layout only */
 
 /* Main Container */
 .main-container {
@@ -127,12 +125,13 @@ body {
 /* Content Area (Right Column) */
 .content-area {
   width: 360px;
+  min-width: 240px;
   height: 666px;
   display: flex;
   flex-direction: column;
   padding: 16px 0 6px 0;
   gap: var(--content-gap);
-  flex-shrink: 0;
+  flex-shrink: 1;
   position: relative;
 }
 
@@ -722,147 +721,60 @@ body {
   background: rgba(255, 255, 255, 0.3);
 }
 
-/* Mobile Styles */
-@media (max-width: 768px) {
-  .desktop-view {
-    display: none;
-  }
-
-  .mobile-view {
-    display: block;
-    min-height: 100vh;
-    background-color: var(--bg-color);
-    padding-bottom: 100px;
-  }
-
-  /* Mobile intro */
-  .mobile-intro {
-    padding: 100px 37px 0 37px;
-  }
-
-  .mobile-intro h1 {
-    font-size: 24px;
-    font-weight: 400;
-    color: #ffffff;
-    margin-bottom: 20px;
-  }
-
-  .mobile-intro-text p {
-    font-size: 22px;
-    font-weight: 400;
-    color: #ccc6bf;
-    line-height: normal;
-    margin-bottom: 12px;
-  }
-
-  /* Mobile home screen */
-  .mobile-home-screen {
-    position: relative;
-    width: 100%;
-    margin-top: 40px;
-  }
-
-  .mobile-mockup-image {
-    width: 100%;
-    height: auto;
-    display: block;
-    object-fit: contain;
-  }
-
-  /* Mobile tap targets - will need specific positioning based on your mockup */
-  .mobile-tap {
-    position: absolute;
-    cursor: pointer;
-  }
-
-  /* Mobile Overlay */
-  .mobile-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
-    backdrop-filter: blur(10px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    z-index: 1000;
-  }
-
-  .mobile-overlay.hidden {
-    display: none;
-  }
-
-  .mobile-overlay-content {
-    width: 100%;
-    max-width: 345px;
-  }
-
-  /* Mobile Folder Widget */
-  .mobile-folder-widget {
-    background: linear-gradient(180deg, #5a554d 0%, #564d41 100%);
-    border-radius: 29px;
-    box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 1px 3px 0px rgba(255, 255, 255, 0.25);
-    padding: 19px;
-  }
-
-  @supports (corner-shape: squircle) {
-    .mobile-folder-widget {
-      border-radius: 58px;
-      corner-shape: squircle;
-    }
-  }
-
-  .mobile-folder-widget h3 {
-    font-family: 'Figma Hand', 'Comic Sans MS', cursive;
-    font-size: 18px;
-    font-weight: bold;
-    color: #ffffff;
-    margin-bottom: 14px;
-    line-height: 1.3;
-  }
-
-  .mobile-folder-text {
-    font-size: 15px;
-    color: #ccc6bf;
-    line-height: 1.3;
-  }
-
-  .mobile-folder-text p {
-    margin-bottom: 4px;
-  }
-
-  .mobile-folder-text .app-name {
-    color: #ffffff;
-  }
-
-  /* Bottom gradient mask */
-  .mobile-view::after {
-    content: '';
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 158px;
-    background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
-    pointer-events: none;
+/* Tablet - reduce gap */
+@media (max-width: 900px) and (min-width: 721px) {
+  .main-container {
+    gap: 32px;
+    padding: 0 24px;
   }
 }
 
-/* Responsive breakpoints */
-@media (max-width: 1024px) and (min-width: 769px) {
+/* Phone hidden, content centered (720px - 451px) */
+@media (max-width: 720px) and (min-width: 451px) {
+  .main-container {
+    padding: 0 24px;
+  }
+
+  .phone-container {
+    display: none;
+  }
+
+  .content-area {
+    width: 100%;
+    max-width: 360px;
+    height: 666px;
+  }
+}
+
+/* True mobile (450px and below) */
+@media (max-width: 450px) {
   .desktop-view {
-    gap: 40px;
-    padding: 40px;
+    min-height: 100vh;
+    height: auto;
+    padding: 30px;
   }
 
-  .intro-section {
-    width: 280px;
+  .main-container {
+    padding: 0;
+    min-height: calc(100vh - 60px);
   }
 
-  .sidebar {
-    width: 320px;
+  .phone-container {
+    display: none;
+  }
+
+  .content-area {
+    width: 100%;
+    height: auto;
+    min-height: calc(100vh - 60px);
+    padding: 0;
+  }
+
+  .content-area-inner {
+    min-height: calc(100vh - 60px);
+  }
+
+  .content-body {
+    flex: 1;
   }
 }
