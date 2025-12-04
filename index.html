@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Raffi Chilingaryan</title>
+  <link rel="preconnect" href="https://rsms.me/">
+  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/motion@12.7.4/dist/motion.js"></script>
 </head>
@@ -112,7 +114,7 @@
           video: 'assets/videos/retro.mp4',
           qrCode: 'assets/qr-codes/retro.png',
           appStoreURL: 'https://apps.apple.com/retro',
-          longDescription: 'Retro is the social app that I wish everyone used instead of Instagram. I use it as a personal photo journal and try to get whoever I can to download it.\n\nYou can send people postcards directly from the app too :) Give it a try with the QR code below.'
+          longDescription: 'Retro is the social app that I wish everyone used instead of Instagram. I use it as a personal photo journal and try to get whoever I can to download it.\nYou can send people postcards directly from the app too :) Give it a try with the QR code below.'
         },
         notes: {
           name: 'Notes',
@@ -419,9 +421,6 @@
         </div>
       `;
 
-      // Remove folder-view class from content-area
-      document.querySelector('.content-area').classList.remove('folder-view');
-
       swapContent(html);
     }
 
@@ -429,41 +428,36 @@
       const folder = appData.folders[folderName];
       if (!folder) return;
 
-      let appsHtml = folder.apps.map(app => `
+      const appsHtml = folder.apps.map(app => `
         <div class="folder-app-item">
           <img src="${app.icon}" alt="${app.name}" class="folder-app-icon">
           <p class="folder-app-description"><span class="app-name">${app.name}</span> ${app.description.replace(app.name, '')}</p>
         </div>
       `).join('');
 
-      const html = appsHtml;
-
-      // Add folder-view class to content-area
-      const contentArea = document.querySelector('.content-area');
-      contentArea.classList.add('folder-view');
-
-      // Insert masks and header as siblings to content-area-inner
-      const existingMasks = contentArea.querySelectorAll('.folder-bottom-mask, .folder-top-mask, .folder-title-row');
-      existingMasks.forEach(el => el.remove());
-
-      const masksHtml = `
-        <div class="folder-bottom-mask"></div>
-        <div class="folder-top-mask"></div>
-        <div class="folder-title-row">
-          <div class="folder-emoji-container">
-            <span class="folder-emoji">${folder.emoji}</span>
+      // Complete folder component - self-contained
+      const html = `
+        <div class="folder-container">
+          <div class="folder-title-row">
+            <div class="folder-emoji-container">
+              <span class="folder-emoji">${folder.emoji}</span>
+            </div>
+            <div class="folder-emoji-container">
+              <span class="folder-emoji">${folder.emoji}</span>
+            </div>
+            <div class="folder-emoji-container">
+              <span class="folder-emoji">${folder.emoji}</span>
+            </div>
           </div>
-          <div class="folder-emoji-container">
-            <span class="folder-emoji">${folder.emoji}</span>
+          <div class="folder-scroll-area">
+            ${appsHtml}
           </div>
-          <div class="folder-emoji-container">
-            <span class="folder-emoji">${folder.emoji}</span>
-          </div>
+          <div class="folder-top-mask"></div>
+          <div class="folder-bottom-mask"></div>
         </div>
       `;
 
       swapContent(html);
-      contentArea.insertAdjacentHTML('beforeend', masksHtml);
     }
 
     function handleMobileFolderClick(folderName) {
@@ -490,9 +484,6 @@
     }
 
     function closeOverlay() {
-      // Remove folder-view class from content-area
-      document.querySelector('.content-area').classList.remove('folder-view');
-
       // Desktop: Return to home content
       swapContent(homeContentHTML);
 
