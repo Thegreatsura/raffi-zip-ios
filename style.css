@@ -10,6 +10,7 @@
   --home-spacing: 48px;
   --intro-height: 170px;
   --phone-height: 666px;
+  --content-gap: 24px;
 
   /* Phone frame constants */
   --phone-frame-padding: 8px;
@@ -130,7 +131,7 @@ body {
   display: flex;
   flex-direction: column;
   padding: 16px 0 6px 0;
-  gap: 24px;
+  gap: var(--content-gap);
   flex-shrink: 0;
 }
 
@@ -207,6 +208,7 @@ body {
   flex: 1;
   display: flex;
   flex-direction: column;
+  gap: var(--content-gap);
   min-height: 0;
   transition: opacity 200ms ease-out, transform 200ms ease-out, filter 200ms ease-out;
 }
