@@ -133,6 +133,7 @@ body {
   padding: 16px 0 6px 0;
   gap: var(--content-gap);
   flex-shrink: 0;
+  position: relative;
 }
 
 /* Folder component - self-contained */
@@ -210,7 +211,6 @@ body {
   flex-direction: column;
   gap: var(--content-gap);
   min-height: 0;
-  transition: opacity 200ms ease-out, transform 200ms ease-out, filter 200ms ease-out;
 }
 
 /* Folder scroll area */
@@ -231,27 +231,6 @@ body {
 
 .folder-scroll-area::-webkit-scrollbar {
   display: none;
-}
-
-.content-area-inner.transitioning-out {
-  opacity: 0;
-  transform: translateY(-4px);
-  filter: blur(4px);
-}
-
-.content-area-inner.transitioning-in {
-  opacity: 0;
-  transform: translateY(-4px);
-  filter: blur(4px);
-  animation: contentFadeIn 200ms ease-out forwards;
-}
-
-@keyframes contentFadeIn {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
 }
 
 /* Phone Container */
@@ -487,6 +466,21 @@ body {
   align-items: center;
   gap: 8px;
   z-index: 3;
+}
+
+/* Emoji slot machine structure */
+.emoji-slot {
+  width: 48px;
+  height: 48px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.emoji-track {
+  display: flex;
+  flex-direction: column;
+  position: relative;
 }
 
 .folder-emoji-container {

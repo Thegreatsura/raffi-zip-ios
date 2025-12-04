@@ -274,25 +274,123 @@
       attachEventListeners();
     }
 
-    // Content swapping with blur/fade/Y-offset transitions
+    // Content swapping with Motion animations
     function swapContent(newHTML) {
-      // Add transitioning-out class (blur + fade out + -4px Y offset)
-      contentAreaInner.classList.add('transitioning-out');
+      // Get exact position of content-area-inner before cloning
+      const rect = contentAreaInner.getBoundingClientRect();
+      const parentRect = contentAreaInner.parentElement.getBoundingClientRect();
 
-      // Wait 200ms for exit animation
-      setTimeout(() => {
-        // Swap content
-        contentAreaInner.innerHTML = newHTML;
+      // Check if this is a folder-to-folder transition
+      const oldIsFolder = contentAreaInner.querySelector('.folder-container');
+      const newIsFolder = newHTML.includes('folder-container');
 
-        // Remove transitioning-out and add transitioning-in
-        contentAreaInner.classList.remove('transitioning-out');
-        contentAreaInner.classList.add('transitioning-in');
+      // Clone current content for exit animation
+      const oldContent = contentAreaInner.cloneNode(true);
+      oldContent.style.position = 'absolute';
+      oldContent.style.top = (rect.top - parentRect.top) + 'px';
+      oldContent.style.left = (rect.left - parentRect.left) + 'px';
+      oldContent.style.width = rect.width + 'px';
+      oldContent.style.height = rect.height + 'px';
+      oldContent.style.pointerEvents = 'none';
+      contentAreaInner.parentElement.appendChild(oldContent);
 
-        // Remove transitioning-in after animation completes
-        setTimeout(() => {
-          contentAreaInner.classList.remove('transitioning-in');
-        }, 200);
-      }, 200);
+      // Swap content immediately
+      contentAreaInner.innerHTML = newHTML;
+
+      // Set initial state for new content
+      contentAreaInner.style.opacity = '0';
+      contentAreaInner.style.transform = 'translateY(0px)';
+      contentAreaInner.style.filter = 'blur(0px)';
+
+      // Folder-to-folder: Slot machine emoji animation
+      if (oldIsFolder && newIsFolder) {
+        // Get folder indices
+        const oldFolderIndex = parseInt(oldContent.querySelector('.folder-container').dataset.folderIndex);
+        const newFolderIndex = parseInt(contentAreaInner.querySelector('.folder-container').dataset.folderIndex);
+
+        // Get emoji slots and tracks (3 columns)
+        const oldSlots = oldContent.querySelectorAll('.emoji-slot');
+        const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
+        const oldTracks = oldContent.querySelectorAll('.emoji-track');
+        const newTracks = contentAreaInner.querySelectorAll('.emoji-track');
+
+        // Prevent emojis from fading and blurring with content
+        [...oldSlots, ...newSlots].forEach(slot => {
+          slot.style.opacity = '1';
+          slot.style.filter = 'blur(0)';
+        });
+
+        // Calculate positions
+        const emojiHeight = 48; // px
+        const oldPosition = -oldFolderIndex * emojiHeight;
+        const newPosition = -newFolderIndex * emojiHeight;
+        const newStartPosition = newPosition + emojiHeight; // Start one emoji higher
+
+        // Set initial position for new tracks (above final position, ready to slide down)
+        newTracks.forEach(track => {
+          track.style.transform = `translateY(${newStartPosition}px)`;
+        });
+
+        // Randomize animation order
+        const indices = [0, 1, 2].sort(() => Math.random() - 0.5);
+        const staggerDelay = 30; // ms between each track
+
+        indices.forEach((trackIndex, order) => {
+          const delay = order * staggerDelay;
+
+          // Animate old track out (push down)
+          setTimeout(() => {
+            Motion.animate(oldTracks[trackIndex], {
+              transform: [`translateY(${oldPosition}px)`, `translateY(${oldPosition - emojiHeight}px)`]
+            }, {
+              duration: 0.4,
+              easing: [0.34, 1.8, 0.64, 1] // bouncier spring
+            });
+          }, delay);
+
+          // Animate new track in (slide down from above)
+          setTimeout(() => {
+            Motion.animate(newTracks[trackIndex], {
+              transform: [`translateY(${newStartPosition}px)`, `translateY(${newPosition}px)`]
+            }, {
+              duration: 0.4,
+              easing: [0.34, 1.8, 0.64, 1] // bouncier spring
+            });
+          }, delay);
+        });
+      }
+
+      // Exit animation on clone: 400ms, ease-out
+      Motion.animate(oldContent, {
+        opacity: [1, 0],
+        transform: ['translateY(0)', 'translateY(0px)'],
+        filter: ['blur(0)', 'blur(0px)']
+      }, {
+        duration: 0.4,
+        easing: 'ease-out'
+      }).finished.then(() => {
+        oldContent.remove();
+      });
+
+      // Entrance animation on new content: 400ms
+      Motion.animate(contentAreaInner, {
+        transform: ['translateY(0px)', 'translateY(0)']
+      }, {
+        duration: 0.4,
+        easing: [0.34, 1.56, 0.64, 1]
+      });
+
+      Motion.animate(contentAreaInner, {
+        opacity: [0, 1],
+        filter: ['blur(12px)', 'blur(0)']
+      }, {
+        duration: 0.4,
+        easing: 'ease-in'
+      }).finished.then(() => {
+        contentAreaInner.style.opacity = '';
+        contentAreaInner.style.transform = '';
+        contentAreaInner.style.filter = '';
+      });
     }
 
     function attachEventListeners() {
@@ -435,19 +533,28 @@
         </div>
       `).join('');
 
-      // Complete folder component - self-contained
+      // Get all folder keys in order
+      const folderKeys = Object.keys(appData.folders); // ['money', 'work', 'social', 'vibes']
+      const folderIndex = folderKeys.indexOf(folderName);
+
+      // Generate emoji slots (3 columns, each with all 4 folder emojis)
+      const emojiSlotsHtml = [0, 1, 2].map(colIndex => `
+        <div class="emoji-slot" data-column="${colIndex}">
+          <div class="emoji-track" style="transform: translateY(-${folderIndex * 48}px)">
+            ${folderKeys.map(key => `
+              <div class="folder-emoji-container" data-folder="${key}">
+                <span class="folder-emoji">${appData.folders[key].emoji}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+
+      // Complete folder component with persistent emoji system
       const html = `
-        <div class="folder-container">
+        <div class="folder-container" data-current-folder="${folderName}" data-folder-index="${folderIndex}">
           <div class="folder-title-row">
-            <div class="folder-emoji-container">
-              <span class="folder-emoji">${folder.emoji}</span>
-            </div>
-            <div class="folder-emoji-container">
-              <span class="folder-emoji">${folder.emoji}</span>
-            </div>
-            <div class="folder-emoji-container">
-              <span class="folder-emoji">${folder.emoji}</span>
-            </div>
+            ${emojiSlotsHtml}
           </div>
           <div class="folder-scroll-area">
             ${appsHtml}
