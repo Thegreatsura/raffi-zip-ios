@@ -16,8 +16,21 @@
       <!-- Phone Mockup with Tap Targets -->
       <div class="phone-container">
         <div class="phone-frame">
-          <!-- Phone mockup background image -->
-          <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
+          <!-- Clipping container for sheet transitions -->
+          <div class="phone-screen">
+            <!-- Black background for sheet transitions -->
+            <div class="sheet-bg"></div>
+
+            <!-- Phone mockup background image -->
+            <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
+
+            </div>
+
+          <!-- Video sheets (above tap targets, outside phone-screen for z-index) -->
+          <video class="video-sheet" data-app="retro" src="assets/videos/retro.mp4" muted playsinline></video>
+          <video class="video-sheet" data-app="notes" src="assets/videos/notes.mp4" muted playsinline></video>
+          <video class="video-sheet" data-app="photos" src="assets/videos/photos.mp4" muted playsinline></video>
+          <video class="video-sheet" data-app="notboringcamera" src="assets/videos/notboringcamera.mp4" muted playsinline></video>
 
           <!-- Invisible tap target overlays -->
           <div class="tap-target tap-widget-github" data-app="github"></div>
@@ -26,7 +39,7 @@
           <div class="tap-target tap-app-notes" data-app="notes"></div>
           <div class="tap-target tap-app-photos" data-app="photos"></div>
           <div class="tap-target tap-app-retro" data-app="retro"></div>
-          <div class="tap-target tap-app-icamera" data-app="icamera"></div>
+          <div class="tap-target tap-app-notboringcamera" data-app="notboringcamera"></div>
 
           <div class="tap-target tap-folder-vibes" data-folder="money"></div>
           <div class="tap-target tap-folder-social" data-folder="work"></div>
@@ -132,13 +145,13 @@
           appStoreURL: 'https://apps.apple.com/photos',
           longDescription: 'Photos app description...'
         },
-        icamera: {
-          name: '!camera',
-          icon: 'assets/icons/icamera.jpg',
-          video: 'assets/videos/icamera.mp4',
-          qrCode: 'assets/qr-codes/icamera.png',
-          appStoreURL: 'https://apps.apple.com/icamera',
-          longDescription: '!camera app description...'
+        notboringcamera: {
+          name: '!Camera',
+          icon: 'assets/icons/notboringcamera.jpg',
+          video: 'assets/videos/notboringcamera.mp4',
+          qrCode: 'assets/qr-codes/notboringcamera.png',
+          appStoreURL: 'https://apps.apple.com/notboringcamera',
+          longDescription: '!Camera app description...'
         },
         claude: {
           name: 'Claude',
@@ -243,6 +256,11 @@
     const mobileOverlay = document.querySelector('.mobile-overlay');
     const mobileOverlayContent = document.querySelector('.mobile-overlay-content');
     const phoneContainer = document.querySelector('.phone-container');
+    const phoneScreen = document.querySelector('.phone-screen');
+    const videoSheets = document.querySelectorAll('.video-sheet');
+
+    // Track active video sheet
+    let activeVideoSheet = null;
 
     // Store home content HTML for returning to home
     const homeContentHTML = `
@@ -279,10 +297,69 @@
       });
     }
 
+    // Open video sheet for an app
+    function openVideoSheet(appName) {
+      const video = document.querySelector(`.video-sheet[data-app="${appName}"]`);
+      if (!video) return false;
+
+      activeVideoSheet = video;
+
+      // Start video playback
+      video.currentTime = 0;
+      video.play();
+
+      // Spring-like easing
+      const springEasing = [0.25, 1, 0.5, 1];
+
+      // Animate entire phone screen down (includes home image and masks)
+      Motion.animate(phoneScreen,
+        { transform: ['scale(1)', 'scale(0.92)'] },
+        { duration: 0.5, easing: springEasing }
+      );
+
+      // Animate video sheet up
+      Motion.animate(video,
+        { transform: ['translateY(650px)', 'translateY(0)'] },
+        { duration: 0.5, easing: springEasing }
+      );
+
+      return true;
+    }
+
+    // Close video sheet
+    function closeVideoSheet() {
+      if (!activeVideoSheet) return;
+
+      const video = activeVideoSheet;
+      activeVideoSheet = null;
+
+      const springEasing = [0.25, 1, 0.5, 1];
+
+      // Animate phone screen back up
+      Motion.animate(phoneScreen,
+        { transform: ['scale(0.92)', 'scale(1)'] },
+        { duration: 0.5, easing: springEasing }
+      );
+
+      // Animate video sheet down
+      Motion.animate(video,
+        { transform: ['translateY(0)', 'translateY(650px)'] },
+        { duration: 0.5, easing: springEasing }
+      ).finished.then(() => {
+        video.pause();
+        video.currentTime = 0;
+      });
+    }
+
     // Initialize
     function init() {
       preloadImages();
       attachEventListeners();
+
+      // Add click handlers to video sheets for dismiss
+      videoSheets.forEach(video => {
+        video.addEventListener('click', closeVideoSheet);
+      });
     }
 
     // Content swapping with Motion animations
@@ -457,30 +534,22 @@
         el.addEventListener('click', () => handleFolderClick(el.dataset.folder));
       });
 
-      // Desktop: Phone hover effect (1% scale with spring)
+      // Desktop: Phone hover effect (1% scale)
       if (phoneContainer) {
         let isHovering = false;
         phoneContainer.addEventListener('mouseenter', () => {
           isHovering = true;
-          if (window.Motion && window.Motion.animate) {
-            window.Motion.animate(phoneContainer, { scale: 1.01 }, {
-              duration: 0.08,
-              easing: window.Motion.spring({ stiffness: 400, damping: 30 })
-            });
-          } else {
-            phoneContainer.style.transform = 'scale(1.01)';
-          }
+          Motion.animate(phoneContainer, { scale: 1.01 }, {
+            duration: 0.15,
+            easing: 'ease-out'
+          });
         });
         phoneContainer.addEventListener('mouseleave', () => {
           isHovering = false;
-          if (window.Motion && window.Motion.animate) {
-            window.Motion.animate(phoneContainer, { scale: 1 }, {
-              duration: 0.08,
-              easing: window.Motion.spring({ stiffness: 400, damping: 30 })
-            });
-          } else {
-            phoneContainer.style.transform = 'scale(1)';
-          }
+          Motion.animate(phoneContainer, { scale: 1 }, {
+            duration: 0.15,
+            easing: 'ease-out'
+          });
         });
       }
 
@@ -552,6 +621,10 @@
     }
 
     function handleAppClick(appName) {
+      // Try to open video sheet
+      openVideoSheet(appName);
+
+      // ALWAYS show app info on RHS (if available)
       const app = appData.apps[appName];
       if (!app || !app.longDescription) return;
 
