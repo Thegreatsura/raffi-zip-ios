@@ -304,128 +304,81 @@
       // Swap content immediately
       contentAreaInner.innerHTML = newHTML;
 
-      // Folder-to-folder: Separate header and content animations
+      // Folder-to-folder: Emoji slot machine + content cross dissolve
       if (oldIsFolder && newIsFolder) {
-        // Get folder info
+        // Get emoji characters
         const oldFolderName = oldContent.querySelector('.folder-container').dataset.currentFolder;
         const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
-
-        // Get characters
         const oldEmojiChar = appData.folders[oldFolderName].emoji;
         const newEmojiChar = appData.folders[newFolderName].emoji;
 
-        // Get scroll areas (content part only)
+        // Get slot positions BEFORE any visual changes
+        const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
+        const slotRects = Array.from(newSlots).map(slot => slot.getBoundingClientRect());
+
+        // Hide all emoji slots - we'll use floating overlays
+        oldContent.querySelectorAll('.emoji-slot').forEach(s => s.style.visibility = 'hidden');
+        newSlots.forEach(s => s.style.visibility = 'hidden');
+
+        // Create floating slot machines at exact positions
+        const floatingSlots = slotRects.map(rect => {
+          const slot = document.createElement('div');
+          slot.style.cssText = `
+            position: fixed;
+            top: ${rect.top}px;
+            left: ${rect.left}px;
+            width: 48px;
+            height: 48px;
+            overflow: hidden;
+            z-index: 9999;
+            pointer-events: none;
+          `;
+
+          const reel = document.createElement('div');
+          reel.style.cssText = 'display: flex; flex-direction: column;';
+          reel.innerHTML = `
+            <div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:42px;line-height:1;letter-spacing:-0.42px;">${oldEmojiChar}</span>
+            </div>
+            <div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+              <span style="font-size:42px;line-height:1;letter-spacing:-0.42px;">${newEmojiChar}</span>
+            </div>
+          `;
+
+          slot.appendChild(reel);
+          document.body.appendChild(slot);
+          return { slot, reel };
+        });
+
+        // Animate floating slots (staggered, random order)
+        const slotIndices = [0, 1, 2].sort(() => Math.random() - 0.5);
+        slotIndices.forEach((slotIndex, order) => {
+          setTimeout(() => {
+            const { slot, reel } = floatingSlots[slotIndex];
+            Motion.animate(reel, { transform: ['translateY(0)', 'translateY(-48px)'] }, {
+              duration: 0.4,
+              easing: [0.34, 1.8, 0.64, 1]
+            }).finished.then(() => {
+              slot.remove();
+              newSlots[slotIndex].style.visibility = 'visible';
+            });
+          }, order * 60);
+        });
+
+        // Cross dissolve scroll areas
         const oldScrollArea = oldContent.querySelector('.folder-scroll-area');
         const newScrollArea = contentAreaInner.querySelector('.folder-scroll-area');
-
-        // Get emoji slots from new content
-        const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
-
-        // Set initial state for new scroll area only
         newScrollArea.style.opacity = '0';
-        newScrollArea.style.filter = 'blur(12px)';
 
-        // Keep containers fully visible (no fade/blur on entire container)
-        contentAreaInner.style.opacity = '1';
-        contentAreaInner.style.filter = 'none';
-        oldContent.style.opacity = '1';
-        oldContent.style.filter = 'none';
-
-        // Randomize slot animation order
-        const slotIndices = [0, 1, 2].sort(() => Math.random() - 0.5);
-        const staggerDelay = 60;
-
-        // HIJACK STRATEGY: Use existing elements instead of injecting new HTML
-        // This ensures perfect rendering fidelity and no "fading" artifacts.
-        
-        // Prepare NEW slots (they sit underneath OLD slots)
-        newSlots.forEach((slot) => {
-          // Push the new emoji down 48px so it can slide up
-          const container = slot.querySelector('.folder-emoji-container');
-          if (container) {
-             container.style.transform = 'translateY(48px)';
-          }
-        });
-        
-        // Get OLD slots to animate them out
-        const oldSlots = oldContent.querySelectorAll('.emoji-slot');
-
-        // Animate slots
-        slotIndices.forEach((slotIndex, order) => {
-          const delay = order * staggerDelay;
-          
-          // Target elements
-          const oldSlot = oldSlots[slotIndex];
-          const newSlot = newSlots[slotIndex];
-          
-          const oldEmoji = oldSlot.querySelector('.folder-emoji-container');
-          const newEmoji = newSlot.querySelector('.folder-emoji-container');
-
-          if (!oldEmoji || !newEmoji) return;
-
-          setTimeout(() => {
-            // Animate OLD emoji UP and OUT
-            Motion.animate(oldEmoji, {
-              transform: ['translateY(0px)', 'translateY(-48px)']
-            }, {
-              duration: 0.4,
-              easing: [0.34, 1.8, 0.64, 1] // spring with bounce
-            });
-
-            // Animate NEW emoji UP and IN
-            Motion.animate(newEmoji, {
-              transform: ['translateY(48px)', 'translateY(0px)']
-            }, {
-              duration: 0.4,
-              easing: [0.34, 1.8, 0.64, 1] // spring with bounce
-            });
-          }, delay);
-        });
-
-        // Animate scroll areas (content fade/blur)
-        Motion.animate(oldScrollArea, {
-          opacity: [1, 0],
-          filter: ['blur(0)', 'blur(0px)']
-        }, {
-          duration: 0.4,
-          easing: 'ease-out'
-        });
-
-        Motion.animate(newScrollArea, {
-          opacity: [0, 1],
-          filter: ['blur(12px)', 'blur(0)']
-        }, {
-          duration: 0.4,
-          easing: 'ease-in'
-        }).finished.then(() => {
-          newScrollArea.style.opacity = '';
-          newScrollArea.style.filter = '';
-          oldContent.remove();
-        });
+        Motion.animate(oldScrollArea, { opacity: [1, 0] }, { duration: 0.3, easing: 'ease-out' });
+        Motion.animate(newScrollArea, { opacity: [0, 1] }, { duration: 0.3, easing: 'ease-in' })
+          .finished.then(() => {
+            newScrollArea.style.opacity = '';
+            oldContent.remove();
+          });
 
       } else {
         // Normal animation for non-folder transitions
-
-        // If new content is a folder (but old wasn't), position tracks appropriately
-        if (newIsFolder) {
-          const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
-          const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
-
-          // Position all tracks: target folder visible, others hidden
-          newSlots.forEach(slot => {
-            const tracks = slot.querySelectorAll('.emoji-track');
-            tracks.forEach(track => {
-              const trackFolder = track.dataset.folder;
-              if (trackFolder === newFolderName) {
-                // Target folder: show first emoji
-                track.style.transform = 'translateY(0)';
-              } else {
-                // Other folders: hide far below
-                track.style.transform = 'translateY(96px)';
-              }
-            });
-          });
-        }
 
         // Set initial state for new content
         contentAreaInner.style.opacity = '0';
@@ -598,6 +551,10 @@
     function handleFolderClick(folderName) {
       const folder = appData.folders[folderName];
       if (!folder) return;
+
+      // Don't animate if already showing this folder
+      const currentFolder = contentAreaInner.querySelector('.folder-container')?.dataset.currentFolder;
+      if (currentFolder === folderName) return;
 
       const appsHtml = folder.apps.map(app => `
         <div class="folder-app-item">

@@ -477,16 +477,11 @@ body {
   flex-shrink: 0;
 }
 
-.emoji-track {
+.emoji-reel {
   display: flex;
   flex-direction: column;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  transform: translateY(0); /* Start at position 0, showing first emoji */
-  opacity: 1; /* Always fully opaque */
 }
+
 
 .folder-emoji-container {
   width: 48px;
