@@ -211,7 +211,8 @@ body {
   height: 100%;
   position: relative;
   background: linear-gradient(180deg, rgba(132, 126, 118, 0.5) 0%, rgba(122, 109, 91, 0.5) 100%);
-  border-radius: 44px;
+  border-radius: 88px;
+  corner-shape: squircle;
   box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 4px 4px 0px rgba(255, 255, 255, 0.25);
   padding: var(--phone-frame-padding);
   overflow: hidden;
@@ -221,7 +222,8 @@ body {
   width: 100%;
   height: 100%;
   display: block;
-  border-radius: 36px;
+  border-radius: 72px;
+  corner-shape: squircle;
   object-fit: cover;
   object-position: center;
 }
@@ -390,9 +392,11 @@ body {
 }
 
 .qr-code {
-  width: 84px;
-  height: 84px;
-  border-radius: 12px;
+  --qr-size: 84px;
+  width: var(--qr-size);
+  height: var(--qr-size);
+  corner-shape: squircle;
+  border-radius: calc(var(--qr-size) * 0.448);
   border: 1px solid #ffffff;
   padding: 6px;
 }
@@ -430,9 +434,16 @@ body {
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 80px 0;
+  padding: 80px 0 132px 0;
   min-height: 0;
   width: 100%;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.folder-apps-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 .folder-top-mask {
@@ -483,9 +494,11 @@ body {
 }
 
 .folder-app-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 12px;
+  --icon-size: 52px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  corner-shape: squircle;
+  border-radius: calc(var(--icon-size) * 0.448);
   flex-shrink: 0;
 }
 
@@ -523,6 +536,7 @@ body {
 
 .folder-apps-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
+  corner-shape: squircle;
   border-radius: 3px;
 }
 
@@ -611,6 +625,7 @@ body {
   /* Mobile Folder Widget */
   .mobile-folder-widget {
     background: linear-gradient(180deg, #5a554d 0%, #564d41 100%);
+    corner-shape: squircle;
     border-radius: 29px;
     box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 1px 3px 0px rgba(255, 255, 255, 0.25);
     padding: 19px;
