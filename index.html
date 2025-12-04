@@ -52,13 +52,13 @@
               <p>Feel free to tap around or get in touch, and thanks for stopping by.</p>
             </div>
             <div class="social-icons">
-              <a href="https://x.com" target="_blank" class="social-icon">
+              <a href="https://x.com/raffichill" target="_blank" class="social-icon">
                 <img src="assets/social/x-icon.svg" alt="X" />
               </a>
-              <a href="https://instagram.com" target="_blank" class="social-icon">
+              <a href="https://instagram.com/raffichill" target="_blank" class="social-icon">
                 <img src="assets/social/instagram-icon.svg" alt="Instagram" />
               </a>
-              <a href="https://github.com" target="_blank" class="social-icon">
+              <a href="https://github.com/raffichill" target="_blank" class="social-icon">
                 <img src="assets/social/github-icon.svg" alt="GitHub" />
               </a>
             </div>
@@ -256,21 +256,32 @@
           <p>You can tap around and explore :)</p>
         </div>
         <div class="social-icons">
-          <a href="https://x.com" target="_blank" class="social-icon">
-            <img src="assets/social/x.svg" alt="X" />
+          <a href="https://x.com/raffichill" target="_blank" class="social-icon">
+            <img src="assets/social/x-icon.svg" alt="X" />
           </a>
-          <a href="https://instagram.com" target="_blank" class="social-icon">
-            <img src="assets/social/instagram.svg" alt="Instagram" />
+          <a href="https://instagram.com/raffichill" target="_blank" class="social-icon">
+            <img src="assets/social/instagram-icon.svg" alt="Instagram" />
           </a>
-          <a href="https://github.com" target="_blank" class="social-icon">
-            <img src="assets/social/github.svg" alt="GitHub" />
+          <a href="https://github.com/raffichill" target="_blank" class="social-icon">
+            <img src="assets/social/github-icon.svg" alt="GitHub" />
           </a>
         </div>
       </div>
     `;
 
+    // Preload all folder app icons for smooth transitions
+    function preloadImages() {
+      Object.values(appData.folders).forEach(folder => {
+        folder.apps.forEach(app => {
+          const img = new Image();
+          img.src = app.icon;
+        });
+      });
+    }
+
     // Initialize
     function init() {
+      preloadImages();
       attachEventListeners();
     }
 
@@ -306,19 +317,28 @@
 
       // Folder-to-folder: Emoji slot machine + content cross dissolve
       if (oldIsFolder && newIsFolder) {
-        // Get emoji characters
+        // IMMEDIATELY hide new content before browser paints
+        const newScrollArea = contentAreaInner.querySelector('.folder-scroll-area');
+        const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
+
+        // Hide new scroll area and masks (masks stay hidden - old ones remain visible)
+        newScrollArea.style.opacity = '0';
+        contentAreaInner.querySelector('.folder-top-mask').style.opacity = '0';
+        contentAreaInner.querySelector('.folder-bottom-mask').style.opacity = '0';
+        newSlots.forEach(s => s.style.visibility = 'hidden');
+
+        // Now safe to do reflow-triggering operations
         const oldFolderName = oldContent.querySelector('.folder-container').dataset.currentFolder;
         const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
         const oldEmojiChar = appData.folders[oldFolderName].emoji;
         const newEmojiChar = appData.folders[newFolderName].emoji;
 
-        // Get slot positions BEFORE any visual changes
-        const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
-        const slotRects = Array.from(newSlots).map(slot => slot.getBoundingClientRect());
+        // Get slot positions (from old content to avoid any flash)
+        const oldSlots = oldContent.querySelectorAll('.emoji-slot');
+        const slotRects = Array.from(oldSlots).map(slot => slot.getBoundingClientRect());
 
-        // Hide all emoji slots - we'll use floating overlays
-        oldContent.querySelectorAll('.emoji-slot').forEach(s => s.style.visibility = 'hidden');
-        newSlots.forEach(s => s.style.visibility = 'hidden');
+        // Hide old emoji slots too
+        oldSlots.forEach(s => s.style.visibility = 'hidden');
 
         // Create floating slot machines at exact positions
         const floatingSlots = slotRects.map(rect => {
@@ -365,15 +385,22 @@
           }, order * 60);
         });
 
-        // Cross dissolve scroll areas
+        // Cross dissolve scroll areas only (masks stay static - old ones visible throughout)
         const oldScrollArea = oldContent.querySelector('.folder-scroll-area');
-        const newScrollArea = contentAreaInner.querySelector('.folder-scroll-area');
-        newScrollArea.style.opacity = '0';
 
+        // Prep GPU layers
+        oldScrollArea.style.willChange = 'opacity';
+        newScrollArea.style.willChange = 'opacity';
+
+        // Cross-fade scroll areas
         Motion.animate(oldScrollArea, { opacity: [1, 0] }, { duration: 0.3, easing: 'ease-out' });
-        Motion.animate(newScrollArea, { opacity: [0, 1] }, { duration: 0.3, easing: 'ease-in' })
+        Motion.animate(newScrollArea, { opacity: [0, 1] }, { duration: 0.3, easing: 'ease-out' })
           .finished.then(() => {
+            // Clean up - reveal new masks, remove old content
+            newScrollArea.style.willChange = '';
             newScrollArea.style.opacity = '';
+            contentAreaInner.querySelector('.folder-top-mask').style.opacity = '';
+            contentAreaInner.querySelector('.folder-bottom-mask').style.opacity = '';
             oldContent.remove();
           });
 

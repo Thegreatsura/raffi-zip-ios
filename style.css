@@ -196,6 +196,12 @@ body {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  opacity: 0.6;
+  transition: opacity 0.15s ease-out;
+}
+
+.social-icon:hover {
+  opacity: 1;
 }
 
 .social-icon img {
