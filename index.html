@@ -310,15 +310,16 @@
         const oldFolderName = oldContent.querySelector('.folder-container').dataset.currentFolder;
         const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
 
+        // Get characters
+        const oldEmojiChar = appData.folders[oldFolderName].emoji;
+        const newEmojiChar = appData.folders[newFolderName].emoji;
+
         // Get scroll areas (content part only)
         const oldScrollArea = oldContent.querySelector('.folder-scroll-area');
         const newScrollArea = contentAreaInner.querySelector('.folder-scroll-area');
 
-        // Get emoji slots from new content (these are the persistent tracks we'll animate)
+        // Get emoji slots from new content
         const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
-
-        const emojiHeight = 48;
-        const folderKeys = Object.keys(appData.folders);
 
         // Set initial state for new scroll area only
         newScrollArea.style.opacity = '0';
@@ -330,61 +331,53 @@
         oldContent.style.opacity = '1';
         oldContent.style.filter = 'none';
 
-        // Randomize slot animation order (0, 1, 2 for three columns)
+        // Randomize slot animation order
         const slotIndices = [0, 1, 2].sort(() => Math.random() - 0.5);
-        const staggerDelay = 100; // ms between each slot
+        const staggerDelay = 60;
 
-        // Animate each slot's emojis
+        // HIJACK STRATEGY: Use existing elements instead of injecting new HTML
+        // This ensures perfect rendering fidelity and no "fading" artifacts.
+        
+        // Prepare NEW slots (they sit underneath OLD slots)
+        newSlots.forEach((slot) => {
+          // Push the new emoji down 48px so it can slide up
+          const container = slot.querySelector('.folder-emoji-container');
+          if (container) {
+             container.style.transform = 'translateY(48px)';
+          }
+        });
+        
+        // Get OLD slots to animate them out
+        const oldSlots = oldContent.querySelectorAll('.emoji-slot');
+
+        // Animate slots
         slotIndices.forEach((slotIndex, order) => {
           const delay = order * staggerDelay;
-          const slot = newSlots[slotIndex];
-          const track = slot.querySelector('.emoji-track');
-          const emojiContainers = track.querySelectorAll('.folder-emoji-container');
+          
+          // Target elements
+          const oldSlot = oldSlots[slotIndex];
+          const newSlot = newSlots[slotIndex];
+          
+          const oldEmoji = oldSlot.querySelector('.folder-emoji-container');
+          const newEmoji = newSlot.querySelector('.folder-emoji-container');
 
-          // Find current and target emoji containers
-          const currentEmoji = Array.from(emojiContainers).find(e => e.dataset.folder === oldFolderName);
-          const targetEmoji = Array.from(emojiContainers).find(e => e.dataset.folder === newFolderName);
+          if (!oldEmoji || !newEmoji) return;
 
-          if (!currentEmoji || !targetEmoji) return;
-
-          // Get target's starting position (its data-position tells us where it is)
-          const targetStartPosition = parseInt(targetEmoji.dataset.position);
-          const targetStartY = targetStartPosition * emojiHeight;
-
-          // Animate ONLY the current and target emojis
           setTimeout(() => {
-            // Animate current emoji UP and out (to -48px)
-            const currentAnimation = Motion.animate(currentEmoji, {
+            // Animate OLD emoji UP and OUT
+            Motion.animate(oldEmoji, {
               transform: ['translateY(0px)', 'translateY(-48px)']
             }, {
               duration: 0.4,
               easing: [0.34, 1.8, 0.64, 1] // spring with bounce
             });
 
-            // Animate target emoji UP into view (from its position to 0)
-            const targetAnimation = Motion.animate(targetEmoji, {
-              transform: [`translateY(${targetStartY}px)`, 'translateY(0px)']
+            // Animate NEW emoji UP and IN
+            Motion.animate(newEmoji, {
+              transform: ['translateY(48px)', 'translateY(0px)']
             }, {
               duration: 0.4,
               easing: [0.34, 1.8, 0.64, 1] // spring with bounce
-            });
-
-            // After both animations complete, reset the track
-            Promise.all([currentAnimation.finished, targetAnimation.finished]).then(() => {
-              // RESET: Rebuild track with new order
-              const newTrackOrder = [
-                newFolderName, // Now at position 0
-                ...folderKeys.filter(k => k !== newFolderName) // Others below
-              ];
-
-              const newEmojisHtml = newTrackOrder.map((key, position) => `
-                <div class="folder-emoji-container" data-folder="${key}" data-position="${position}">
-                  <span class="folder-emoji">${appData.folders[key].emoji}</span>
-                </div>
-              `).join('');
-
-              track.innerHTML = newEmojisHtml;
-              track.dataset.currentFolder = newFolderName;
             });
           }, delay);
         });
@@ -613,35 +606,20 @@
         </div>
       `).join('');
 
-      // Get all folder keys in order
-      const folderKeys = Object.keys(appData.folders); // ['money', 'work', 'social', 'vibes']
-      const folderIndex = folderKeys.indexOf(folderName);
+      const folderIndex = Object.keys(appData.folders).indexOf(folderName);
 
-      // Generate emoji slots (3 columns, each with ONE track containing 4 emojis)
-      // Current emoji at position 0 (visible), 3 others below (ready to push up)
-      const emojiSlotsHtml = [0, 1, 2].map(colIndex => {
-        // Order: current folder first, then all others below it
-        const orderedFolders = [
-          folderName, // Current at position 0 (visible)
-          ...folderKeys.filter(k => k !== folderName) // Others at 48px, 96px, 144px (hidden below)
-        ];
-
-        const emojisHtml = orderedFolders.map((key, position) => `
-          <div class="folder-emoji-container" data-folder="${key}" data-position="${position}">
-            <span class="folder-emoji">${appData.folders[key].emoji}</span>
+      // Static emoji slots (simple final state)
+      // We just render the 3 columns with the current emoji.
+      // The animation logic in swapContent will handle the transition.
+      const emojiSlotsHtml = [0, 1, 2].map(colIndex => `
+        <div class="emoji-slot" data-column="${colIndex}">
+          <div class="folder-emoji-container">
+            <span class="folder-emoji">${folder.emoji}</span>
           </div>
-        `).join('');
+        </div>
+      `).join('');
 
-        return `
-          <div class="emoji-slot" data-column="${colIndex}">
-            <div class="emoji-track" data-current-folder="${folderName}">
-              ${emojisHtml}
-            </div>
-          </div>
-        `;
-      }).join('');
-
-      // Complete folder component with persistent emoji system
+      // Complete folder component
       const html = `
         <div class="folder-container" data-current-folder="${folderName}" data-folder-index="${folderIndex}">
           <div class="folder-title-row">
