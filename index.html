@@ -436,12 +436,17 @@
         </div>
       `).join('');
 
-      const html = `
-        <div class="folder-apps-container">
-          <div class="folder-apps-list">
-            ${appsHtml}
-          </div>
-        </div>
+      const html = appsHtml;
+
+      // Add folder-view class to content-area
+      const contentArea = document.querySelector('.content-area');
+      contentArea.classList.add('folder-view');
+
+      // Insert masks and header as siblings to content-area-inner
+      const existingMasks = contentArea.querySelectorAll('.folder-bottom-mask, .folder-top-mask, .folder-title-row');
+      existingMasks.forEach(el => el.remove());
+
+      const masksHtml = `
         <div class="folder-bottom-mask"></div>
         <div class="folder-top-mask"></div>
         <div class="folder-title-row">
@@ -457,10 +462,8 @@
         </div>
       `;
 
-      // Add folder-view class to content-area
-      document.querySelector('.content-area').classList.add('folder-view');
-
       swapContent(html);
+      contentArea.insertAdjacentHTML('beforeend', masksHtml);
     }
 
     function handleMobileFolderClick(folderName) {

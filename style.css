@@ -30,6 +30,14 @@
   --phone-mockup-radius-squircle: 72px;
   --app-icon-radius-ratio-squircle: 0.448;
 
+  /* Folder view spacing */
+  --folder-title-height: 64px;
+  --folder-title-gap: 32px;
+  --folder-top-padding: 96px; /* title height (64px) + gap (32px) */
+  --folder-bottom-padding: 132px;
+  --folder-item-gap: 24px;
+  --folder-mask-height: 132px;
+
   /* Tap target dimensions */
   --widget-width: 139px;
   --widget-height: 152px;
@@ -75,12 +83,20 @@
   box-sizing: border-box;
 }
 
+html {
+  overscroll-behavior: none;
+  overflow: hidden;
+  height: 100%;
+}
+
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-color);
   color: #ffffff;
   overflow-x: hidden;
   min-height: 100vh;
+  overscroll-behavior: none;
+  height: 100%;
 }
 
 /* Desktop View */
@@ -91,6 +107,7 @@ body {
   min-height: 100vh;
   height: 100vh;
   overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .mobile-view {
@@ -117,7 +134,7 @@ body {
 
 /* Folder Detail View - Full height with clipping */
 .content-area.folder-view {
-  padding: 16px 0 0 0;
+  padding: 0;
   gap: 40px;
   overflow: clip;
   position: relative;
@@ -184,6 +201,25 @@ body {
 /* Content Transitions */
 .content-area-inner {
   transition: opacity 200ms ease-out, transform 200ms ease-out, filter 200ms ease-out;
+}
+
+/* Folder view: content-area-inner becomes scrollable container */
+.content-area.folder-view .content-area-inner {
+  flex: 1 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--folder-item-gap);
+  padding: var(--folder-top-padding) 0 var(--folder-bottom-padding) 0;
+  min-height: 0;
+  width: 100%;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* iOS momentum scrolling */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.content-area.folder-view .content-area-inner::-webkit-scrollbar {
+  display: none;
 }
 
 .content-area-inner.transitioning-out {
@@ -435,7 +471,7 @@ body {
   top: 0;
   left: 0;
   width: 360px;
-  height: 64px;
+  height: var(--folder-title-height);
   display: flex;
   align-items: center;
   gap: 8px;
@@ -466,8 +502,10 @@ body {
   min-height: 0;
   width: 100%;
   overflow-y: auto;
+  overscroll-behavior: contain; /* Prevent scroll propagation */
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
+  outline: 3px solid red; /* TEMP: Redline for debugging */
 }
 
 .folder-apps-container::-webkit-scrollbar {
@@ -479,7 +517,7 @@ body {
   top: 0;
   left: 0;
   width: 360px;
-  height: 132px;
+  height: var(--folder-mask-height);
   background: linear-gradient(180deg, var(--bg-color) 0%, transparent 100%);
   pointer-events: none;
   z-index: 2;
@@ -490,7 +528,7 @@ body {
   bottom: 0;
   left: 0;
   width: 360px;
-  height: 132px;
+  height: var(--folder-mask-height);
   background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
   pointer-events: none;
   z-index: 2;
