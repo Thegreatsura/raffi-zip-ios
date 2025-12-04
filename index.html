@@ -26,10 +26,10 @@
           <div class="tap-target tap-app-retro" data-app="retro"></div>
           <div class="tap-target tap-app-icamera" data-app="icamera"></div>
 
-          <div class="tap-target tap-folder-vibes" data-folder="vibes"></div>
-          <div class="tap-target tap-folder-social" data-folder="social"></div>
-          <div class="tap-target tap-folder-health" data-folder="health"></div>
-          <div class="tap-target tap-folder-tools" data-folder="tools"></div>
+          <div class="tap-target tap-folder-vibes" data-folder="money"></div>
+          <div class="tap-target tap-folder-social" data-folder="work"></div>
+          <div class="tap-target tap-folder-health" data-folder="social"></div>
+          <div class="tap-target tap-folder-tools" data-folder="vibes"></div>
 
           <div class="tap-target tap-dock-claude" data-app="claude"></div>
           <div class="tap-target tap-dock-safari" data-app="safari"></div>
@@ -51,13 +51,13 @@
             </div>
             <div class="social-icons">
               <a href="https://x.com" target="_blank" class="social-icon">
-                <img src="assets/social/x.svg" alt="X" />
+                <img src="assets/social/x-icon.svg" alt="X" />
               </a>
               <a href="https://instagram.com" target="_blank" class="social-icon">
-                <img src="assets/social/instagram.svg" alt="Instagram" />
+                <img src="assets/social/instagram-icon.svg" alt="Instagram" />
               </a>
               <a href="https://github.com" target="_blank" class="social-icon">
-                <img src="assets/social/github.svg" alt="GitHub" />
+                <img src="assets/social/github-icon.svg" alt="GitHub" />
               </a>
             </div>
           </div>
@@ -108,7 +108,7 @@
       apps: {
         retro: {
           name: 'Retro',
-          icon: 'assets/icons/retro.png',
+          icon: 'assets/icons/retro.jpg',
           video: 'assets/videos/retro.mp4',
           qrCode: 'assets/qr-codes/retro.png',
           appStoreURL: 'https://apps.apple.com/retro',
@@ -116,7 +116,7 @@
         },
         notes: {
           name: 'Notes',
-          icon: 'assets/icons/notes.png',
+          icon: 'assets/icons/notes.jpg',
           video: 'assets/videos/notes.mp4',
           qrCode: 'assets/qr-codes/notes.png',
           appStoreURL: 'https://apps.apple.com/notes',
@@ -124,7 +124,7 @@
         },
         photos: {
           name: 'Photos',
-          icon: 'assets/icons/photos.png',
+          icon: 'assets/icons/photos.jpg',
           video: 'assets/videos/photos.mp4',
           qrCode: 'assets/qr-codes/photos.png',
           appStoreURL: 'https://apps.apple.com/photos',
@@ -132,7 +132,7 @@
         },
         icamera: {
           name: '!camera',
-          icon: 'assets/icons/icamera.png',
+          icon: 'assets/icons/icamera.jpg',
           video: 'assets/videos/icamera.mp4',
           qrCode: 'assets/qr-codes/icamera.png',
           appStoreURL: 'https://apps.apple.com/icamera',
@@ -173,8 +173,53 @@
       },
 
       folders: {
+        money: {
+          name: 'Money',
+          emoji: '🌳',
+          apps: [
+            { name: 'Capital One', icon: 'assets/icons/capitalone.jpg', description: 'Capital One is one of my credit card apps.' },
+            { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe.' },
+            { name: 'Mercury', icon: 'assets/icons/mercury.jpg', description: 'Mercury is my business banking app.' },
+            { name: 'Venmo', icon: 'assets/icons/venmo.jpg', description: 'Venmo makes splitting bills super easy.' },
+            { name: 'Chase', icon: 'assets/icons/chase.jpg', description: 'Chase is my primary banking app.' },
+            { name: 'Stripe', icon: 'assets/icons/stripe.jpg', description: 'Stripe helps me manage payments for my apps.' },
+            { name: 'Cash App', icon: 'assets/icons/cashapp.jpg', description: 'Cash App is my backup payment app.' },
+            { name: 'Robinhood', icon: 'assets/icons/robinhood.jpg', description: 'Robinhood is where I occasionally trade stocks.' },
+            { name: 'Wallet', icon: 'assets/icons/wallet.jpg', description: 'Wallet stores all my cards and passes.' }
+          ]
+        },
+        work: {
+          name: 'Work',
+          emoji: '💼',
+          apps: [
+            { name: 'Empty', icon: 'assets/icons/empty.jpg', description: 'Empty is a placeholder app.' },
+            { name: 'Numbies', icon: 'assets/icons/numbies.jpg', description: 'Numbies is my favorite calorie tracking app.' },
+            { name: 'Runbuds', icon: 'assets/icons/runbuds.jpg', description: 'Runbuds is a social running app I built with friends.' },
+            { name: 'Shift', icon: 'assets/icons/shift.jpg', description: 'Shift is my gym tracker app that I built.' },
+            { name: 'Shift Dev', icon: 'assets/icons/shift-dev.jpg', description: 'Shift Dev is the development build of my gym app.' },
+            { name: 'Figma', icon: 'assets/icons/figma.jpg', description: 'Figma is where all my design work happens.' },
+            { name: 'App Store', icon: 'assets/icons/appstore.jpg', description: 'App Store is where I download new apps.' },
+            { name: 'TestFlight', icon: 'assets/icons/testflight.jpg', description: 'TestFlight is where I test apps before they go live.' },
+            { name: 'Linear', icon: 'assets/icons/linear.jpg', description: 'Linear is the best project management tool I\'ve used.' }
+          ]
+        },
+        social: {
+          name: 'Social',
+          emoji: '👥',
+          apps: [
+            { name: 'Messages', icon: 'assets/icons/messages.jpg', description: 'Messages is how I stay in touch with my iPhone friends.' },
+            { name: 'WhatsApp', icon: 'assets/icons/whatsapp.jpg', description: 'WhatsApp is essential for staying connected internationally.' },
+            { name: 'Net', icon: 'assets/icons/net.jpg', description: 'Net helps me track my net worth.' },
+            { name: 'X', icon: 'assets/icons/x.jpg', description: 'X (formerly Twitter) is where I keep up with tech news and memes.' },
+            { name: 'TikTok', icon: 'assets/icons/tiktok.jpg', description: 'TikTok is a black hole but the algorithm is incredible.' },
+            { name: 'Bump', icon: 'assets/icons/bump.jpg', description: 'Bump helps track pregnancy milestones week by week.' },
+            { name: 'Instagram', icon: 'assets/icons/instagram.jpg', description: 'Instagram is where I lurk and occasionally post stories.' },
+            { name: 'Messenger', icon: 'assets/icons/messenger.jpg', description: 'Messenger is for my friends who still use Facebook.' },
+            { name: 'YouTube', icon: 'assets/icons/youtube.jpg', description: 'YouTube is my go-to for tutorials and entertainment.' }
+          ]
+        },
         vibes: {
-          name: '(vibes)',
+          name: 'Vibes',
           emoji: '🌏',
           apps: [
             { name: 'Fotmob', icon: 'assets/icons/fotmob.jpg', description: 'Fotmob is how I keep up with the beautiful game.' },
@@ -186,48 +231,6 @@
             { name: 'Arena', icon: 'assets/icons/arena.jpg', description: "Arena is where I've been stashing all of my favorite internet tidbits." },
             { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe.' },
             { name: 'Poolsuite', icon: 'assets/icons/poolsuite.jpg', description: 'Poolsuite has a lovely set of playlists and immaculate UI.' }
-          ]
-        },
-        social: {
-          name: 'Social',
-          emoji: '💬',
-          apps: [
-            { name: 'Messages', icon: 'assets/icons/messages.jpg', description: 'Messages is how I stay in touch with my iPhone friends.' },
-            { name: 'Instagram', icon: 'assets/icons/instagram.jpg', description: 'Instagram is where I lurk and occasionally post stories.' },
-            { name: 'WhatsApp', icon: 'assets/icons/whatsapp.jpg', description: 'WhatsApp is essential for staying connected internationally.' },
-            { name: 'Messenger', icon: 'assets/icons/messenger.jpg', description: 'Messenger is for my friends who still use Facebook.' },
-            { name: 'TikTok', icon: 'assets/icons/tiktok.jpg', description: 'TikTok is a black hole but the algorithm is incredible.' },
-            { name: 'X', icon: 'assets/icons/x.jpg', description: 'X (formerly Twitter) is where I keep up with tech news and memes.' },
-            { name: 'YouTube', icon: 'assets/icons/youtube.jpg', description: 'YouTube is my go-to for tutorials and entertainment.' }
-          ]
-        },
-        health: {
-          name: 'Health',
-          emoji: '❤️',
-          apps: [
-            { name: 'Bump', icon: 'assets/icons/bump.jpg', description: 'Bump helps track pregnancy milestones week by week.' },
-            { name: 'Runbuds', icon: 'assets/icons/runbuds.jpg', description: 'Runbuds is a social running app I built with friends.' },
-            { name: 'Numbies', icon: 'assets/icons/numbies.jpg', description: 'Numbies is my favorite calorie tracking app.' }
-          ]
-        },
-        tools: {
-          name: 'Tools',
-          emoji: '🔧',
-          apps: [
-            { name: 'Figma', icon: 'assets/icons/figma.jpg', description: 'Figma is where all my design work happens.' },
-            { name: 'Linear', icon: 'assets/icons/linear.jpg', description: 'Linear is the best project management tool I\'ve used.' },
-            { name: 'Shift', icon: 'assets/icons/shift.jpg', description: 'Shift is my gym tracker app that I built.' },
-            { name: 'Shift Dev', icon: 'assets/icons/shift-dev.jpg', description: 'Shift Dev is the development build of my gym app.' },
-            { name: 'TestFlight', icon: 'assets/icons/testflight.jpg', description: 'TestFlight is where I test apps before they go live.' },
-            { name: 'Stripe', icon: 'assets/icons/stripe.jpg', description: 'Stripe helps me manage payments for my apps.' },
-            { name: 'Mercury', icon: 'assets/icons/mercury.jpg', description: 'Mercury is my business banking app.' },
-            { name: 'Capital One', icon: 'assets/icons/capitalone.jpg', description: 'Capital One is one of my credit card apps.' },
-            { name: 'Chase', icon: 'assets/icons/chase.jpg', description: 'Chase is my primary banking app.' },
-            { name: 'Robinhood', icon: 'assets/icons/robinhood.jpg', description: 'Robinhood is where I occasionally trade stocks.' },
-            { name: 'Venmo', icon: 'assets/icons/venmo.jpg', description: 'Venmo makes splitting bills super easy.' },
-            { name: 'Cash App', icon: 'assets/icons/cashapp.jpg', description: 'Cash App is my backup payment app.' },
-            { name: 'Wallet', icon: 'assets/icons/wallet.jpg', description: 'Wallet stores all my cards and passes.' },
-            { name: 'Net', icon: 'assets/icons/net.jpg', description: 'Net helps me track my net worth.' }
           ]
         }
       }
@@ -328,15 +331,38 @@
         });
       }
 
-      // Show tap targets on hover
+      // Show tap targets on hover - inverted logic (fade out non-hovered targets)
       document.querySelectorAll('.tap-target').forEach(target => {
         target.addEventListener('mouseenter', () => {
-          target.style.backgroundColor = 'rgba(255, 255, 255, 0.15)';
-          target.style.border = '2px solid rgba(255, 255, 255, 0.4)';
+          // Apply overlay to all OTHER tap targets
+          document.querySelectorAll('.tap-target').forEach(otherTarget => {
+            if (otherTarget !== target) {
+              // Check if it's a dock target (class contains 'tap-dock')
+              const isDockTarget = Array.from(otherTarget.classList).some(cls => cls.includes('tap-dock'));
+
+              // Add longer transition for fade out
+              otherTarget.style.transition = 'background-color 300ms ease-out';
+
+              if (isDockTarget) {
+                // Dock overlay: 70% opacity #534E47
+                otherTarget.style.backgroundColor = 'rgba(83, 78, 71, 0.7)';
+              } else {
+                // App/widget overlay: 70% opacity #312B24
+                otherTarget.style.backgroundColor = 'rgba(49, 43, 36, 0.7)';
+              }
+            } else {
+              // Hovered target: instant transition to clear
+              target.style.transition = 'background-color 0ms';
+              target.style.backgroundColor = 'transparent';
+            }
+          });
         });
         target.addEventListener('mouseleave', () => {
-          target.style.backgroundColor = 'transparent';
-          target.style.border = 'none';
+          // Remove overlays from all tap targets with longer transition
+          document.querySelectorAll('.tap-target').forEach(otherTarget => {
+            otherTarget.style.transition = 'background-color 300ms ease-out';
+            otherTarget.style.backgroundColor = 'transparent';
+          });
         });
       });
 
@@ -377,11 +403,12 @@
       if (!app || !app.longDescription) return;
 
       const html = `
-        <div class="app-detail">
+        <div class="content-header">
           <div class="app-header">
-            <img src="${app.icon}" alt="${app.name}" class="app-icon-large">
-            <h2>${app.name}</h2>
+            <h1>${app.name}</h1>
           </div>
+        </div>
+        <div class="content-body">
           <div class="app-content">
             <p class="app-description">${app.longDescription.replace(/\n/g, '<br><br>')}</p>
             <p class="back-link" onclick="closeOverlay()">Back to home</p>
@@ -391,6 +418,9 @@
           </div>
         </div>
       `;
+
+      // Remove folder-view class from content-area
+      document.querySelector('.content-area').classList.remove('folder-view');
 
       swapContent(html);
     }
@@ -407,18 +437,28 @@
       `).join('');
 
       const html = `
-        <div class="folder-detail">
-          <div class="folder-header">
-            <span class="folder-emoji">${folder.emoji}</span>
-            <h2>${folder.name}</h2>
-          </div>
+        <div class="folder-apps-container">
           <div class="folder-apps-list">
             ${appsHtml}
           </div>
-          <p class="back-link" onclick="closeOverlay()">Back to home</p>
-          <div class="folder-fade"></div>
+        </div>
+        <div class="folder-bottom-mask"></div>
+        <div class="folder-top-mask"></div>
+        <div class="folder-title-row">
+          <div class="folder-emoji-container">
+            <span class="folder-emoji">${folder.emoji}</span>
+          </div>
+          <div class="folder-emoji-container">
+            <span class="folder-emoji">${folder.emoji}</span>
+          </div>
+          <div class="folder-emoji-container">
+            <span class="folder-emoji">${folder.emoji}</span>
+          </div>
         </div>
       `;
+
+      // Add folder-view class to content-area
+      document.querySelector('.content-area').classList.add('folder-view');
 
       swapContent(html);
     }
@@ -447,6 +487,9 @@
     }
 
     function closeOverlay() {
+      // Remove folder-view class from content-area
+      document.querySelector('.content-area').classList.remove('folder-view');
+
       // Desktop: Return to home content
       swapContent(homeContentHTML);
 
