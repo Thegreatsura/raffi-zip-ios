@@ -266,8 +266,26 @@ body {
   overflow: hidden;
 }
 
+/* Frame bezel overlay - sits on TOP of everything to mask video edges at corners */
+.phone-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--phone-frame-radius);
+  /* Recreate the bezel appearance on top of all content */
+  border: var(--phone-frame-padding) solid transparent;
+  background: linear-gradient(180deg, rgba(132, 126, 118, 0.5) 0%, rgba(122, 109, 91, 0.5) 100%) border-box;
+  -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+  z-index: 100;
+}
+
 @supports (corner-shape: squircle) {
-  .phone-frame {
+  .phone-frame,
+  .phone-frame::after {
     border-radius: var(--phone-frame-radius-squircle);
     corner-shape: squircle;
   }

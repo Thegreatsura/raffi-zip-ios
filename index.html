@@ -350,18 +350,18 @@
       video.currentTime = 0;
       video.play();
 
-      // Spring animation: stiffness 400, damping 40
-      const springConfig = { type: "spring", stiffness: 400, damping: 40 };
+      // Spring animation config
+      const springConfig = { type: "spring", stiffness: 400, damping: 40, mass: 1 };
 
       // Animate entire phone screen down (includes home image and masks)
       Motion.animate(phoneScreen,
-        { transform: ['scale(1)', 'scale(0.92)'] },
+        { scale: [1, 0.92] },
         springConfig
       );
 
       // Animate video sheet up
       Motion.animate(video,
-        { transform: ['translateY(650px)', 'translateY(0)'] },
+        { y: [650, 0] },
         springConfig
       );
 
@@ -375,18 +375,18 @@
       const video = activeVideoSheet;
       activeVideoSheet = null;
 
-      // Spring animation: stiffness 400, damping 40
-      const springConfig = { type: "spring", stiffness: 400, damping: 40 };
+      // Spring animation config
+      const springConfig = { type: "spring", stiffness: 400, damping: 40, mass: 1 };
 
       // Animate phone screen back up
       Motion.animate(phoneScreen,
-        { transform: ['scale(0.92)', 'scale(1)'] },
+        { scale: [0.92, 1] },
         springConfig
       );
 
       // Animate video sheet down
       Motion.animate(video,
-        { transform: ['translateY(0)', 'translateY(650px)'] },
+        { y: [0, 650] },
         springConfig
       ).finished.then(() => {
         video.pause();
