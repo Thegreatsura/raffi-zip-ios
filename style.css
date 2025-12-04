@@ -32,11 +32,11 @@
 
   /* Folder view spacing */
   --folder-title-height: 64px;
-  --folder-title-gap: 32px;
-  --folder-top-padding: 96px; /* title height (64px) + gap (32px) */
-  --folder-bottom-padding: 132px;
+  --folder-title-gap: 24px;
+  --folder-top-padding: 88px; /* title height (64px) + gap (24px) */
+  --folder-bottom-padding: 92px;
   --folder-item-gap: 24px;
-  --folder-mask-height: 132px;
+  --folder-mask-height: 140px;
 
   /* Tap target dimensions */
   --widget-width: 139px;
@@ -518,7 +518,14 @@ body {
   left: 0;
   width: 360px;
   height: var(--folder-mask-height);
-  background: linear-gradient(180deg, var(--bg-color) 0%, transparent 100%);
+  background: linear-gradient(180deg,
+    #322C24 0%,
+    rgba(50, 44, 36, 0.87) 20%,
+    rgba(50, 44, 36, 0.64) 40%,
+    rgba(50, 44, 36, 0.36) 60%,
+    rgba(50, 44, 36, 0.13) 80%,
+    transparent 100%
+  );
   pointer-events: none;
   z-index: 2;
 }
@@ -529,7 +536,14 @@ body {
   left: 0;
   width: 360px;
   height: var(--folder-mask-height);
-  background: linear-gradient(180deg, transparent 0%, var(--bg-color) 100%);
+  background: linear-gradient(180deg,
+    transparent 0%,
+    rgba(50, 44, 36, 0.13) 20%,
+    rgba(50, 44, 36, 0.36) 40%,
+    rgba(50, 44, 36, 0.64) 60%,
+    rgba(50, 44, 36, 0.87) 80%,
+    #322C24 100%
+  );
   pointer-events: none;
   z-index: 2;
 }
