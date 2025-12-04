@@ -273,13 +273,15 @@ body {
   }
 }
 
-/* Phone screen - clipping container for sheet transitions */
+/* Phone screen - clipping container for sheet transitions (scales down when video opens) */
 .phone-screen {
   position: absolute;
   inset: var(--phone-frame-padding);
   border-radius: var(--phone-mockup-radius);
   overflow: hidden;
   pointer-events: none;
+  z-index: 1; /* Above sheet-bg (z-index: 0) */
+  transform-origin: center center;
 }
 
 @supports (corner-shape: squircle) {
@@ -289,12 +291,20 @@ body {
   }
 }
 
-/* Sheet background - black layer behind home screen */
+/* Sheet background - black layer that never scales, sits behind phone-screen */
 .sheet-bg {
   position: absolute;
-  inset: 0;
+  inset: var(--phone-frame-padding);
   background: black;
-  z-index: 1;
+  border-radius: var(--phone-mockup-radius);
+  z-index: 0;
+}
+
+@supports (corner-shape: squircle) {
+  .sheet-bg {
+    border-radius: var(--phone-mockup-radius-squircle);
+    corner-shape: squircle;
+  }
 }
 
 .phone-mockup-image {

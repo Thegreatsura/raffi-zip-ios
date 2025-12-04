@@ -16,15 +16,14 @@
       <!-- Phone Mockup with Tap Targets -->
       <div class="phone-container">
         <div class="phone-frame">
-          <!-- Clipping container for sheet transitions -->
-          <div class="phone-screen">
-            <!-- Black background for sheet transitions -->
-            <div class="sheet-bg"></div>
+          <!-- Black backdrop - stays fixed, never scales -->
+          <div class="sheet-bg"></div>
 
+          <!-- Clipping container for sheet transitions (this scales) -->
+          <div class="phone-screen">
             <!-- Phone mockup background image -->
             <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
-
-            </div>
+          </div>
 
           <!-- Video sheets (above tap targets, outside phone-screen for z-index) -->
           <video class="video-sheet" data-app="retro" src="assets/videos/retro.mp4" muted playsinline></video>
@@ -262,6 +261,46 @@
     // Track active video sheet
     let activeVideoSheet = null;
 
+    // Global mouse tracking for cursor pickup after video dismiss
+    let lastMouseX = 0;
+    let lastMouseY = 0;
+    document.addEventListener('mousemove', (e) => {
+      lastMouseX = e.clientX;
+      lastMouseY = e.clientY;
+    });
+
+    // Hover effect helpers (extracted for reuse)
+    function applyHoverEffect(hoveredTarget) {
+      document.querySelectorAll('.tap-target').forEach(otherTarget => {
+        if (otherTarget !== hoveredTarget) {
+          const isDockTarget = Array.from(otherTarget.classList).some(cls => cls.includes('tap-dock'));
+          otherTarget.style.transition = 'background-color 300ms ease-out';
+          if (isDockTarget) {
+            otherTarget.style.backgroundColor = 'rgba(83, 78, 71, 0.7)';
+          } else {
+            otherTarget.style.backgroundColor = 'rgba(49, 43, 36, 0.7)';
+          }
+        } else {
+          hoveredTarget.style.transition = 'background-color 0ms';
+          hoveredTarget.style.backgroundColor = 'transparent';
+        }
+      });
+    }
+
+    function clearHoverEffect() {
+      document.querySelectorAll('.tap-target').forEach(otherTarget => {
+        otherTarget.style.transition = 'background-color 300ms ease-out';
+        otherTarget.style.backgroundColor = 'transparent';
+      });
+    }
+
+    function pickupCursorHover() {
+      const elementUnderCursor = document.elementFromPoint(lastMouseX, lastMouseY);
+      if (elementUnderCursor && elementUnderCursor.classList.contains('tap-target')) {
+        applyHoverEffect(elementUnderCursor);
+      }
+    }
+
     // Store home content HTML for returning to home
     const homeContentHTML = `
       <div class="content-header">
@@ -304,23 +343,26 @@
 
       activeVideoSheet = video;
 
+      // Clear any hover effects when opening video
+      clearHoverEffect();
+
       // Start video playback
       video.currentTime = 0;
       video.play();
 
-      // Spring-like easing
-      const springEasing = [0.25, 1, 0.5, 1];
+      // Spring animation: stiffness 400, damping 40
+      const springConfig = { type: "spring", stiffness: 400, damping: 40 };
 
       // Animate entire phone screen down (includes home image and masks)
       Motion.animate(phoneScreen,
         { transform: ['scale(1)', 'scale(0.92)'] },
-        { duration: 0.5, easing: springEasing }
+        springConfig
       );
 
       // Animate video sheet up
       Motion.animate(video,
         { transform: ['translateY(650px)', 'translateY(0)'] },
-        { duration: 0.5, easing: springEasing }
+        springConfig
       );
 
       return true;
@@ -333,22 +375,28 @@
       const video = activeVideoSheet;
       activeVideoSheet = null;
 
-      const springEasing = [0.25, 1, 0.5, 1];
+      // Spring animation: stiffness 400, damping 40
+      const springConfig = { type: "spring", stiffness: 400, damping: 40 };
 
       // Animate phone screen back up
       Motion.animate(phoneScreen,
         { transform: ['scale(0.92)', 'scale(1)'] },
-        { duration: 0.5, easing: springEasing }
+        springConfig
       );
 
       // Animate video sheet down
       Motion.animate(video,
         { transform: ['translateY(0)', 'translateY(650px)'] },
-        { duration: 0.5, easing: springEasing }
+        springConfig
       ).finished.then(() => {
         video.pause();
         video.currentTime = 0;
+        // Instantly pickup cursor hover state
+        pickupCursorHover();
       });
+
+      // Return RHS to home content
+      swapContent(homeContentHTML);
     }
 
     // Initialize
@@ -555,37 +603,8 @@
 
       // Show tap targets on hover - inverted logic (fade out non-hovered targets)
       document.querySelectorAll('.tap-target').forEach(target => {
-        target.addEventListener('mouseenter', () => {
-          // Apply overlay to all OTHER tap targets
-          document.querySelectorAll('.tap-target').forEach(otherTarget => {
-            if (otherTarget !== target) {
-              // Check if it's a dock target (class contains 'tap-dock')
-              const isDockTarget = Array.from(otherTarget.classList).some(cls => cls.includes('tap-dock'));
-
-              // Add longer transition for fade out
-              otherTarget.style.transition = 'background-color 300ms ease-out';
-
-              if (isDockTarget) {
-                // Dock overlay: 70% opacity #534E47
-                otherTarget.style.backgroundColor = 'rgba(83, 78, 71, 0.7)';
-              } else {
-                // App/widget overlay: 70% opacity #312B24
-                otherTarget.style.backgroundColor = 'rgba(49, 43, 36, 0.7)';
-              }
-            } else {
-              // Hovered target: instant transition to clear
-              target.style.transition = 'background-color 0ms';
-              target.style.backgroundColor = 'transparent';
-            }
-          });
-        });
-        target.addEventListener('mouseleave', () => {
-          // Remove overlays from all tap targets with longer transition
-          document.querySelectorAll('.tap-target').forEach(otherTarget => {
-            otherTarget.style.transition = 'background-color 300ms ease-out';
-            otherTarget.style.backgroundColor = 'transparent';
-          });
-        });
+        target.addEventListener('mouseenter', () => applyHoverEffect(target));
+        target.addEventListener('mouseleave', () => clearHoverEffect());
       });
 
       // Mobile: Widget/app clicks (redirect to App Store)
