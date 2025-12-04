@@ -20,6 +20,16 @@
   --phone-content-inset: 11px;
   --phone-tap-inset: calc(var(--phone-frame-padding) + var(--phone-content-inset)); /* 19px */
 
+  /* Border radius - base values (without squircle) */
+  --phone-frame-radius: 44px;
+  --phone-mockup-radius: 36px;
+  --app-icon-radius-ratio: 0.224;
+
+  /* Border radius - squircle values (2x multiplier) */
+  --phone-frame-radius-squircle: 88px;
+  --phone-mockup-radius-squircle: 72px;
+  --app-icon-radius-ratio-squircle: 0.448;
+
   /* Tap target dimensions */
   --widget-width: 139px;
   --widget-height: 152px;
@@ -211,21 +221,33 @@ body {
   height: 100%;
   position: relative;
   background: linear-gradient(180deg, rgba(132, 126, 118, 0.5) 0%, rgba(122, 109, 91, 0.5) 100%);
-  border-radius: 88px;
-  corner-shape: squircle;
+  border-radius: var(--phone-frame-radius);
   box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 4px 4px 0px rgba(255, 255, 255, 0.25);
   padding: var(--phone-frame-padding);
   overflow: hidden;
+}
+
+@supports (corner-shape: squircle) {
+  .phone-frame {
+    border-radius: var(--phone-frame-radius-squircle);
+    corner-shape: squircle;
+  }
 }
 
 .phone-mockup-image {
   width: 100%;
   height: 100%;
   display: block;
-  border-radius: 72px;
-  corner-shape: squircle;
+  border-radius: var(--phone-mockup-radius);
   object-fit: cover;
   object-position: center;
+}
+
+@supports (corner-shape: squircle) {
+  .phone-mockup-image {
+    border-radius: var(--phone-mockup-radius-squircle);
+    corner-shape: squircle;
+  }
 }
 
 /* Tap Targets - positioned absolutely over the phone image */
@@ -395,10 +417,16 @@ body {
   --qr-size: 84px;
   width: var(--qr-size);
   height: var(--qr-size);
-  corner-shape: squircle;
-  border-radius: calc(var(--qr-size) * 0.448);
+  border-radius: calc(var(--qr-size) * var(--app-icon-radius-ratio));
   border: 1px solid #ffffff;
   padding: 6px;
+}
+
+@supports (corner-shape: squircle) {
+  .qr-code {
+    border-radius: calc(var(--qr-size) * var(--app-icon-radius-ratio-squircle));
+    corner-shape: squircle;
+  }
 }
 
 /* Folder Detail View */
@@ -497,9 +525,15 @@ body {
   --icon-size: 52px;
   width: var(--icon-size);
   height: var(--icon-size);
-  corner-shape: squircle;
-  border-radius: calc(var(--icon-size) * 0.448);
+  border-radius: calc(var(--icon-size) * var(--app-icon-radius-ratio));
   flex-shrink: 0;
+}
+
+@supports (corner-shape: squircle) {
+  .folder-app-icon {
+    border-radius: calc(var(--icon-size) * var(--app-icon-radius-ratio-squircle));
+    corner-shape: squircle;
+  }
 }
 
 .folder-app-description {
@@ -536,8 +570,14 @@ body {
 
 .folder-apps-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
-  corner-shape: squircle;
   border-radius: 3px;
+}
+
+@supports (corner-shape: squircle) {
+  .folder-apps-list::-webkit-scrollbar-thumb {
+    border-radius: 6px;
+    corner-shape: squircle;
+  }
 }
 
 .folder-apps-list::-webkit-scrollbar-thumb:hover {
@@ -625,10 +665,16 @@ body {
   /* Mobile Folder Widget */
   .mobile-folder-widget {
     background: linear-gradient(180deg, #5a554d 0%, #564d41 100%);
-    corner-shape: squircle;
     border-radius: 29px;
     box-shadow: 0px 4px 3px 0px rgba(0, 0, 0, 0.05), inset 0px 1px 3px 0px rgba(255, 255, 255, 0.25);
     padding: 19px;
+  }
+
+  @supports (corner-shape: squircle) {
+    .mobile-folder-widget {
+      border-radius: 58px;
+      corner-shape: squircle;
+    }
   }
 
   .mobile-folder-widget h3 {
