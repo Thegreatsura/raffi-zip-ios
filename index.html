@@ -26,10 +26,10 @@
           </div>
 
           <!-- Video sheets (above tap targets, outside phone-screen for z-index) -->
-          <video class="video-sheet" data-app="retro" src="assets/videos/retro.mp4" muted playsinline></video>
-          <video class="video-sheet" data-app="notes" src="assets/videos/notes.mp4" muted playsinline></video>
-          <video class="video-sheet" data-app="photos" src="assets/videos/photos.mp4" muted playsinline></video>
-          <video class="video-sheet" data-app="notboringcamera" src="assets/videos/notboringcamera.mp4" muted playsinline></video>
+          <video class="video-sheet" data-app="retro" src="assets/videos/retro.mp4" muted playsinline loop></video>
+          <video class="video-sheet" data-app="notes" src="assets/videos/notes.mp4" muted playsinline loop></video>
+          <video class="video-sheet" data-app="photos" src="assets/videos/photos.mp4" muted playsinline loop></video>
+          <video class="video-sheet" data-app="notboringcamera" src="assets/videos/notboringcamera.mp4" muted playsinline loop></video>
 
           <!-- Invisible tap target overlays -->
           <div class="tap-target tap-widget-github" data-app="github"></div>
@@ -597,6 +597,16 @@
       // Close overlay on ESC
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
+          closeOverlay();
+        }
+      });
+
+      // Click on deadspace (content area background) returns to home
+      document.querySelector('.content-area').addEventListener('click', (e) => {
+        // Only trigger if clicking on the container itself or non-interactive children
+        const isInteractive = e.target.closest('a, button, .folder-app-item, .social-icon');
+        const isFolder = contentAreaInner.querySelector('.folder-container');
+        if (!isInteractive && isFolder) {
           closeOverlay();
         }
       });
