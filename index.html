@@ -59,9 +59,9 @@
           </div>
           <div class="content-body">
             <div class="content-text">
-              <p>I'm the founder of Spotted in Prod - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+              <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
               <p>I think our Home Screen setups say a lot about our true preferences, so here's mine.</p>
-              <p>Feel free to tap around or get in touch, and thanks for stopping by.</p>
+              <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
             </div>
             <div class="social-icons">
               <a href="https://x.com/raffichill" target="_blank" class="social-icon">
@@ -270,9 +270,9 @@
       </div>
       <div class="content-body">
         <div class="content-text">
-          <p>I'm the founder of Spotted in Prod - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
-          <p>I think our Home Screen setups show our true preferences about what apps are actually good, so here's mine.</p>
-          <p>You can tap around and explore :)</p>
+          <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+          <p>I think our Home Screen setups say a lot about our true preferences, so here's mine.</p>
+          <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
         </div>
         <div class="social-icons">
           <a href="https://x.com/raffichill" target="_blank" class="social-icon">
@@ -370,6 +370,13 @@
       videoSheets.forEach(video => {
         video.addEventListener('click', closeVideoSheet);
       });
+
+      // "Tap around" link triggers phone shake on hover (delegated for content swaps)
+      document.addEventListener('mouseenter', (e) => {
+        if (e.target.classList.contains('tap-around-link')) {
+          shakePhone();
+        }
+      }, true);
 
       // Reset to home content when phone hides (720px breakpoint)
       let wasPhoneHidden = window.innerWidth <= 720;
@@ -671,6 +678,20 @@
     function closeOverlay() {
       // Return to home content
       swapContent(homeContentHTML);
+    }
+
+    // Shake the phone when "tap around" is clicked
+    function shakePhone() {
+      if (!phoneContainer) return;
+
+      // Scale up and shake keyframes
+      Motion.animate(phoneContainer,
+        {
+          scale: [1, 1.01, 1.01, 1.01, 1.01, 1],
+          rotate: [0, -0.5, 0.5, -0.5, 0.5, 0]
+        },
+        { duration: 0.5, easing: 'ease-in-out' }
+      );
     }
 
     // Start the app

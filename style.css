@@ -181,6 +181,17 @@ body {
   margin-bottom: 0;
 }
 
+/* Inline text links */
+.content-text a {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.content-text a:hover {
+  color: var(--bg-color);
+  background-color: #ffffff;
+}
+
 /* Social Icons */
 .social-icons {
   display: flex;
