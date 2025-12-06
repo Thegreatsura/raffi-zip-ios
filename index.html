@@ -1127,6 +1127,8 @@
 
             // Attach click listeners to folder app items
             function attachFolderItemListeners() {
+                const springConfig = { type: 'spring', stiffness: 300, damping: 24 };
+
                 document.querySelectorAll('.folder-app-item').forEach((item) => {
                     item.addEventListener('click', () => {
                         const index = parseInt(item.dataset.folderAppIndex);
@@ -1134,6 +1136,23 @@
                             selectFolderApp(index);
                         }
                     });
+
+                    // Scale down on press
+                    const scaleDown = () => {
+                        Motion.animate(item, { scale: 0.98 }, springConfig);
+                    };
+
+                    // Scale back up on release
+                    const scaleUp = () => {
+                        Motion.animate(item, { scale: 1 }, springConfig);
+                    };
+
+                    item.addEventListener('mousedown', scaleDown);
+                    item.addEventListener('touchstart', scaleDown, { passive: true });
+                    item.addEventListener('mouseup', scaleUp);
+                    item.addEventListener('mouseleave', scaleUp);
+                    item.addEventListener('touchend', scaleUp);
+                    item.addEventListener('touchcancel', scaleUp);
                 });
             }
 
