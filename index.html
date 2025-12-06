@@ -16,6 +16,9 @@
                 <!-- Phone Mockup with Tap Targets -->
                 <div class="phone-container">
                     <div class="phone-frame">
+                        <!-- Bezel overlay - sits on top to mask video corners with squircle -->
+                        <div class="phone-bezel-overlay"></div>
+
                         <!-- Black backdrop - stays fixed, never scales -->
                         <div class="sheet-bg"></div>
 
@@ -201,6 +204,63 @@
         </div>
 
         <script>
+            // Sampled colors (will be populated from screenshot)
+            let SCREEN_OVERLAY_COLOR = "rgba(26, 25, 21, 0.7)"; // fallback
+            let DOCK_OVERLAY_COLOR = "rgba(36, 35, 31, 0.7)"; // fallback
+            let FRAME_GRADIENT_TOP = "#9C886E"; // fallback
+            let FRAME_GRADIENT_BOTTOM = "#7A6D5B"; // fallback
+
+            // Sample colors from the home screen screenshot
+            function sampleColorsFromScreenshot() {
+                const img = document.querySelector(".phone-mockup-image");
+                if (!img || !img.complete) return;
+
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                ctx.drawImage(img, 0, 0);
+
+                // Sample points (relative to image dimensions)
+                const w = canvas.width;
+                const h = canvas.height;
+
+                // Screen: sample from left edge, ~40% down (avoid status bar and icons)
+                const screenPixel = ctx.getImageData(5, Math.floor(h * 0.4), 1, 1).data;
+                SCREEN_OVERLAY_COLOR = `rgba(${screenPixel[0]}, ${screenPixel[1]}, ${screenPixel[2]}, 0.7)`;
+
+                // Dock: sample from center bottom area (~92% down)
+                const dockPixel = ctx.getImageData(Math.floor(w * 0.5), Math.floor(h * 0.92), 1, 1).data;
+                DOCK_OVERLAY_COLOR = `rgba(${dockPixel[0]}, ${dockPixel[1]}, ${dockPixel[2]}, 0.7)`;
+
+                // Frame gradient: sample from very top and bottom edges
+                const topPixel = ctx.getImageData(Math.floor(w * 0.5), 2, 1, 1).data;
+                const bottomPixel = ctx.getImageData(Math.floor(w * 0.5), h - 3, 1, 1).data;
+                FRAME_GRADIENT_TOP = `rgb(${topPixel[0]}, ${topPixel[1]}, ${topPixel[2]})`;
+                FRAME_GRADIENT_BOTTOM = `rgb(${bottomPixel[0]}, ${bottomPixel[1]}, ${bottomPixel[2]})`;
+
+                // Apply frame gradient to CSS
+                const phoneFrame = document.querySelector(".phone-frame");
+                const bezelOverlay = document.querySelector(".phone-bezel-overlay");
+                const frameGradient = `
+                    radial-gradient(100% 100% at 100% 100%, rgba(255, 0, 98, 0.02) 0%, rgba(0, 255, 255, 0) 100%),
+                    linear-gradient(167deg, ${FRAME_GRADIENT_TOP} 0%, ${FRAME_GRADIENT_BOTTOM} 100%)
+                `;
+                if (phoneFrame) {
+                    phoneFrame.style.background = frameGradient;
+                }
+                if (bezelOverlay) {
+                    bezelOverlay.style.background = frameGradient;
+                }
+
+                console.log("Sampled colors:", {
+                    screen: SCREEN_OVERLAY_COLOR,
+                    dock: DOCK_OVERLAY_COLOR,
+                    frameTop: FRAME_GRADIENT_TOP,
+                    frameBottom: FRAME_GRADIENT_BOTTOM
+                });
+            }
+
             // App data structure based on Figma
             const appData = {
                 apps: {
@@ -553,10 +613,10 @@
                                 "background-color 300ms ease-out";
                             if (isDockTarget) {
                                 otherTarget.style.backgroundColor =
-                                    "rgba(83, 78, 71, 0.7)";
+                                    DOCK_OVERLAY_COLOR;
                             } else {
                                 otherTarget.style.backgroundColor =
-                                    "rgba(49, 43, 36, 0.7)";
+                                    SCREEN_OVERLAY_COLOR;
                             }
                         } else {
                             hoveredTarget.style.transition =
@@ -698,6 +758,16 @@
             function init() {
                 preloadImages();
                 attachEventListeners();
+
+                // Sample colors from screenshot once loaded
+                const mockupImg = document.querySelector(".phone-mockup-image");
+                if (mockupImg) {
+                    if (mockupImg.complete) {
+                        sampleColorsFromScreenshot();
+                    } else {
+                        mockupImg.addEventListener("load", sampleColorsFromScreenshot);
+                    }
+                }
 
                 // Add click handlers to video sheets for dismiss
                 videoSheets.forEach((video) => {
@@ -1299,21 +1369,76 @@
         <!-- Corner smoothing module -->
         <script type="module">
             import { squircleObserver } from "https://esm.sh/corner-smoothing";
+            import { getSvgPath } from "https://esm.sh/figma-squircle";
 
-            // Phone frame: 44px radius
+            // Phone frame: 49px radius
             const phoneFrame = document.querySelector(".phone-frame");
-            if (phoneFrame) squircleObserver(phoneFrame, { cornerRadius: 44 });
+            if (phoneFrame) squircleObserver(phoneFrame, { cornerRadius: 49 });
 
-            // Phone screen & sheet-bg: 36px radius
+            // Bezel overlay: squircle ring mask (outer 49px, inner 40px)
+            const bezelOverlay = document.querySelector(".phone-bezel-overlay");
+            if (bezelOverlay) {
+                const applySquircleMask = () => {
+                    const width = bezelOverlay.clientWidth;
+                    const height = bezelOverlay.clientHeight;
+                    const outerRadius = 49;
+                    const borderWidth = 9;
+                    const innerRadius = outerRadius - borderWidth;
+                    const innerWidth = width - borderWidth * 2;
+                    const innerHeight = height - borderWidth * 2;
+
+                    // Generate outer squircle path
+                    const outerPath = getSvgPath({
+                        width,
+                        height,
+                        cornerRadius: outerRadius,
+                        cornerSmoothing: 1,
+                    });
+
+                    // Generate inner squircle path
+                    const innerPath = getSvgPath({
+                        width: innerWidth,
+                        height: innerHeight,
+                        cornerRadius: innerRadius,
+                        cornerSmoothing: 1,
+                    });
+
+                    // Create SVGs for mask
+                    const outerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="${outerPath}" fill="white"/></svg>`;
+                    const innerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${innerWidth}" height="${innerHeight}"><path d="${innerPath}" fill="white"/></svg>`;
+
+                    // Apply as XOR mask to create ring shape
+                    const outerUrl = `url("data:image/svg+xml,${encodeURIComponent(outerSvg)}")`;
+                    const innerUrl = `url("data:image/svg+xml,${encodeURIComponent(innerSvg)}")`;
+
+                    bezelOverlay.style.webkitMaskImage = `${outerUrl}, ${innerUrl}`;
+                    bezelOverlay.style.maskImage = `${outerUrl}, ${innerUrl}`;
+                    bezelOverlay.style.webkitMaskPosition = `0 0, ${borderWidth}px ${borderWidth}px`;
+                    bezelOverlay.style.maskPosition = `0 0, ${borderWidth}px ${borderWidth}px`;
+                    bezelOverlay.style.webkitMaskSize = `100% 100%, ${innerWidth}px ${innerHeight}px`;
+                    bezelOverlay.style.maskSize = `100% 100%, ${innerWidth}px ${innerHeight}px`;
+                    bezelOverlay.style.webkitMaskRepeat = "no-repeat";
+                    bezelOverlay.style.maskRepeat = "no-repeat";
+                    bezelOverlay.style.webkitMaskComposite = "xor";
+                    bezelOverlay.style.maskComposite = "exclude";
+                };
+
+                // Apply initially and on resize
+                applySquircleMask();
+                const resizeObserver = new ResizeObserver(applySquircleMask);
+                resizeObserver.observe(bezelOverlay);
+            }
+
+            // Phone screen & sheet-bg: 40px radius (49 - 9 padding = concentric)
             const phoneScreen = document.querySelector(".phone-screen");
             const sheetBg = document.querySelector(".sheet-bg");
             if (phoneScreen)
-                squircleObserver(phoneScreen, { cornerRadius: 36 });
-            if (sheetBg) squircleObserver(sheetBg, { cornerRadius: 36 });
+                squircleObserver(phoneScreen, { cornerRadius: 40 });
+            if (sheetBg) squircleObserver(sheetBg, { cornerRadius: 40 });
 
-            // Video sheets: 36px radius
+            // Video sheets: 40px radius
             document.querySelectorAll(".video-sheet").forEach((el) => {
-                squircleObserver(el, { cornerRadius: 36 });
+                squircleObserver(el, { cornerRadius: 40 });
             });
 
             // Dynamic island: pill shape (half of height)
