@@ -5,7 +5,8 @@
         "calt" 1;
 
     /* Colors */
-    --bg-color: #322c24;
+    --bg-color: #433526;
+    --bg-color-rgb: 67, 53, 38; /* RGB of #433526 */
 
     /* Layout spacing */
     --home-top-padding: 223px;
@@ -292,8 +293,12 @@ body {
     height: 100%;
     position: relative;
     background:
-        radial-gradient(100% 100% at 100% 100%, rgba(255, 0, 98, 0.02) 0%, rgba(0, 255, 255, 0) 100%),
-        linear-gradient(167deg, #9C886E 0%, #7A6D5B 100%);
+        radial-gradient(
+            100% 100% at 100% 100%,
+            rgba(255, 0, 98, 0.02) 0%,
+            rgba(0, 255, 255, 0) 100%
+        ),
+        linear-gradient(167deg, #9c886e 0%, #7a6d5b 100%);
     border-radius: var(--phone-frame-radius);
     box-shadow:
         0px 4px 3px 0px rgba(0, 0, 0, 0.05),
@@ -321,8 +326,12 @@ body {
     position: absolute;
     inset: 0;
     background:
-        radial-gradient(100% 100% at 100% 100%, rgba(255, 0, 98, 0.02) 0%, rgba(0, 255, 255, 0) 100%),
-        linear-gradient(167deg, #9C886E 0%, #7A6D5B 100%);
+        radial-gradient(
+            100% 100% at 100% 100%,
+            rgba(255, 0, 98, 0.02) 0%,
+            rgba(0, 255, 255, 0) 100%
+        ),
+        linear-gradient(167deg, #9c886e 0%, #7a6d5b 100%);
     pointer-events: none;
     z-index: 100;
     /* Mask will be applied via JavaScript using squircle paths */
@@ -633,11 +642,11 @@ body {
     height: var(--folder-top-mask-height);
     background: linear-gradient(
         180deg,
-        #322c24 0%,
-        rgba(50, 44, 36, 0.87) 20%,
-        rgba(50, 44, 36, 0.64) 40%,
-        rgba(50, 44, 36, 0.36) 60%,
-        rgba(50, 44, 36, 0.13) 80%,
+        var(--bg-color) 0%,
+        rgba(var(--bg-color-rgb), 0.87) 20%,
+        rgba(var(--bg-color-rgb), 0.64) 40%,
+        rgba(var(--bg-color-rgb), 0.36) 60%,
+        rgba(var(--bg-color-rgb), 0.13) 80%,
         transparent 100%
     );
     pointer-events: none;
@@ -653,11 +662,11 @@ body {
     background: linear-gradient(
         180deg,
         transparent 0%,
-        rgba(50, 44, 36, 0.13) 20%,
-        rgba(50, 44, 36, 0.36) 40%,
-        rgba(50, 44, 36, 0.64) 60%,
-        rgba(50, 44, 36, 0.87) 80%,
-        #322c24 100%
+        rgba(var(--bg-color-rgb), 0.13) 20%,
+        rgba(var(--bg-color-rgb), 0.36) 40%,
+        rgba(var(--bg-color-rgb), 0.64) 60%,
+        rgba(var(--bg-color-rgb), 0.87) 80%,
+        var(--bg-color) 100%
     );
     pointer-events: none;
     z-index: 2;
@@ -709,12 +718,14 @@ body {
 }
 
 .folder-app-item.hover {
-    background-color: var(--folder-item-bg);
+    background-color: rgba(255, 255, 255, 0.08);
+    mix-blend-mode: overlay;
     transition: none;
 }
 
 .folder-app-item.selected {
-    background-color: var(--folder-item-bg);
+    /*background-color: rgba(255, 255, 255, 0.08);*/
+    mix-blend-mode: overlay;
     border-color: var(--folder-item-border-color);
 }
 

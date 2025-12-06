@@ -204,9 +204,9 @@
         </div>
 
         <script>
-            // Sampled colors (will be populated from screenshot)
-            let SCREEN_OVERLAY_COLOR = "rgba(26, 25, 21, 0.7)"; // fallback
-            let DOCK_OVERLAY_COLOR = "rgba(36, 35, 31, 0.7)"; // fallback
+            // Sampled colors (fallbacks match current screenshot)
+            let SCREEN_OVERLAY_COLOR = "rgba(43, 39, 31, 0.7)"; // #2B271F
+            let DOCK_OVERLAY_COLOR = "rgba(52, 46, 39, 0.7)"; // #342E27
             let FRAME_GRADIENT_TOP = "#9C886E"; // fallback
             let FRAME_GRADIENT_BOTTOM = "#7A6D5B"; // fallback
 
@@ -221,16 +221,15 @@
                 canvas.height = img.naturalHeight;
                 ctx.drawImage(img, 0, 0);
 
-                // Sample points (relative to image dimensions)
                 const w = canvas.width;
                 const h = canvas.height;
 
-                // Screen: sample from left edge, ~40% down (avoid status bar and icons)
-                const screenPixel = ctx.getImageData(5, Math.floor(h * 0.4), 1, 1).data;
+                // Screen: sample from left edge, between widget rows (cleaner area)
+                const screenPixel = ctx.getImageData(8, Math.floor(h * 0.35), 1, 1).data;
                 SCREEN_OVERLAY_COLOR = `rgba(${screenPixel[0]}, ${screenPixel[1]}, ${screenPixel[2]}, 0.7)`;
 
-                // Dock: sample from center bottom area (~92% down)
-                const dockPixel = ctx.getImageData(Math.floor(w * 0.5), Math.floor(h * 0.92), 1, 1).data;
+                // Dock: sample from bottom-left corner of dock area (avoids icons)
+                const dockPixel = ctx.getImageData(80, Math.floor(h * 0.94), 1, 1).data;
                 DOCK_OVERLAY_COLOR = `rgba(${dockPixel[0]}, ${dockPixel[1]}, ${dockPixel[2]}, 0.7)`;
 
                 // Frame gradient: sample from very top and bottom edges
