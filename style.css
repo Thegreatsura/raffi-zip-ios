@@ -28,13 +28,10 @@
   --folder-title-gap: 24px;
   --folder-top-padding: 88px; /* title height (64px) + gap (24px) */
   --folder-bottom-padding: 72px;
-  --folder-item-gap: 28px;
   --folder-top-mask-height: 144px;
   --folder-bottom-mask-height: 244px;
 
   /* Folder list styles */
-  --folder-scroll-width-max: 380px;
-  --folder-scroll-width-min: 300px;
   --folder-item-padding-top: 14px;
   --folder-item-padding-right: 24px;
   --folder-item-padding-bottom: 20px;
@@ -150,7 +147,6 @@ body {
   flex-direction: column;
   padding: 16px 0 6px 0;
   gap: var(--content-gap);
-  outline: 2px solid red; /* DEBUG */
   flex-shrink: 1;
   position: relative;
 }
@@ -265,8 +261,6 @@ body {
   gap: var(--folder-item-gap);
   padding: var(--folder-top-padding) 0 var(--folder-bottom-padding) 0;
   min-height: 0;
-  max-width: var(--folder-scroll-width-max);
-  min-width: var(--folder-scroll-width-min);
   width: 100%;
   overflow-y: auto;
   overflow-x: visible;
@@ -274,7 +268,6 @@ body {
   scrollbar-width: none;
   -ms-overflow-style: none;
   z-index: 1;
-  outline: 2px solid blue; /* DEBUG */
 }
 
 .folder-scroll-area::-webkit-scrollbar {
@@ -672,18 +665,16 @@ body {
   align-items: flex-start;
   width: 100%;
   padding: var(--folder-item-padding-top) var(--folder-item-padding-right) var(--folder-item-padding-bottom) var(--folder-item-padding-left);
-  margin-top: calc(-0.5 * var(--folder-item-gap));
-  margin-bottom: calc(-0.5 * var(--folder-item-gap));
   border-radius: var(--folder-item-radius);
   cursor: pointer;
-  transition: background-color 0.15s ease-out, border-color 0.15s ease-out;
+  transition: background-color 140ms ease-out, border-color 140ms ease-out;
   border: 1px solid transparent;
   box-sizing: border-box;
-  outline: 2px solid lime; /* DEBUG */
 }
 
 .folder-app-item:hover {
   background-color: var(--folder-item-bg);
+  transition: none;
 }
 
 .folder-app-item.selected {
