@@ -9,6 +9,7 @@
     "live-server": "^1.2.2"
   },
   "dependencies": {
+    "corner-smoothing": "^0.1.5",
     "motion": "^12.7.4"
   }
 }

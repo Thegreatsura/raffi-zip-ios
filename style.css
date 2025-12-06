@@ -17,15 +17,10 @@
   --phone-content-inset: 11px;
   --phone-tap-inset: calc(var(--phone-frame-padding) + var(--phone-content-inset)); /* 19px */
 
-  /* Border radius - base values (without squircle) */
+  /* Border radius */
   --phone-frame-radius: 44px;
   --phone-mockup-radius: 36px;
   --app-icon-radius-ratio: 0.224;
-
-  /* Border radius - squircle values (2x multiplier) */
-  --phone-frame-radius-squircle: 88px;
-  --phone-mockup-radius-squircle: 72px;
-  --app-icon-radius-ratio-squircle: 0.448;
 
   /* Folder view spacing */
   --folder-title-height: 64px;
@@ -40,8 +35,6 @@
   --dynamic-island-width: 88px;
   --dynamic-island-height: 26px;
   --dynamic-island-top: 10.5px;
-  --dynamic-island-radius: 13px;
-  --dynamic-island-radius-squircle: 52px;  /* 4x for pill squircle */
 
   /* Tap target dimensions */
   --widget-width: 139px;
@@ -302,14 +295,6 @@ body {
   z-index: 100;
 }
 
-@supports (corner-shape: squircle) {
-  .phone-frame,
-  .phone-frame::after {
-    border-radius: var(--phone-frame-radius-squircle);
-    corner-shape: squircle;
-  }
-}
-
 /* Phone screen - clipping container for sheet transitions (scales down when video opens) */
 .phone-screen {
   position: absolute;
@@ -321,13 +306,6 @@ body {
   transform-origin: center center;
 }
 
-@supports (corner-shape: squircle) {
-  .phone-screen {
-    border-radius: var(--phone-mockup-radius-squircle);
-    corner-shape: squircle;
-  }
-}
-
 /* Sheet background - black layer that never scales, sits behind phone-screen */
 .sheet-bg {
   position: absolute;
@@ -335,13 +313,6 @@ body {
   background: black;
   border-radius: var(--phone-mockup-radius);
   z-index: 0;
-}
-
-@supports (corner-shape: squircle) {
-  .sheet-bg {
-    border-radius: var(--phone-mockup-radius-squircle);
-    corner-shape: squircle;
-  }
 }
 
 .phone-mockup-image {
@@ -381,13 +352,6 @@ body {
   cursor: pointer;
   pointer-events: auto;
   border-radius: var(--phone-mockup-radius);
-}
-
-@supports (corner-shape: squircle) {
-  .video-sheet {
-    border-radius: var(--phone-mockup-radius-squircle);
-    corner-shape: squircle;
-  }
 }
 
 /* Tap Targets - positioned absolutely over the phone image */
@@ -562,13 +526,6 @@ body {
   padding: 6px;
 }
 
-@supports (corner-shape: squircle) {
-  .qr-code {
-    border-radius: calc(var(--qr-size) * var(--app-icon-radius-ratio-squircle));
-    corner-shape: squircle;
-  }
-}
-
 /* Folder title row */
 .folder-title-row {
   position: absolute;
@@ -700,13 +657,6 @@ body {
   flex-shrink: 0;
 }
 
-@supports (corner-shape: squircle) {
-  .folder-app-icon {
-    border-radius: calc(var(--icon-size) * var(--app-icon-radius-ratio-squircle));
-    corner-shape: squircle;
-  }
-}
-
 .folder-app-description {
   font-size: var(--list-font-size);
   font-weight: var(--list-font-weight);
@@ -742,13 +692,6 @@ body {
 .folder-apps-list::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
-}
-
-@supports (corner-shape: squircle) {
-  .folder-apps-list::-webkit-scrollbar-thumb {
-    border-radius: 6px;
-    corner-shape: squircle;
-  }
 }
 
 .folder-apps-list::-webkit-scrollbar-thumb:hover {

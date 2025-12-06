@@ -10,17 +10,6 @@
         <script src="https://cdn.jsdelivr.net/npm/motion@12.7.4/dist/motion.js"></script>
     </head>
     <body>
-        <!-- SVG Definitions for squircle clip path -->
-        <svg width="0" height="0" style="position: absolute">
-            <defs>
-                <clipPath id="squircle-clip" clipPathUnits="objectBoundingBox">
-                    <path
-                        d="M0.532 0C0.727 0 0.824 0.000007 0.893 0.050C0.915 0.066 0.934 0.085 0.950 0.107C1 0.176 1 0.273 1 0.468V0.532C1 0.727 1 0.824 0.950 0.893C0.934 0.915 0.915 0.934 0.893 0.950C0.824 1 0.727 1 0.532 1H0.468C0.273 1 0.176 1 0.107 0.950C0.085 0.934 0.066 0.915 0.050 0.893C0.000007 0.824 0 0.727 0 0.532V0.468C0 0.273 0.000007 0.176 0.050 0.107C0.066 0.085 0.085 0.066 0.107 0.050C0.176 0.000007 0.273 0 0.468 0H0.532Z"
-                    />
-                </clipPath>
-            </defs>
-        </svg>
-
         <!-- Desktop View -->
         <div class="desktop-view">
             <div class="main-container">
@@ -1139,6 +1128,40 @@
 
             // Start the app
             init();
+        </script>
+
+        <!-- Corner smoothing module -->
+        <script type="module">
+            import { squircleObserver } from 'https://esm.sh/corner-smoothing';
+
+            // Phone frame: 44px radius
+            const phoneFrame = document.querySelector('.phone-frame');
+            if (phoneFrame) squircleObserver(phoneFrame, { cornerRadius: 44 });
+
+            // Phone screen & sheet-bg: 36px radius
+            const phoneScreen = document.querySelector('.phone-screen');
+            const sheetBg = document.querySelector('.sheet-bg');
+            if (phoneScreen) squircleObserver(phoneScreen, { cornerRadius: 36 });
+            if (sheetBg) squircleObserver(sheetBg, { cornerRadius: 36 });
+
+            // Video sheets: 36px radius
+            document.querySelectorAll('.video-sheet').forEach(el => {
+                squircleObserver(el, { cornerRadius: 36 });
+            });
+
+            // Dynamic island: pill shape (half of height)
+            const dynamicIsland = document.querySelector('.dynamic-island');
+            if (dynamicIsland) squircleObserver(dynamicIsland, { cornerRadius: 13 });
+
+            // App icons in folders: 52px * 0.224 ≈ 11.6px
+            document.querySelectorAll('.folder-app-icon').forEach(el => {
+                squircleObserver(el, { cornerRadius: 11.6 });
+            });
+
+            // QR code: 84px * 0.224 ≈ 18.8px
+            document.querySelectorAll('.qr-code').forEach(el => {
+                squircleObserver(el, { cornerRadius: 18.8 });
+            });
         </script>
     </body>
 </html>
