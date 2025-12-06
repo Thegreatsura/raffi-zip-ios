@@ -1,273 +1,604 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Raffi Chilingaryan</title>
-  <link rel="preconnect" href="https://rsms.me/">
-  <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/motion@12.7.4/dist/motion.js"></script>
-</head>
-<body>
-  <!-- Desktop View -->
-  <div class="desktop-view">
-    <div class="main-container">
-      <!-- Phone Mockup with Tap Targets -->
-      <div class="phone-container">
-        <div class="phone-frame">
-          <!-- Black backdrop - stays fixed, never scales -->
-          <div class="sheet-bg"></div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Raffi Chilingaryan</title>
+        <link rel="preconnect" href="https://rsms.me/" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <link rel="stylesheet" href="style.css" />
+        <script src="https://cdn.jsdelivr.net/npm/motion@12.7.4/dist/motion.js"></script>
+    </head>
+    <body>
+        <!-- SVG Definitions for squircle clip path -->
+        <svg width="0" height="0" style="position: absolute">
+            <defs>
+                <clipPath id="squircle-clip" clipPathUnits="objectBoundingBox">
+                    <path
+                        d="M0.532 0C0.727 0 0.824 0.000007 0.893 0.050C0.915 0.066 0.934 0.085 0.950 0.107C1 0.176 1 0.273 1 0.468V0.532C1 0.727 1 0.824 0.950 0.893C0.934 0.915 0.915 0.934 0.893 0.950C0.824 1 0.727 1 0.532 1H0.468C0.273 1 0.176 1 0.107 0.950C0.085 0.934 0.066 0.915 0.050 0.893C0.000007 0.824 0 0.727 0 0.532V0.468C0 0.273 0.000007 0.176 0.050 0.107C0.066 0.085 0.085 0.066 0.107 0.050C0.176 0.000007 0.273 0 0.468 0H0.532Z"
+                    />
+                </clipPath>
+            </defs>
+        </svg>
 
-          <!-- Clipping container for sheet transitions (this scales) -->
-          <div class="phone-screen">
-            <!-- Phone mockup background image -->
-            <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
-          </div>
+        <!-- Desktop View -->
+        <div class="desktop-view">
+            <div class="main-container">
+                <!-- Phone Mockup with Tap Targets -->
+                <div class="phone-container">
+                    <div class="phone-frame">
+                        <!-- Black backdrop - stays fixed, never scales -->
+                        <div class="sheet-bg"></div>
 
-          <!-- Dynamic Island (outside phone-screen to persist over videos) -->
-          <div class="dynamic-island"></div>
+                        <!-- Clipping container for sheet transitions (this scales) -->
+                        <div class="phone-screen">
+                            <!-- Phone mockup background image -->
+                            <img
+                                src="assets/phone-mockups/home-desktop.jpg"
+                                alt="Home Screen"
+                                class="phone-mockup-image"
+                            />
+                        </div>
 
-          <!-- Video sheets (above tap targets, outside phone-screen for z-index) -->
-          <video class="video-sheet" data-app="retro" src="assets/videos/retro.mp4" muted playsinline loop></video>
-          <video class="video-sheet" data-app="notes" src="assets/videos/notes.mp4" muted playsinline loop></video>
-          <video class="video-sheet" data-app="photos" src="assets/videos/photos.mp4" muted playsinline loop></video>
-          <video class="video-sheet" data-app="notboringcamera" src="assets/videos/notboringcamera.mp4" muted playsinline loop></video>
+                        <!-- Dynamic Island (outside phone-screen to persist over videos) -->
+                        <div class="dynamic-island"></div>
 
-          <!-- Invisible tap target overlays -->
-          <div class="tap-target tap-widget-github" data-app="github"></div>
-          <div class="tap-target tap-widget-spotify" data-app="spotify"></div>
+                        <!-- Video sheets (above tap targets, outside phone-screen for z-index) -->
+                        <video
+                            class="video-sheet"
+                            data-app="retro"
+                            src="assets/videos/retro.mp4"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
+                        <video
+                            class="video-sheet"
+                            data-app="notes"
+                            src="assets/videos/notes.mp4"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
+                        <video
+                            class="video-sheet"
+                            data-app="photos"
+                            src="assets/videos/photos.mp4"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
+                        <video
+                            class="video-sheet"
+                            data-app="notboringcamera"
+                            src="assets/videos/notboringcamera.mp4"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
 
-          <div class="tap-target tap-app-notes" data-app="notes"></div>
-          <div class="tap-target tap-app-photos" data-app="photos"></div>
-          <div class="tap-target tap-app-retro" data-app="retro"></div>
-          <div class="tap-target tap-app-notboringcamera" data-app="notboringcamera"></div>
+                        <!-- Invisible tap target overlays -->
+                        <div
+                            class="tap-target tap-widget-github"
+                            data-app="github"
+                        ></div>
+                        <div
+                            class="tap-target tap-widget-spotify"
+                            data-app="spotify"
+                        ></div>
 
-          <div class="tap-target tap-folder-vibes" data-folder="money"></div>
-          <div class="tap-target tap-folder-social" data-folder="work"></div>
-          <div class="tap-target tap-folder-health" data-folder="social"></div>
-          <div class="tap-target tap-folder-tools" data-folder="vibes"></div>
+                        <div
+                            class="tap-target tap-app-notes"
+                            data-app="notes"
+                        ></div>
+                        <div
+                            class="tap-target tap-app-photos"
+                            data-app="photos"
+                        ></div>
+                        <div
+                            class="tap-target tap-app-retro"
+                            data-app="retro"
+                        ></div>
+                        <div
+                            class="tap-target tap-app-notboringcamera"
+                            data-app="notboringcamera"
+                        ></div>
 
-          <div class="tap-target tap-dock-claude" data-app="claude"></div>
-          <div class="tap-target tap-dock-safari" data-app="safari"></div>
-          <div class="tap-target tap-dock-maps" data-app="maps"></div>
-        </div>
-      </div>
+                        <div
+                            class="tap-target tap-folder-vibes"
+                            data-folder="money"
+                        ></div>
+                        <div
+                            class="tap-target tap-folder-social"
+                            data-folder="work"
+                        ></div>
+                        <div
+                            class="tap-target tap-folder-health"
+                            data-folder="social"
+                        ></div>
+                        <div
+                            class="tap-target tap-folder-tools"
+                            data-folder="vibes"
+                        ></div>
 
-      <!-- Content Area (Right Column) -->
-      <div class="content-area">
-        <div class="content-area-inner">
-          <div class="content-header">
-            <h1>Raffi Chilingaryan</h1>
-          </div>
-          <div class="content-body">
-            <div class="content-text">
-              <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
-              <p>I think our Home Screen setups say a lot about us (at least us who care about apps), so here's mine.</p>
-              <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
+                        <div
+                            class="tap-target tap-dock-claude"
+                            data-app="claude"
+                        ></div>
+                        <div
+                            class="tap-target tap-dock-safari"
+                            data-app="safari"
+                        ></div>
+                        <div
+                            class="tap-target tap-dock-maps"
+                            data-app="maps"
+                        ></div>
+                    </div>
+                </div>
+
+                <!-- Content Area (Right Column) -->
+                <div class="content-area">
+                    <div class="content-area-inner">
+                        <div class="content-header">
+                            <h1>Raffi Chilingaryan</h1>
+                        </div>
+                        <div class="content-body">
+                            <div class="content-text">
+                                <p>
+                                    I'm the founder of
+                                    <a
+                                        href="https://x.com/spottedinprod"
+                                        target="_blank"
+                                        >Spotted in Prod</a
+                                    >
+                                    - a platform that features great iOS apps
+                                    and the developers behind them. I also build
+                                    fitness apps on my own and with friends.
+                                </p>
+                                <p>
+                                    I think our Home Screen setups say a lot
+                                    about us (at least us who care about apps),
+                                    so here's mine.
+                                </p>
+                                <p>
+                                    Feel free to
+                                    <a href="#" class="tap-around-link"
+                                        >tap around</a
+                                    >
+                                    or
+                                    <a
+                                        href="mailto:raffi.chilingaryan@gmail.com"
+                                        >get in touch</a
+                                    >
+                                    and thanks for stopping by.
+                                </p>
+                            </div>
+                            <div class="social-icons">
+                                <a
+                                    href="https://x.com/raffichill"
+                                    target="_blank"
+                                    class="social-icon"
+                                >
+                                    <img
+                                        src="assets/social/x-icon.svg"
+                                        alt="X"
+                                    />
+                                </a>
+                                <a
+                                    href="https://instagram.com/raffichill"
+                                    target="_blank"
+                                    class="social-icon"
+                                >
+                                    <img
+                                        src="assets/social/instagram-icon.svg"
+                                        alt="Instagram"
+                                    />
+                                </a>
+                                <a
+                                    href="https://github.com/raffichill"
+                                    target="_blank"
+                                    class="social-icon"
+                                >
+                                    <img
+                                        src="assets/social/github-icon.svg"
+                                        alt="GitHub"
+                                    />
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="social-icons">
-              <a href="https://x.com/raffichill" target="_blank" class="social-icon">
-                <img src="assets/social/x-icon.svg" alt="X" />
-              </a>
-              <a href="https://instagram.com/raffichill" target="_blank" class="social-icon">
-                <img src="assets/social/instagram-icon.svg" alt="Instagram" />
-              </a>
-              <a href="https://github.com/raffichill" target="_blank" class="social-icon">
-                <img src="assets/social/github-icon.svg" alt="GitHub" />
-              </a>
-            </div>
-          </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <script>
-    // App data structure based on Figma
-    const appData = {
-      apps: {
-        retro: {
-          name: 'Retro',
-          icon: 'assets/icons/retro.jpg',
-          video: 'assets/videos/retro.mp4',
-          qrCode: 'assets/qr-codes/retro.png',
-          appStoreURL: 'https://apps.apple.com/retro',
-          longDescription: 'Retro is the social app that I wish everyone used instead of Instagram. I use it as a personal photo journal and try to get whoever I can to download it.\nYou can send people postcards directly from the app too :) Give it a try with the QR code below.'
-        },
-        notes: {
-          name: 'Notes',
-          icon: 'assets/icons/notes.jpg',
-          video: 'assets/videos/notes.mp4',
-          qrCode: 'assets/qr-codes/notes.png',
-          appStoreURL: 'https://apps.apple.com/notes',
-          longDescription: 'My life runs on Apple Notes. Ive gone back and forth with different todo apps and pen/paper combinations, but Ive most recently landed on Notes for all of my todos, ideas, and document writing (bookmarking is really the only thing I could do in notes that I do on Arena these days). I love shared folders/notes and wish other people used them more. If I could have one wish for 2026 it would be better table formatting.'
-        },
-        photos: {
-          name: 'Photos',
-          icon: 'assets/icons/photos.jpg',
-          video: 'assets/videos/photos.mp4',
-          qrCode: 'assets/qr-codes/photos.png',
-          appStoreURL: 'https://apps.apple.com/photos',
-          longDescription: 'Not much more to say here. Maybe some day my grandchildren will train my AI clone on my camera roll. Discovering awesome camera apps like !camera, Stops, and Soft have given me a stronger incentive to protect my camera roll from screenshots, so despite the task being impossible I try to tend to it often and also use an app called Shutter Declutter.'
-        },
-        notboringcamera: {
-          name: '!Camera',
-          icon: 'assets/icons/notboringcamera.jpg',
-          video: 'assets/videos/notboringcamera.mp4',
-          qrCode: 'assets/qr-codes/notboringcamera.png',
-          appStoreURL: 'https://apps.apple.com/notboringcamera',
-          longDescription: 'Ive bounced between Stops, Soft, and !Camera over the past couple years as my action button but am currently using this guy because I love the Andy and Retro filters on 3x zoom. Its still crazy to me how these little apps have gotten me so much more excited to capture moments in my life and be the person in the friend group that snaps pics. There are so many more out there that I havent even tried (Halide, Dazzcam, the list goes on) but I just cant think of what more I would want and the asallen craft obviously doesnt hurt.'
-        },
-        claude: {
-          name: 'Claude',
-          icon: 'assets/icons/claude.png',
-          video: 'assets/videos/claude.mp4',
-          qrCode: 'assets/qr-codes/claude.png',
-          appStoreURL: 'https://apps.apple.com/claude',
-          longDescription: 'Claude app description...'
-        },
-        safari: {
-          name: 'Safari',
-          icon: 'assets/icons/safari.png',
-          video: 'assets/videos/safari.mp4',
-          qrCode: 'assets/qr-codes/safari.png',
-          appStoreURL: 'https://apps.apple.com/safari',
-          longDescription: 'Safari browser description...'
-        },
-        maps: {
-          name: 'Google Maps',
-          icon: 'assets/icons/maps.png',
-          video: 'assets/videos/maps.mp4',
-          qrCode: 'assets/qr-codes/maps.png',
-          appStoreURL: 'https://apps.apple.com/maps',
-          longDescription: 'Google Maps description...'
-        },
-        github: {
-          name: 'GitHub',
-          appStoreURL: 'https://apps.apple.com/github'
-        },
-        spotify: {
-          name: 'Spotify',
-          appStoreURL: 'https://apps.apple.com/spotify'
-        }
-      },
+        <script>
+            // App data structure based on Figma
+            const appData = {
+                apps: {
+                    retro: {
+                        name: "Retro",
+                        icon: "assets/icons/retro.jpg",
+                        video: "assets/videos/retro.mp4",
+                        qrCode: "assets/qr-codes/retro.png",
+                        appStoreURL: "https://apps.apple.com/retro",
+                        longDescription:
+                            "Retro is the social app that I wish everyone used instead of Instagram. I use it as a personal photo journal and try to get whoever I can to download it.\nYou can send people postcards directly from the app too :) Give it a try with the QR code below.",
+                    },
+                    notes: {
+                        name: "Notes",
+                        icon: "assets/icons/notes.jpg",
+                        video: "assets/videos/notes.mp4",
+                        qrCode: "assets/qr-codes/notes.png",
+                        appStoreURL: "https://apps.apple.com/notes",
+                        longDescription:
+                            "My life runs on Apple Notes. Ive gone back and forth with different todo apps and pen/paper combinations, but Ive most recently landed on Notes for all of my todos, ideas, and document writing (bookmarking is really the only thing I could do in notes that I do on Arena these days). I love shared folders/notes and wish other people used them more. If I could have one wish for 2026 it would be better table formatting.",
+                    },
+                    photos: {
+                        name: "Photos",
+                        icon: "assets/icons/photos.jpg",
+                        video: "assets/videos/photos.mp4",
+                        qrCode: "assets/qr-codes/photos.png",
+                        appStoreURL: "https://apps.apple.com/photos",
+                        longDescription:
+                            "Not much more to say here. Maybe some day my grandchildren will train my AI clone on my camera roll. Discovering awesome camera apps like !camera, Stops, and Soft have given me a stronger incentive to protect my camera roll from screenshots, so despite the task being impossible I try to tend to it often and also use an app called Shutter Declutter.",
+                    },
+                    notboringcamera: {
+                        name: "!Camera",
+                        icon: "assets/icons/notboringcamera.jpg",
+                        video: "assets/videos/notboringcamera.mp4",
+                        qrCode: "assets/qr-codes/notboringcamera.png",
+                        appStoreURL: "https://apps.apple.com/notboringcamera",
+                        longDescription:
+                            "Ive bounced between Stops, Soft, and !Camera over the past couple years as my action button but am currently using this guy because I love the Andy and Retro filters on 3x zoom. Its still crazy to me how these little apps have gotten me so much more excited to capture moments in my life and be the person in the friend group that snaps pics. There are so many more out there that I havent even tried (Halide, Dazzcam, the list goes on) but I just cant think of what more I would want and the asallen craft obviously doesnt hurt.",
+                    },
+                    claude: {
+                        name: "Claude",
+                        icon: "assets/icons/claude.png",
+                        video: "assets/videos/claude.mp4",
+                        qrCode: "assets/qr-codes/claude.png",
+                        appStoreURL: "https://apps.apple.com/claude",
+                        longDescription: "Claude app description...",
+                    },
+                    safari: {
+                        name: "Safari",
+                        icon: "assets/icons/safari.png",
+                        video: "assets/videos/safari.mp4",
+                        qrCode: "assets/qr-codes/safari.png",
+                        appStoreURL: "https://apps.apple.com/safari",
+                        longDescription: "Safari browser description...",
+                    },
+                    maps: {
+                        name: "Google Maps",
+                        icon: "assets/icons/maps.png",
+                        video: "assets/videos/maps.mp4",
+                        qrCode: "assets/qr-codes/maps.png",
+                        appStoreURL: "https://apps.apple.com/maps",
+                        longDescription: "Google Maps description...",
+                    },
+                    github: {
+                        name: "GitHub",
+                        appStoreURL: "https://apps.apple.com/github",
+                    },
+                    spotify: {
+                        name: "Spotify",
+                        appStoreURL: "https://apps.apple.com/spotify",
+                    },
+                },
 
-      folders: {
-        money: {
-          name: 'Money',
-          emoji: '🌳',
-          apps: [
-            { name: 'Capital One', icon: 'assets/icons/capitalone.jpg', description: 'Oh the Capital One Quicksilver 1.5% cash back card... simpler times. This was my first credit card and I think youre not supposed to cancel these or something so I still have it paying for some subscriptions.' },
-            { name: 'WSB', icon: 'assets/icons/wsb.jpg', description: 'I grew up in Watertown, MA (15 min outside of Boston) and mostly keep my local bank account for the nostalgia. Looking at the app icon makes me think of the Dunkin Donuts and 711 around the corner.' },
-            { name: 'Mercury', icon: 'assets/icons/mercury.jpg', description: 'I want Mercury to IPO so I can own some stock. I love this shit so much. Its so good. I love you guys the craft the usability the brand and the product velocity. The idea of winner take all in fintech and banking is really interesting to me.' },
-            { name: 'Venmo', icon: 'assets/icons/venmo.jpg', description: 'Venmooooooooooooo has a solid 5.2/10 UI but its a staple you cant avoid and it completes the grid.' },
-            { name: 'Chase', icon: 'assets/icons/chase.jpg', description: 'I got my first and only big tech job at Shopify instantly bought a Chase Sapphire card. This was one of the biggest simp moves of my life and then I got canned six months later. Also kind of need it because Chase branches are a convenient way to deposit cash and now I have a joint account here so kinda locked in ugh. I just hate it. I hate crusty antiquated UI. Mercury glass ATMs wen.' },
-            { name: 'Stripe', icon: 'assets/icons/stripe.jpg', description: 'For checking Spotted in Prod subscription revenue. I open this app, look at churn, think about how much better our platform could be, and close the app. Thats about it.' },
-            { name: 'Cash App', icon: 'assets/icons/cashapp.jpg', description: 'The downfall of Cash App and recent slight bounceback of Cash App needs to be studied. Obviously there are oodles of talented folks there but how did we lose that rounded font with the iconic white on green and how are there so many hard edges/shadow overflow in the app? It could be perfect but since its not I dont really use it and just let it hang out here for the looks. Cash App Taxes is lovely though.' },
-            { name: 'Robinhood', icon: 'assets/icons/robinhood.jpg', description: 'I like Robinhood. I think about stocks and buy them and I think investing and thinking about the relative market cap of companies is a great way to develop your worldview. I also think HOOD itself is one of the best stocks you could buy. This is financial advice.' },
-            { name: 'Wallet', icon: 'assets/icons/wallet.jpg', description: 'Apple is probably a sleeper financial giant and Wallet is just such a beautiful app. Its on my todo list to think a bit more deeply about how the fintech side of Apple should be factored into the value of the company.' }
-          ]
-        },
-        work: {
-          name: 'Work',
-          emoji: '💼',
-          apps: [
-            { name: 'Empty', icon: 'assets/icons/empty.jpg', description: 'Empty is an intermittent fasting app that I made with Rafael. It was the first app that I shipped that people really loved and continue to use daily. This lovely app icon (along with the 17 alts in the app) was crafted by Hannah Lee.' },
-            { name: 'Numbies', icon: 'assets/icons/numbies.jpg', description: 'Numbies was a social exercise rep counter that allowed you to buzz your friends and track bodyweight exercises together in realtime websocket-based sessions. Anthony and Caleb built this. In hindsight it was a VERY dumb app to build and invest so much effort into. But despite the bummer of putting all that effort into a UI that isnt used by anyone, I still smile when I open it up and tap around. The lesson here is that you might regret the bad idea, but youll never regret doing good work.' },
-            { name: 'Runbuds', icon: 'assets/icons/runbuds.jpg', description: 'Runbuds is my current focus. Rafael, Qasim, Gabriel and I are working on a more expressive social running app.' },
-            { name: 'Shift', icon: 'assets/icons/shift.jpg', description: 'Shift is my only solo iOS build on the App Store and is a fun way for me to learn with Claude code without worrying about breaking prod. Its a utility meant to help you become a morning person by shifting your alarm clock by only a few minutes each day. A simple idea that I believe in.' },
-            { name: 'Shift Dev', icon: 'assets/icons/shift-dev.jpg', description: 'Shift Dev is the development build for Shift. Necessary since Im trying to properly dogfood the process of using the app over the course of weeks and I need to constantly restart and change settings.' },
-            { name: 'Figma', icon: 'assets/icons/figma.jpg', description: 'Ive been building fewer and fewer prototypes in Figma with Claude Code allowing me to prototype rapidly in code, but I still like mirroring initial design concepts and holding things in my hand to think about how an app will really feel at the earliest stage possible.' },
-            { name: 'App Store', icon: 'assets/icons/appstore.jpg', description: 'I am constantly checking ratings, downloads, and using the App Stats shortcut to creep on revenue (reliable idk?) of all the startups that Im a fan of. This is also where I download my new apps. Design award for Shift, Runbuds, or maybe the SIP iOS app is definitely a goal of mine for 2026.' },
-            { name: 'TestFlight', icon: 'assets/icons/testflight.jpg', description: 'Exclusive TestFlights used to be cool but now I think they are cope just SHIP it people!!! Of course time and place but I also just hate seeing the little dot next to apps on my home screen.' },
-            { name: 'Linear', icon: 'assets/icons/linear.jpg', description: 'Linear. Great app. Love watching Gavin keep pushing his craft with highly custom motion. I think the share sheet extension is a bit broken though or was for a bit. I also feel like Im not fully taking advantage of everything Linear has to offer (so many integrations) on desktop but oh well.' }
-          ]
-        },
-        social: {
-          name: 'Social',
-          emoji: '👥',
-          apps: [
-            { name: 'Messages', icon: 'assets/icons/messages.jpg', description: 'Ill never forget the moment from Carl Peis TBPN interview where he was just like "you cant beat blue texts its impossible." Messages is probably the #1 reason to HODL Apple stock until you die.' },
-            { name: 'WhatsApp', icon: 'assets/icons/whatsapp.jpg', description: 'Im looking at this app icon and wishing Telegram was here so I could pay homage to a truly GOATed UI but thats just not true to how I use my phone (I have just enough inernational friends that I need WhatsApp).' },
-            { name: 'Net', icon: 'assets/icons/net.jpg', description: 'Nets email card stack is too good, especially the roundup of non-essential emails that I can simply swipe aside. It seems like multiple teams are trying their hand at email again in the AI era but so far Im riding with Net. Excited to see what they ship on desktop so I can fully ditch Superhuman.' },
-            { name: 'X', icon: 'assets/icons/x.jpg', description: 'X becoming my LinkedIn and basically the foundation of my career was not on my life bingo card I will certainly tell you that. No matter who leads the platform or how the algo changes, the concentration of interesting and talented people who are willing to just yap and connect with each other is the most magical thing ever.' },
-            { name: 'TikTok', icon: 'assets/icons/tiktok.jpg', description: 'If you think you are above TikTok I take issue with that. I understand not having it because its too addictive and you need to go cold turkey, but the quality of short form on this platform is head and shoulders above the rest.' },
-            { name: 'Bump', icon: 'assets/icons/bump.jpg', description: 'The pain of being a millenial is that my friends refuse to download Bump and we cant use it instead of Find my Friends. But Ive got my wife and a few Twitter friends on here so I use it often enough to justify home screen status. Best iOS team in the game right now.' },
-            { name: 'Instagram', icon: 'assets/icons/instagram.jpg', description: 'Ive been trying to use IG more like Retro and post randomly because the grid archive is really nice to have. My content is mostly soccer and sports memes. Kinda want to follow more art & graphic design accounts on here.' },
-            { name: 'Messenger', icon: 'assets/icons/messenger.jpg', description: 'My dad exclusively sends me tennis/soccer reels here and very unfunny epic fail videos that are reminiscient of Americas Funniest Home Videos which we watched together as I was growing up. Also communicate with Armenian friends and family via Messenger for whatever reason.' },
-            { name: 'YouTube', icon: 'assets/icons/youtube.jpg', description: 'I grew up watching soccer skills edits and full game Messi/Neymar highlights on YouTube. I learned my first bit of code by watching React Native tutorials. I still use YouTube every day and I just never think about it as a brand. Its like electricity.' }
-          ]
-        },
-        vibes: {
-          name: 'Vibes',
-          emoji: '🌏',
-          apps: [
-            { name: 'Fotmob', icon: 'assets/icons/fotmob.jpg', description: 'Fotmob is how I keep up with the beautiful game. Im happiest when Im playing soccer, followed by watching soccer, and grew up a Barcelona & Ronaldinho fan. I support Crystal Palace in the Premier League after falling in love with Selhurst Park the one time I was lucky enough to watch a game there.' },
-            { name: 'Radio Garden', icon: 'assets/icons/radiogarden.jpg', description: 'Radio Garden has stations from all over the world. I love using radio to ambiently support language learning (I try to improve my Armenian and Spanish skills every now and then) and its also a gret way to mix it up when you want something a bit different to listen to.' },
-            { name: 'Pokemon', icon: 'assets/icons/pokemontcgp.jpg', description: 'Pokemon artwork will never not give me nostalgia, and Im especially feeling it right now after my first ever Japan trip. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldnt see the light coming from my room.' },
-            { name: 'Anki', icon: 'assets/icons/anki.jpg', description: 'The spaced repetition studying method that smart people swear by, and Anki is the most popular app for it. I started getting into it for my Armenian vocab/alphabet and havent touched the app for months but its one of those things you keep around not to forget about it.' },
-            { name: 'Particle', icon: 'assets/icons/particle.jpg', description: 'Particle is a beautiful and free AI news app. Super fluid navigation, high quality summaries, and tons of fun features like crosswords, political bias comparisons, and more.' },
-            { name: 'GOAT', icon: 'assets/icons/goat.jpg', description: 'Im not a full on sneakerhead but I like sneakers a lot, and GOAT has all the footwear I could ever dream of. Maybe Ill try buying some clothes from there some day as well. Their brand and aesthetic is up there for me. Just need them to bump their font size by like 2pt.' },
-            { name: 'Arena', icon: 'assets/icons/arena.jpg', description: "Yihuis recent v2 iOS build (available on TestFlight for supporters) has finally gotten me fully into Arena. Ive been having so much more fun stashing gems that I find (mostly on twitter) and browsing other peoples collections." },
-            { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe, and theyre the least biased publication with a solid iOS app (IMO).' },
-            { name: 'Poolsuite', icon: 'assets/icons/poolsuite.jpg', description: 'Poolsuite is just such a cool brand, such a great app, and the playlists aint bad either. Marty & co epitomize the level of creativity that all small consumer teams (indie or VC-backed) should aspire to. Theyre clearly just having fun with it.' }
-          ]
-        }
-      }
-    };
+                folders: {
+                    money: {
+                        name: "Money",
+                        emoji: "🌳",
+                        apps: [
+                            {
+                                name: "Capital One",
+                                icon: "assets/icons/capitalone.jpg",
+                                description:
+                                    "Oh the Capital One Quicksilver 1.5% cash back card... simpler times. This was my first credit card and I think youre not supposed to cancel these or something so I still have it paying for some subscriptions.",
+                            },
+                            {
+                                name: "WSB",
+                                icon: "assets/icons/wsb.jpg",
+                                description:
+                                    "I grew up in Watertown, MA (15 min outside of Boston) and mostly keep my local bank account for the nostalgia. Looking at the app icon makes me think of the Dunkin Donuts and 711 around the corner.",
+                            },
+                            {
+                                name: "Mercury",
+                                icon: "assets/icons/mercury.jpg",
+                                description:
+                                    "I want Mercury to IPO so I can own some stock. I love this shit so much. Its so good. I love you guys the craft the usability the brand and the product velocity. The idea of winner take all in fintech and banking is really interesting to me.",
+                            },
+                            {
+                                name: "Venmo",
+                                icon: "assets/icons/venmo.jpg",
+                                description:
+                                    "Venmooooooooooooo has a solid 5.2/10 UI but its a staple you cant avoid and it completes the grid.",
+                            },
+                            {
+                                name: "Chase",
+                                icon: "assets/icons/chase.jpg",
+                                description:
+                                    "I got my first and only big tech job at Shopify instantly bought a Chase Sapphire card. This was one of the biggest simp moves of my life and then I got canned six months later. Also kind of need it because Chase branches are a convenient way to deposit cash and now I have a joint account here so kinda locked in ugh. I just hate it. I hate crusty antiquated UI. Mercury glass ATMs wen.",
+                            },
+                            {
+                                name: "Stripe",
+                                icon: "assets/icons/stripe.jpg",
+                                description:
+                                    "For checking Spotted in Prod subscription revenue. I open this app, look at churn, think about how much better our platform could be, and close the app. Thats about it.",
+                            },
+                            {
+                                name: "Cash App",
+                                icon: "assets/icons/cashapp.jpg",
+                                description:
+                                    "The downfall of Cash App and recent slight bounceback of Cash App needs to be studied. Obviously there are oodles of talented folks there but how did we lose that rounded font with the iconic white on green and how are there so many hard edges/shadow overflow in the app? It could be perfect but since its not I dont really use it and just let it hang out here for the looks. Cash App Taxes is lovely though.",
+                            },
+                            {
+                                name: "Robinhood",
+                                icon: "assets/icons/robinhood.jpg",
+                                description:
+                                    "I like Robinhood. I think about stocks and buy them and I think investing and thinking about the relative market cap of companies is a great way to develop your worldview. I also think HOOD itself is one of the best stocks you could buy. This is financial advice.",
+                            },
+                            {
+                                name: "Wallet",
+                                icon: "assets/icons/wallet.jpg",
+                                description:
+                                    "Apple is probably a sleeper financial giant and Wallet is just such a beautiful app. Its on my todo list to think a bit more deeply about how the fintech side of Apple should be factored into the value of the company.",
+                            },
+                        ],
+                    },
+                    work: {
+                        name: "Work",
+                        emoji: "💼",
+                        apps: [
+                            {
+                                name: "Empty",
+                                icon: "assets/icons/empty.jpg",
+                                description:
+                                    "Empty is an intermittent fasting app that I made with Rafael. It was the first app that I shipped that people really loved and continue to use daily. This lovely app icon (along with the 17 alts in the app) was crafted by Hannah Lee.",
+                            },
+                            {
+                                name: "Numbies",
+                                icon: "assets/icons/numbies.jpg",
+                                description:
+                                    "Numbies was a social exercise rep counter that allowed you to buzz your friends and track bodyweight exercises together in realtime websocket-based sessions. Anthony and Caleb built this. In hindsight it was a VERY dumb app to build and invest so much effort into. But despite the bummer of putting all that effort into a UI that isnt used by anyone, I still smile when I open it up and tap around. The lesson here is that you might regret the bad idea, but youll never regret doing good work.",
+                            },
+                            {
+                                name: "Runbuds",
+                                icon: "assets/icons/runbuds.jpg",
+                                description:
+                                    "Runbuds is my current focus. Rafael, Qasim, Gabriel and I are working on a more expressive social running app.",
+                            },
+                            {
+                                name: "Shift",
+                                icon: "assets/icons/shift.jpg",
+                                description:
+                                    "Shift is my only solo iOS build on the App Store and is a fun way for me to learn with Claude code without worrying about breaking prod. Its a utility meant to help you become a morning person by shifting your alarm clock by only a few minutes each day. A simple idea that I believe in.",
+                            },
+                            {
+                                name: "Shift Dev",
+                                icon: "assets/icons/shift-dev.jpg",
+                                description:
+                                    "Shift Dev is the development build for Shift. Necessary since Im trying to properly dogfood the process of using the app over the course of weeks and I need to constantly restart and change settings.",
+                            },
+                            {
+                                name: "Figma",
+                                icon: "assets/icons/figma.jpg",
+                                description:
+                                    "Ive been building fewer and fewer prototypes in Figma with Claude Code allowing me to prototype rapidly in code, but I still like mirroring initial design concepts and holding things in my hand to think about how an app will really feel at the earliest stage possible.",
+                            },
+                            {
+                                name: "App Store",
+                                icon: "assets/icons/appstore.jpg",
+                                description:
+                                    "I am constantly checking ratings, downloads, and using the App Stats shortcut to creep on revenue (reliable idk?) of all the startups that Im a fan of. This is also where I download my new apps. Design award for Shift, Runbuds, or maybe the SIP iOS app is definitely a goal of mine for 2026.",
+                            },
+                            {
+                                name: "TestFlight",
+                                icon: "assets/icons/testflight.jpg",
+                                description:
+                                    "Exclusive TestFlights used to be cool but now I think they are cope just SHIP it people!!! Of course time and place but I also just hate seeing the little dot next to apps on my home screen.",
+                            },
+                            {
+                                name: "Linear",
+                                icon: "assets/icons/linear.jpg",
+                                description:
+                                    "Linear. Great app. Love watching Gavin keep pushing his craft with highly custom motion. I think the share sheet extension is a bit broken though or was for a bit. I also feel like Im not fully taking advantage of everything Linear has to offer (so many integrations) on desktop but oh well.",
+                            },
+                        ],
+                    },
+                    social: {
+                        name: "Social",
+                        emoji: "👥",
+                        apps: [
+                            {
+                                name: "Messages",
+                                icon: "assets/icons/messages.jpg",
+                                description:
+                                    'Ill never forget the moment from Carl Peis TBPN interview where he was just like "you cant beat blue texts its impossible." Messages is probably the #1 reason to HODL Apple stock until you die.',
+                            },
+                            {
+                                name: "WhatsApp",
+                                icon: "assets/icons/whatsapp.jpg",
+                                description:
+                                    "Im looking at this app icon and wishing Telegram was here so I could pay homage to a truly GOATed UI but thats just not true to how I use my phone (I have just enough inernational friends that I need WhatsApp).",
+                            },
+                            {
+                                name: "Net",
+                                icon: "assets/icons/net.jpg",
+                                description:
+                                    "Nets email card stack is too good, especially the roundup of non-essential emails that I can simply swipe aside. It seems like multiple teams are trying their hand at email again in the AI era but so far Im riding with Net. Excited to see what they ship on desktop so I can fully ditch Superhuman.",
+                            },
+                            {
+                                name: "X",
+                                icon: "assets/icons/x.jpg",
+                                description:
+                                    "X becoming my LinkedIn and basically the foundation of my career was not on my life bingo card I will certainly tell you that. No matter who leads the platform or how the algo changes, the concentration of interesting and talented people who are willing to just yap and connect with each other is the most magical thing ever.",
+                            },
+                            {
+                                name: "TikTok",
+                                icon: "assets/icons/tiktok.jpg",
+                                description:
+                                    "If you think you are above TikTok I take issue with that. I understand not having it because its too addictive and you need to go cold turkey, but the quality of short form on this platform is head and shoulders above the rest.",
+                            },
+                            {
+                                name: "Bump",
+                                icon: "assets/icons/bump.jpg",
+                                description:
+                                    "The pain of being a millenial is that my friends refuse to download Bump and we cant use it instead of Find my Friends. But Ive got my wife and a few Twitter friends on here so I use it often enough to justify home screen status. Best iOS team in the game right now.",
+                            },
+                            {
+                                name: "Instagram",
+                                icon: "assets/icons/instagram.jpg",
+                                description:
+                                    "Ive been trying to use IG more like Retro and post randomly because the grid archive is really nice to have. My content is mostly soccer and sports memes. Kinda want to follow more art & graphic design accounts on here.",
+                            },
+                            {
+                                name: "Messenger",
+                                icon: "assets/icons/messenger.jpg",
+                                description:
+                                    "My dad exclusively sends me tennis/soccer reels here and very unfunny epic fail videos that are reminiscient of Americas Funniest Home Videos which we watched together as I was growing up. Also communicate with Armenian friends and family via Messenger for whatever reason.",
+                            },
+                            {
+                                name: "YouTube",
+                                icon: "assets/icons/youtube.jpg",
+                                description:
+                                    "I grew up watching soccer skills edits and full game Messi/Neymar highlights on YouTube. I learned my first bit of code by watching React Native tutorials. I still use YouTube every day and I just never think about it as a brand. Its like electricity.",
+                            },
+                        ],
+                    },
+                    vibes: {
+                        name: "Vibes",
+                        emoji: "🌏",
+                        apps: [
+                            {
+                                name: "Fotmob",
+                                icon: "assets/icons/fotmob.jpg",
+                                description:
+                                    "Fotmob is how I keep up with the beautiful game. Im happiest when Im playing soccer, followed by watching soccer, and grew up a Barcelona & Ronaldinho fan. I support Crystal Palace in the Premier League after falling in love with Selhurst Park the one time I was lucky enough to watch a game there.",
+                            },
+                            {
+                                name: "Radio Garden",
+                                icon: "assets/icons/radiogarden.jpg",
+                                description:
+                                    "Radio Garden has stations from all over the world. I love using radio to ambiently support language learning (I try to improve my Armenian and Spanish skills every now and then) and its also a gret way to mix it up when you want something a bit different to listen to.",
+                            },
+                            {
+                                name: "Pokemon",
+                                icon: "assets/icons/pokemontcgp.jpg",
+                                description:
+                                    "Pokemon artwork will never not give me nostalgia, and Im especially feeling it right now after my first ever Japan trip. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldnt see the light coming from my room.",
+                            },
+                            {
+                                name: "Anki",
+                                icon: "assets/icons/anki.jpg",
+                                description:
+                                    "The spaced repetition studying method that smart people swear by, and Anki is the most popular app for it. I started getting into it for my Armenian vocab/alphabet and havent touched the app for months but its one of those things you keep around not to forget about it.",
+                            },
+                            {
+                                name: "Particle",
+                                icon: "assets/icons/particle.jpg",
+                                description:
+                                    "Particle is a beautiful and free AI news app. Super fluid navigation, high quality summaries, and tons of fun features like crosswords, political bias comparisons, and more.",
+                            },
+                            {
+                                name: "GOAT",
+                                icon: "assets/icons/goat.jpg",
+                                description:
+                                    "Im not a full on sneakerhead but I like sneakers a lot, and GOAT has all the footwear I could ever dream of. Maybe Ill try buying some clothes from there some day as well. Their brand and aesthetic is up there for me. Just need them to bump their font size by like 2pt.",
+                            },
+                            {
+                                name: "Arena",
+                                icon: "assets/icons/arena.jpg",
+                                description:
+                                    "Yihuis recent v2 iOS build (available on TestFlight for supporters) has finally gotten me fully into Arena. Ive been having so much more fun stashing gems that I find (mostly on twitter) and browsing other peoples collections.",
+                            },
+                            {
+                                name: "WSJ",
+                                icon: "assets/icons/wsj.jpg",
+                                description:
+                                    "The Wall Street Journal is expensive but I dig their vibe, and theyre the least biased publication with a solid iOS app (IMO).",
+                            },
+                            {
+                                name: "Poolsuite",
+                                icon: "assets/icons/poolsuite.jpg",
+                                description:
+                                    "Poolsuite is just such a cool brand, such a great app, and the playlists aint bad either. Marty & co epitomize the level of creativity that all small consumer teams (indie or VC-backed) should aspire to. Theyre clearly just having fun with it.",
+                            },
+                        ],
+                    },
+                },
+            };
 
-    // DOM elements
-    const contentAreaInner = document.querySelector('.content-area-inner');
-    const phoneContainer = document.querySelector('.phone-container');
-    const phoneScreen = document.querySelector('.phone-screen');
-    const videoSheets = document.querySelectorAll('.video-sheet');
+            // DOM elements
+            const contentAreaInner = document.querySelector(
+                ".content-area-inner",
+            );
+            const phoneContainer = document.querySelector(".phone-container");
+            const phoneScreen = document.querySelector(".phone-screen");
+            const videoSheets = document.querySelectorAll(".video-sheet");
 
-    // Track active video sheet
-    let activeVideoSheet = null;
+            // Track active video sheet
+            let activeVideoSheet = null;
 
-    // Global mouse tracking for cursor pickup after video dismiss
-    let lastMouseX = 0;
-    let lastMouseY = 0;
-    document.addEventListener('mousemove', (e) => {
-      lastMouseX = e.clientX;
-      lastMouseY = e.clientY;
-    });
+            // Global mouse tracking for cursor pickup after video dismiss
+            let lastMouseX = 0;
+            let lastMouseY = 0;
+            document.addEventListener("mousemove", (e) => {
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            });
 
-    // Hover effect helpers (extracted for reuse)
-    function applyHoverEffect(hoveredTarget) {
-      document.querySelectorAll('.tap-target').forEach(otherTarget => {
-        if (otherTarget !== hoveredTarget) {
-          const isDockTarget = Array.from(otherTarget.classList).some(cls => cls.includes('tap-dock'));
-          otherTarget.style.transition = 'background-color 300ms ease-out';
-          if (isDockTarget) {
-            otherTarget.style.backgroundColor = 'rgba(83, 78, 71, 0.7)';
-          } else {
-            otherTarget.style.backgroundColor = 'rgba(49, 43, 36, 0.7)';
-          }
-        } else {
-          hoveredTarget.style.transition = 'background-color 0ms';
-          hoveredTarget.style.backgroundColor = 'transparent';
-        }
-      });
-    }
+            // Hover effect helpers (extracted for reuse)
+            function applyHoverEffect(hoveredTarget) {
+                document
+                    .querySelectorAll(".tap-target")
+                    .forEach((otherTarget) => {
+                        if (otherTarget !== hoveredTarget) {
+                            const isDockTarget = Array.from(
+                                otherTarget.classList,
+                            ).some((cls) => cls.includes("tap-dock"));
+                            otherTarget.style.transition =
+                                "background-color 300ms ease-out";
+                            if (isDockTarget) {
+                                otherTarget.style.backgroundColor =
+                                    "rgba(83, 78, 71, 0.7)";
+                            } else {
+                                otherTarget.style.backgroundColor =
+                                    "rgba(49, 43, 36, 0.7)";
+                            }
+                        } else {
+                            hoveredTarget.style.transition =
+                                "background-color 0ms";
+                            hoveredTarget.style.backgroundColor = "transparent";
+                        }
+                    });
+            }
 
-    function clearHoverEffect() {
-      document.querySelectorAll('.tap-target').forEach(otherTarget => {
-        otherTarget.style.transition = 'background-color 300ms ease-out';
-        otherTarget.style.backgroundColor = 'transparent';
-      });
-    }
+            function clearHoverEffect() {
+                document
+                    .querySelectorAll(".tap-target")
+                    .forEach((otherTarget) => {
+                        otherTarget.style.transition =
+                            "background-color 300ms ease-out";
+                        otherTarget.style.backgroundColor = "transparent";
+                    });
+            }
 
-    function pickupCursorHover() {
-      const elementUnderCursor = document.elementFromPoint(lastMouseX, lastMouseY);
-      if (elementUnderCursor && elementUnderCursor.classList.contains('tap-target')) {
-        applyHoverEffect(elementUnderCursor);
-      }
-    }
+            function pickupCursorHover() {
+                const elementUnderCursor = document.elementFromPoint(
+                    lastMouseX,
+                    lastMouseY,
+                );
+                if (
+                    elementUnderCursor &&
+                    elementUnderCursor.classList.contains("tap-target")
+                ) {
+                    applyHoverEffect(elementUnderCursor);
+                }
+            }
 
-    // Store home content HTML for returning to home
-    const homeContentHTML = `
+            // Store home content HTML for returning to home
+            const homeContentHTML = `
       <div class="content-header">
         <h1>Raffi Chilingaryan</h1>
       </div>
@@ -291,174 +622,200 @@
       </div>
     `;
 
-    // Preload all folder app icons for smooth transitions
-    function preloadImages() {
-      Object.values(appData.folders).forEach(folder => {
-        folder.apps.forEach(app => {
-          const img = new Image();
-          img.src = app.icon;
-        });
-      });
-    }
+            // Preload all folder app icons for smooth transitions
+            function preloadImages() {
+                Object.values(appData.folders).forEach((folder) => {
+                    folder.apps.forEach((app) => {
+                        const img = new Image();
+                        img.src = app.icon;
+                    });
+                });
+            }
 
-    // Open video sheet for an app
-    function openVideoSheet(appName) {
-      const video = document.querySelector(`.video-sheet[data-app="${appName}"]`);
-      if (!video) return false;
+            // Open video sheet for an app
+            function openVideoSheet(appName) {
+                const video = document.querySelector(
+                    `.video-sheet[data-app="${appName}"]`,
+                );
+                if (!video) return false;
 
-      activeVideoSheet = video;
+                activeVideoSheet = video;
 
-      // Clear any hover effects when opening video
-      clearHoverEffect();
+                // Clear any hover effects when opening video
+                clearHoverEffect();
 
-      // Start video playback
-      video.currentTime = 0;
-      video.play();
+                // Start video playback
+                video.currentTime = 0;
+                video.play();
 
-      // Spring animation config
-      const springConfig = { type: "spring", stiffness: 400, damping: 40, mass: 1 };
+                // Spring animation config
+                const springConfig = {
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 40,
+                    mass: 1,
+                };
 
-      // Animate entire phone screen down (includes home image and masks)
-      Motion.animate(phoneScreen,
-        { scale: [1, 0.92] },
-        springConfig
-      );
+                // Animate entire phone screen down (includes home image and masks)
+                Motion.animate(phoneScreen, { scale: [1, 0.92] }, springConfig);
 
-      // Animate video sheet up
-      Motion.animate(video,
-        { y: [650, 0] },
-        springConfig
-      );
+                // Animate video sheet up
+                Motion.animate(video, { y: [650, 0] }, springConfig);
 
-      return true;
-    }
+                return true;
+            }
 
-    // Close video sheet
-    function closeVideoSheet() {
-      if (!activeVideoSheet) return;
+            // Close video sheet
+            function closeVideoSheet() {
+                if (!activeVideoSheet) return;
 
-      const video = activeVideoSheet;
-      activeVideoSheet = null;
+                const video = activeVideoSheet;
+                activeVideoSheet = null;
 
-      // Spring animation config
-      const springConfig = { type: "spring", stiffness: 400, damping: 40, mass: 1 };
+                // Spring animation config
+                const springConfig = {
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 40,
+                    mass: 1,
+                };
 
-      // Animate phone screen back up
-      Motion.animate(phoneScreen,
-        { scale: [0.92, 1] },
-        springConfig
-      );
+                // Animate phone screen back up
+                Motion.animate(phoneScreen, { scale: [0.92, 1] }, springConfig);
 
-      // Animate video sheet down
-      Motion.animate(video,
-        { y: [0, 650] },
-        springConfig
-      ).finished.then(() => {
-        video.pause();
-        video.currentTime = 0;
-        // Instantly pickup cursor hover state
-        pickupCursorHover();
-      });
+                // Animate video sheet down
+                Motion.animate(
+                    video,
+                    { y: [0, 650] },
+                    springConfig,
+                ).finished.then(() => {
+                    video.pause();
+                    video.currentTime = 0;
+                    // Instantly pickup cursor hover state
+                    pickupCursorHover();
+                });
 
-      // Return RHS to home content
-      swapContent(homeContentHTML);
-    }
+                // Return RHS to home content
+                swapContent(homeContentHTML);
+            }
 
-    // Initialize
-    function init() {
-      preloadImages();
-      attachEventListeners();
+            // Initialize
+            function init() {
+                preloadImages();
+                attachEventListeners();
 
-      // Add click handlers to video sheets for dismiss
-      videoSheets.forEach(video => {
-        video.addEventListener('click', closeVideoSheet);
-      });
+                // Add click handlers to video sheets for dismiss
+                videoSheets.forEach((video) => {
+                    video.addEventListener("click", closeVideoSheet);
+                });
 
-      // "Tap around" link triggers phone shake on hover (delegated for content swaps)
-      document.addEventListener('mouseenter', (e) => {
-        if (e.target.classList.contains('tap-around-link')) {
-          shakePhone();
-        }
-      }, true);
+                // "Tap around" link triggers phone shake on hover (delegated for content swaps)
+                document.addEventListener(
+                    "mouseenter",
+                    (e) => {
+                        if (e.target.classList.contains("tap-around-link")) {
+                            shakePhone();
+                        }
+                    },
+                    true,
+                );
 
-      // Reset to home content when phone hides (720px breakpoint)
-      let wasPhoneHidden = window.innerWidth <= 720;
-      window.addEventListener('resize', () => {
-        const isPhoneHidden = window.innerWidth <= 720;
-        if (isPhoneHidden && !wasPhoneHidden) {
-          // Just crossed into phone-hidden state - instantly show home content
-          contentAreaInner.innerHTML = homeContentHTML;
-          // Close any open video
-          if (activeVideoSheet) {
-            activeVideoSheet.pause();
-            activeVideoSheet.style.transform = 'translateY(650px)';
-            phoneScreen.style.transform = 'scale(1)';
-            activeVideoSheet = null;
-          }
-        }
-        wasPhoneHidden = isPhoneHidden;
-      });
-    }
+                // Reset to home content when phone hides (720px breakpoint)
+                let wasPhoneHidden = window.innerWidth <= 720;
+                window.addEventListener("resize", () => {
+                    const isPhoneHidden = window.innerWidth <= 720;
+                    if (isPhoneHidden && !wasPhoneHidden) {
+                        // Just crossed into phone-hidden state - instantly show home content
+                        contentAreaInner.innerHTML = homeContentHTML;
+                        // Close any open video
+                        if (activeVideoSheet) {
+                            activeVideoSheet.pause();
+                            activeVideoSheet.style.transform =
+                                "translateY(650px)";
+                            phoneScreen.style.transform = "scale(1)";
+                            activeVideoSheet = null;
+                        }
+                    }
+                    wasPhoneHidden = isPhoneHidden;
+                });
+            }
 
-    // Content swapping with Motion animations
-    function swapContent(newHTML) {
-      // Remove any leftover clones from previous transitions
-      const parent = contentAreaInner.parentElement;
-      const existingClones = Array.from(parent.children).filter(el =>
-        el !== contentAreaInner && el.style.position === 'absolute'
-      );
-      existingClones.forEach(clone => clone.remove());
+            // Content swapping with Motion animations
+            function swapContent(newHTML) {
+                // Remove any leftover clones from previous transitions
+                const parent = contentAreaInner.parentElement;
+                const existingClones = Array.from(parent.children).filter(
+                    (el) =>
+                        el !== contentAreaInner &&
+                        el.style.position === "absolute",
+                );
+                existingClones.forEach((clone) => clone.remove());
 
-      // Get exact position of content-area-inner before cloning
-      const rect = contentAreaInner.getBoundingClientRect();
-      const parentRect = contentAreaInner.parentElement.getBoundingClientRect();
+                // Get exact position of content-area-inner before cloning
+                const rect = contentAreaInner.getBoundingClientRect();
+                const parentRect =
+                    contentAreaInner.parentElement.getBoundingClientRect();
 
-      // Check if this is a folder-to-folder transition
-      const oldIsFolder = contentAreaInner.querySelector('.folder-container');
-      const newIsFolder = newHTML.includes('folder-container');
+                // Check if this is a folder-to-folder transition
+                const oldIsFolder =
+                    contentAreaInner.querySelector(".folder-container");
+                const newIsFolder = newHTML.includes("folder-container");
 
-      // Clone current content for exit animation
-      const oldContent = contentAreaInner.cloneNode(true);
-      oldContent.style.position = 'absolute';
-      oldContent.style.top = (rect.top - parentRect.top) + 'px';
-      oldContent.style.left = (rect.left - parentRect.left) + 'px';
-      oldContent.style.width = rect.width + 'px';
-      oldContent.style.height = rect.height + 'px';
-      oldContent.style.pointerEvents = 'none';
-      contentAreaInner.parentElement.appendChild(oldContent);
+                // Clone current content for exit animation
+                const oldContent = contentAreaInner.cloneNode(true);
+                oldContent.style.position = "absolute";
+                oldContent.style.top = rect.top - parentRect.top + "px";
+                oldContent.style.left = rect.left - parentRect.left + "px";
+                oldContent.style.width = rect.width + "px";
+                oldContent.style.height = rect.height + "px";
+                oldContent.style.pointerEvents = "none";
+                contentAreaInner.parentElement.appendChild(oldContent);
 
-      // Swap content immediately
-      contentAreaInner.innerHTML = newHTML;
+                // Swap content immediately
+                contentAreaInner.innerHTML = newHTML;
 
-      // Folder-to-folder: Emoji slot machine + content cross dissolve
-      if (oldIsFolder && newIsFolder) {
-        // IMMEDIATELY hide new content before browser paints
-        const newScrollArea = contentAreaInner.querySelector('.folder-scroll-area');
-        const newSlots = contentAreaInner.querySelectorAll('.emoji-slot');
+                // Folder-to-folder: Emoji slot machine + content cross dissolve
+                if (oldIsFolder && newIsFolder) {
+                    // IMMEDIATELY hide new content before browser paints
+                    const newScrollArea = contentAreaInner.querySelector(
+                        ".folder-scroll-area",
+                    );
+                    const newSlots =
+                        contentAreaInner.querySelectorAll(".emoji-slot");
 
-        // Hide new scroll area and masks (masks stay hidden - old ones remain visible)
-        newScrollArea.style.opacity = '0';
-        contentAreaInner.querySelector('.folder-top-mask').style.opacity = '0';
-        contentAreaInner.querySelector('.folder-bottom-mask').style.opacity = '0';
-        newSlots.forEach(s => s.style.visibility = 'hidden');
+                    // Hide new scroll area and masks (masks stay hidden - old ones remain visible)
+                    newScrollArea.style.opacity = "0";
+                    contentAreaInner.querySelector(
+                        ".folder-top-mask",
+                    ).style.opacity = "0";
+                    contentAreaInner.querySelector(
+                        ".folder-bottom-mask",
+                    ).style.opacity = "0";
+                    newSlots.forEach((s) => (s.style.visibility = "hidden"));
 
-        // Now safe to do reflow-triggering operations
-        const oldFolderName = oldContent.querySelector('.folder-container').dataset.currentFolder;
-        const newFolderName = contentAreaInner.querySelector('.folder-container').dataset.currentFolder;
-        const oldEmojiChar = appData.folders[oldFolderName].emoji;
-        const newEmojiChar = appData.folders[newFolderName].emoji;
+                    // Now safe to do reflow-triggering operations
+                    const oldFolderName =
+                        oldContent.querySelector(".folder-container").dataset
+                            .currentFolder;
+                    const newFolderName =
+                        contentAreaInner.querySelector(".folder-container")
+                            .dataset.currentFolder;
+                    const oldEmojiChar = appData.folders[oldFolderName].emoji;
+                    const newEmojiChar = appData.folders[newFolderName].emoji;
 
-        // Get slot positions (from old content to avoid any flash)
-        const oldSlots = oldContent.querySelectorAll('.emoji-slot');
-        const slotRects = Array.from(oldSlots).map(slot => slot.getBoundingClientRect());
+                    // Get slot positions (from old content to avoid any flash)
+                    const oldSlots = oldContent.querySelectorAll(".emoji-slot");
+                    const slotRects = Array.from(oldSlots).map((slot) =>
+                        slot.getBoundingClientRect(),
+                    );
 
-        // Hide old emoji slots too
-        oldSlots.forEach(s => s.style.visibility = 'hidden');
+                    // Hide old emoji slots too
+                    oldSlots.forEach((s) => (s.style.visibility = "hidden"));
 
-        // Create floating slot machines at exact positions
-        const floatingSlots = slotRects.map(rect => {
-          const slot = document.createElement('div');
-          slot.style.cssText = `
+                    // Create floating slot machines at exact positions
+                    const floatingSlots = slotRects.map((rect) => {
+                        const slot = document.createElement("div");
+                        slot.style.cssText = `
             position: fixed;
             top: ${rect.top}px;
             left: ${rect.left}px;
@@ -469,9 +826,10 @@
             pointer-events: none;
           `;
 
-          const reel = document.createElement('div');
-          reel.style.cssText = 'display: flex; flex-direction: column;';
-          reel.innerHTML = `
+                        const reel = document.createElement("div");
+                        reel.style.cssText =
+                            "display: flex; flex-direction: column;";
+                        reel.innerHTML = `
             <div style="width:48px;height:48px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
               <span style="font-size:42px;line-height:1;letter-spacing:-0.42px;">${oldEmojiChar}</span>
             </div>
@@ -480,150 +838,209 @@
             </div>
           `;
 
-          slot.appendChild(reel);
-          document.body.appendChild(slot);
-          return { slot, reel };
-        });
+                        slot.appendChild(reel);
+                        document.body.appendChild(slot);
+                        return { slot, reel };
+                    });
 
-        // Animate floating slots (staggered, random order)
-        const slotIndices = [0, 1, 2].sort(() => Math.random() - 0.5);
-        slotIndices.forEach((slotIndex, order) => {
-          setTimeout(() => {
-            const { slot, reel } = floatingSlots[slotIndex];
-            Motion.animate(reel, { transform: ['translateY(0)', 'translateY(-48px)'] }, {
-              duration: 0.4,
-              easing: [0.34, 1.8, 0.64, 1]
-            }).finished.then(() => {
-              slot.remove();
-              newSlots[slotIndex].style.visibility = 'visible';
-            });
-          }, order * 60);
-        });
+                    // Animate floating slots (staggered, random order)
+                    const slotIndices = [0, 1, 2].sort(
+                        () => Math.random() - 0.5,
+                    );
+                    slotIndices.forEach((slotIndex, order) => {
+                        setTimeout(() => {
+                            const { slot, reel } = floatingSlots[slotIndex];
+                            Motion.animate(
+                                reel,
+                                {
+                                    transform: [
+                                        "translateY(0)",
+                                        "translateY(-48px)",
+                                    ],
+                                },
+                                {
+                                    duration: 0.4,
+                                    easing: [0.34, 1.8, 0.64, 1],
+                                },
+                            ).finished.then(() => {
+                                slot.remove();
+                                newSlots[slotIndex].style.visibility =
+                                    "visible";
+                            });
+                        }, order * 60);
+                    });
 
-        // Cross dissolve scroll areas only (masks stay static - old ones visible throughout)
-        const oldScrollArea = oldContent.querySelector('.folder-scroll-area');
+                    // Cross dissolve scroll areas only (masks stay static - old ones visible throughout)
+                    const oldScrollArea = oldContent.querySelector(
+                        ".folder-scroll-area",
+                    );
 
-        // Prep GPU layers
-        oldScrollArea.style.willChange = 'opacity';
-        newScrollArea.style.willChange = 'opacity';
+                    // Prep GPU layers
+                    oldScrollArea.style.willChange = "opacity";
+                    newScrollArea.style.willChange = "opacity";
 
-        // Cross-fade scroll areas
-        Motion.animate(oldScrollArea, { opacity: [1, 0] }, { duration: 0.3, easing: 'ease-out' });
-        Motion.animate(newScrollArea, { opacity: [0, 1] }, { duration: 0.3, easing: 'ease-out' })
-          .finished.then(() => {
-            // Clean up - reveal new masks, remove old content
-            newScrollArea.style.willChange = '';
-            newScrollArea.style.opacity = '';
-            contentAreaInner.querySelector('.folder-top-mask').style.opacity = '';
-            contentAreaInner.querySelector('.folder-bottom-mask').style.opacity = '';
-            oldContent.remove();
-          });
+                    // Cross-fade scroll areas
+                    Motion.animate(
+                        oldScrollArea,
+                        { opacity: [1, 0] },
+                        { duration: 0.3, easing: "ease-out" },
+                    );
+                    Motion.animate(
+                        newScrollArea,
+                        { opacity: [0, 1] },
+                        { duration: 0.3, easing: "ease-out" },
+                    ).finished.then(() => {
+                        // Clean up - reveal new masks, remove old content
+                        newScrollArea.style.willChange = "";
+                        newScrollArea.style.opacity = "";
+                        contentAreaInner.querySelector(
+                            ".folder-top-mask",
+                        ).style.opacity = "";
+                        contentAreaInner.querySelector(
+                            ".folder-bottom-mask",
+                        ).style.opacity = "";
+                        oldContent.remove();
+                    });
+                } else {
+                    // Normal animation for non-folder transitions
 
-      } else {
-        // Normal animation for non-folder transitions
+                    // Set initial state for new content
+                    contentAreaInner.style.opacity = "0";
+                    contentAreaInner.style.transform = "translateY(0px)";
+                    contentAreaInner.style.filter = "blur(0px)";
 
-        // Set initial state for new content
-        contentAreaInner.style.opacity = '0';
-        contentAreaInner.style.transform = 'translateY(0px)';
-        contentAreaInner.style.filter = 'blur(0px)';
+                    // Exit animation on clone: 400ms, ease-out
+                    Motion.animate(
+                        oldContent,
+                        {
+                            opacity: [1, 0],
+                            transform: ["translateY(0)", "translateY(0px)"],
+                            filter: ["blur(0)", "blur(0px)"],
+                        },
+                        {
+                            duration: 0.4,
+                            easing: "ease-out",
+                        },
+                    ).finished.then(() => {
+                        oldContent.remove();
+                    });
 
-        // Exit animation on clone: 400ms, ease-out
-        Motion.animate(oldContent, {
-          opacity: [1, 0],
-          transform: ['translateY(0)', 'translateY(0px)'],
-          filter: ['blur(0)', 'blur(0px)']
-        }, {
-          duration: 0.4,
-          easing: 'ease-out'
-        }).finished.then(() => {
-          oldContent.remove();
-        });
+                    // Entrance animation on new content: 400ms
+                    Motion.animate(
+                        contentAreaInner,
+                        {
+                            transform: ["translateY(0px)", "translateY(0)"],
+                        },
+                        {
+                            duration: 0.4,
+                            easing: [0.34, 1.56, 0.64, 1],
+                        },
+                    );
 
-        // Entrance animation on new content: 400ms
-        Motion.animate(contentAreaInner, {
-          transform: ['translateY(0px)', 'translateY(0)']
-        }, {
-          duration: 0.4,
-          easing: [0.34, 1.56, 0.64, 1]
-        });
+                    Motion.animate(
+                        contentAreaInner,
+                        {
+                            opacity: [0, 1],
+                            filter: ["blur(12px)", "blur(0)"],
+                        },
+                        {
+                            duration: 0.4,
+                            easing: "ease-in",
+                        },
+                    ).finished.then(() => {
+                        contentAreaInner.style.opacity = "";
+                        contentAreaInner.style.transform = "";
+                        contentAreaInner.style.filter = "";
+                    });
+                }
+            }
 
-        Motion.animate(contentAreaInner, {
-          opacity: [0, 1],
-          filter: ['blur(12px)', 'blur(0)']
-        }, {
-          duration: 0.4,
-          easing: 'ease-in'
-        }).finished.then(() => {
-          contentAreaInner.style.opacity = '';
-          contentAreaInner.style.transform = '';
-          contentAreaInner.style.filter = '';
-        });
-      }
-    }
+            function attachEventListeners() {
+                // Desktop: App tap targets
+                document
+                    .querySelectorAll(".desktop-view .tap-target[data-app]")
+                    .forEach((el) => {
+                        el.addEventListener("click", () =>
+                            handleAppClick(el.dataset.app),
+                        );
+                    });
 
-    function attachEventListeners() {
-      // Desktop: App tap targets
-      document.querySelectorAll('.desktop-view .tap-target[data-app]').forEach(el => {
-        el.addEventListener('click', () => handleAppClick(el.dataset.app));
-      });
+                // Desktop: Folder tap targets
+                document
+                    .querySelectorAll(".desktop-view .tap-target[data-folder]")
+                    .forEach((el) => {
+                        el.addEventListener("click", () =>
+                            handleFolderClick(el.dataset.folder),
+                        );
+                    });
 
-      // Desktop: Folder tap targets
-      document.querySelectorAll('.desktop-view .tap-target[data-folder]').forEach(el => {
-        el.addEventListener('click', () => handleFolderClick(el.dataset.folder));
-      });
+                // Desktop: Phone hover effect (1% scale)
+                if (phoneContainer) {
+                    let isHovering = false;
+                    phoneContainer.addEventListener("mouseenter", () => {
+                        isHovering = true;
+                        Motion.animate(
+                            phoneContainer,
+                            { scale: 1.01 },
+                            {
+                                duration: 0.15,
+                                easing: "ease-out",
+                            },
+                        );
+                    });
+                    phoneContainer.addEventListener("mouseleave", () => {
+                        isHovering = false;
+                        Motion.animate(
+                            phoneContainer,
+                            { scale: 1 },
+                            {
+                                duration: 0.15,
+                                easing: "ease-out",
+                            },
+                        );
+                    });
+                }
 
-      // Desktop: Phone hover effect (1% scale)
-      if (phoneContainer) {
-        let isHovering = false;
-        phoneContainer.addEventListener('mouseenter', () => {
-          isHovering = true;
-          Motion.animate(phoneContainer, { scale: 1.01 }, {
-            duration: 0.15,
-            easing: 'ease-out'
-          });
-        });
-        phoneContainer.addEventListener('mouseleave', () => {
-          isHovering = false;
-          Motion.animate(phoneContainer, { scale: 1 }, {
-            duration: 0.15,
-            easing: 'ease-out'
-          });
-        });
-      }
+                // Show tap targets on hover - inverted logic (fade out non-hovered targets)
+                document.querySelectorAll(".tap-target").forEach((target) => {
+                    target.addEventListener("mouseenter", () =>
+                        applyHoverEffect(target),
+                    );
+                    target.addEventListener("mouseleave", () =>
+                        clearHoverEffect(),
+                    );
+                });
 
-      // Show tap targets on hover - inverted logic (fade out non-hovered targets)
-      document.querySelectorAll('.tap-target').forEach(target => {
-        target.addEventListener('mouseenter', () => applyHoverEffect(target));
-        target.addEventListener('mouseleave', () => clearHoverEffect());
-      });
+                // Close overlay on ESC
+                document.addEventListener("keydown", (e) => {
+                    if (e.key === "Escape") {
+                        closeOverlay();
+                    }
+                });
 
-      // Close overlay on ESC
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          closeOverlay();
-        }
-      });
+                // Click on phone deadspace (not app/widget) returns to home when folder is open
+                document
+                    .querySelector(".phone-frame")
+                    .addEventListener("click", (e) => {
+                        // Only trigger if clicking on deadspace (not a tap target)
+                        const isTapTarget = e.target.closest(".tap-target");
+                        const isFolder =
+                            contentAreaInner.querySelector(".folder-container");
+                        if (!isTapTarget && isFolder) {
+                            closeOverlay();
+                        }
+                    });
+            }
 
-      // Click on phone deadspace (not app/widget) returns to home when folder is open
-      document.querySelector('.phone-frame').addEventListener('click', (e) => {
-        // Only trigger if clicking on deadspace (not a tap target)
-        const isTapTarget = e.target.closest('.tap-target');
-        const isFolder = contentAreaInner.querySelector('.folder-container');
-        if (!isTapTarget && isFolder) {
-          closeOverlay();
-        }
-      });
-    }
+            function handleAppClick(appName) {
+                // Try to open video sheet
+                openVideoSheet(appName);
 
-    function handleAppClick(appName) {
-      // Try to open video sheet
-      openVideoSheet(appName);
+                // ALWAYS show app info on RHS (if available)
+                const app = appData.apps[appName];
+                if (!app || !app.longDescription) return;
 
-      // ALWAYS show app info on RHS (if available)
-      const app = appData.apps[appName];
-      if (!app || !app.longDescription) return;
-
-      const html = `
+                const html = `
         <div class="content-header">
           <div class="app-header">
             <h1>${app.name}</h1>
@@ -631,7 +1048,7 @@
         </div>
         <div class="content-body">
           <div class="app-content">
-            <p class="app-description">${app.longDescription.replace(/\n/g, '<br><br>')}</p>
+            <p class="app-description">${app.longDescription.replace(/\n/g, "<br><br>")}</p>
             <p class="back-link" onclick="closeOverlay()">Back to home</p>
           </div>
           <div class="qr-container">
@@ -640,39 +1057,51 @@
         </div>
       `;
 
-      swapContent(html);
-    }
+                swapContent(html);
+            }
 
-    function handleFolderClick(folderName) {
-      const folder = appData.folders[folderName];
-      if (!folder) return;
+            function handleFolderClick(folderName) {
+                const folder = appData.folders[folderName];
+                if (!folder) return;
 
-      // Don't animate if already showing this folder
-      const currentFolder = contentAreaInner.querySelector('.folder-container')?.dataset.currentFolder;
-      if (currentFolder === folderName) return;
+                // Don't animate if already showing this folder
+                const currentFolder =
+                    contentAreaInner.querySelector(".folder-container")?.dataset
+                        .currentFolder;
+                if (currentFolder === folderName) return;
 
-      const appsHtml = folder.apps.map(app => `
+                const appsHtml = folder.apps
+                    .map(
+                        (app) => `
         <div class="folder-app-item">
           <img src="${app.icon}" alt="${app.name}" class="folder-app-icon">
-          <p class="folder-app-description"><span class="app-name">${app.name}</span> ${app.description.replace(app.name, '')}</p>
+          <p class="folder-app-description"><span class="app-name">${app.name}</span> ${app.description.replace(app.name, "")}</p>
         </div>
-      `).join('');
+      `,
+                    )
+                    .join("");
 
-      const folderIndex = Object.keys(appData.folders).indexOf(folderName);
+                const folderIndex = Object.keys(appData.folders).indexOf(
+                    folderName,
+                );
 
-      // Static emoji slots (simple final state)
-      // We just render the 3 columns with the current emoji.
-      // The animation logic in swapContent will handle the transition.
-      const emojiSlotsHtml = [0, 1, 2].map(colIndex => `
+                // Static emoji slots (simple final state)
+                // We just render the 3 columns with the current emoji.
+                // The animation logic in swapContent will handle the transition.
+                const emojiSlotsHtml = [0, 1, 2]
+                    .map(
+                        (colIndex) => `
         <div class="emoji-slot" data-column="${colIndex}">
           <div class="folder-emoji-container">
             <span class="folder-emoji">${folder.emoji}</span>
           </div>
         </div>
-      `).join('');
+      `,
+                    )
+                    .join("");
 
-      // Complete folder component
-      const html = `
+                // Complete folder component
+                const html = `
         <div class="folder-container" data-current-folder="${folderName}" data-folder-index="${folderIndex}">
           <div class="folder-title-row">
             ${emojiSlotsHtml}
@@ -685,30 +1114,31 @@
         </div>
       `;
 
-      swapContent(html);
-    }
+                swapContent(html);
+            }
 
-    function closeOverlay() {
-      // Return to home content
-      swapContent(homeContentHTML);
-    }
+            function closeOverlay() {
+                // Return to home content
+                swapContent(homeContentHTML);
+            }
 
-    // Shake the phone when "tap around" is clicked
-    function shakePhone() {
-      if (!phoneContainer) return;
+            // Shake the phone when "tap around" is clicked
+            function shakePhone() {
+                if (!phoneContainer) return;
 
-      // Scale up and shake keyframes
-      Motion.animate(phoneContainer,
-        {
-          scale: [1, 1.01, 1.01, 1.01, 1.01, 1],
-          rotate: [0, -0.5, 0.5, -0.5, 0.5, 0]
-        },
-        { duration: 0.5, easing: 'ease-in-out' }
-      );
-    }
+                // Scale up and shake keyframes
+                Motion.animate(
+                    phoneContainer,
+                    {
+                        scale: [1, 1.01, 1.01, 1.01, 1.01, 1],
+                        rotate: [0, -0.5, 0.5, -0.5, 0.5, 0],
+                    },
+                    { duration: 0.5, easing: "ease-in-out" },
+                );
+            }
 
-    // Start the app
-    init();
-  </script>
-</body>
+            // Start the app
+            init();
+        </script>
+    </body>
 </html>

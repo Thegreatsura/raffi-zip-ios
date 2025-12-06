@@ -364,7 +364,7 @@ body {
   width: var(--dynamic-island-width);
   height: var(--dynamic-island-height);
   background: #000000;
-  border-radius: var(--dynamic-island-radius);
+  border-radius: calc(var(--dynamic-island-height) / 2);
   z-index: 200;
   pointer-events: none;
 }
