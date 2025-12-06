@@ -16,6 +16,9 @@
                 <!-- Phone Mockup with Tap Targets -->
                 <div class="phone-container">
                     <div class="phone-frame">
+                        <!-- Inner shadow overlay - squircle ring with gradient glow -->
+                        <div class="phone-inner-shadow"></div>
+
                         <!-- Bezel overlay - sits on top to mask video corners with squircle -->
                         <div class="phone-bezel-overlay"></div>
 
@@ -1214,16 +1217,23 @@
 
                 function updateGradients() {
                     const scrollTop = scrollArea.scrollTop;
-                    const scrollHeight = scrollArea.scrollHeight - scrollArea.clientHeight;
-                    const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+                    const maxScroll = scrollArea.scrollHeight - scrollArea.clientHeight;
+
+                    // Add tolerance for near-bottom detection (within 2px = 100%)
+                    let progress = 0;
+                    if (maxScroll > 0) {
+                        progress = Math.min(scrollTop / maxScroll, 1);
+                        // Snap to 1 if within 2px of bottom
+                        if (maxScroll - scrollTop < 2) progress = 1;
+                    }
 
                     // Top gradient: 48px → 144px between 0-10% scroll
                     const topProgress = Math.min(progress / 0.1, 1);
                     const topHeight = TOP_MIN + (TOP_MAX - TOP_MIN) * topProgress;
                     topMask.style.height = `${topHeight}px`;
 
-                    // Bottom gradient: 244px → 48px between 90-100% scroll
-                    const bottomProgress = Math.max((progress - 0.9) / 0.1, 0);
+                    // Bottom gradient: 244px → 0px between 90-100% scroll
+                    const bottomProgress = Math.min(Math.max((progress - 0.9) / 0.1, 0), 1);
                     const bottomHeight = BOTTOM_MAX - (BOTTOM_MAX - BOTTOM_MIN) * bottomProgress;
                     bottomMask.style.height = `${bottomHeight}px`;
                 }
@@ -1373,6 +1383,55 @@
             // Phone frame: 49px radius
             const phoneFrame = document.querySelector(".phone-frame");
             if (phoneFrame) squircleObserver(phoneFrame, { cornerRadius: 49 });
+
+            // Inner shadow: squircle ring mask (outer 49px, inner ~47px for thin edge glow)
+            const innerShadow = document.querySelector(".phone-inner-shadow");
+            if (innerShadow) {
+                const applyInnerShadowMask = () => {
+                    const width = innerShadow.clientWidth;
+                    const height = innerShadow.clientHeight;
+                    const outerRadius = 49;
+                    const borderWidth = 3; // Thin edge for inner glow
+                    const innerRadius = outerRadius - borderWidth;
+                    const innerWidth = width - borderWidth * 2;
+                    const innerHeight = height - borderWidth * 2;
+
+                    const outerPath = getSvgPath({
+                        width,
+                        height,
+                        cornerRadius: outerRadius,
+                        cornerSmoothing: 1,
+                    });
+
+                    const innerPath = getSvgPath({
+                        width: innerWidth,
+                        height: innerHeight,
+                        cornerRadius: innerRadius,
+                        cornerSmoothing: 1,
+                    });
+
+                    const outerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="${outerPath}" fill="white"/></svg>`;
+                    const innerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${innerWidth}" height="${innerHeight}"><path d="${innerPath}" fill="white"/></svg>`;
+
+                    const outerUrl = `url("data:image/svg+xml,${encodeURIComponent(outerSvg)}")`;
+                    const innerUrl = `url("data:image/svg+xml,${encodeURIComponent(innerSvg)}")`;
+
+                    innerShadow.style.webkitMaskImage = `${outerUrl}, ${innerUrl}`;
+                    innerShadow.style.maskImage = `${outerUrl}, ${innerUrl}`;
+                    innerShadow.style.webkitMaskPosition = `0 0, ${borderWidth}px ${borderWidth}px`;
+                    innerShadow.style.maskPosition = `0 0, ${borderWidth}px ${borderWidth}px`;
+                    innerShadow.style.webkitMaskSize = `100% 100%, ${innerWidth}px ${innerHeight}px`;
+                    innerShadow.style.maskSize = `100% 100%, ${innerWidth}px ${innerHeight}px`;
+                    innerShadow.style.webkitMaskRepeat = "no-repeat";
+                    innerShadow.style.maskRepeat = "no-repeat";
+                    innerShadow.style.webkitMaskComposite = "xor";
+                    innerShadow.style.maskComposite = "exclude";
+                };
+
+                applyInnerShadowMask();
+                const resizeObserver = new ResizeObserver(applyInnerShadowMask);
+                resizeObserver.observe(innerShadow);
+            }
 
             // Bezel overlay: squircle ring mask (outer 49px, inner 40px)
             const bezelOverlay = document.querySelector(".phone-bezel-overlay");

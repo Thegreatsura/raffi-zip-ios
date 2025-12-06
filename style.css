@@ -286,6 +286,8 @@ body {
     height: 668px;
     flex-shrink: 0;
     cursor: pointer;
+    /* Outer drop shadow here since phone-frame's clip-path would clip it */
+    filter: drop-shadow(0px 6px 12px rgba(0, 0, 0, 0.15));
 }
 
 .phone-frame {
@@ -300,25 +302,47 @@ body {
         ),
         linear-gradient(167deg, #9c886e 0%, #7a6d5b 100%);
     border-radius: var(--phone-frame-radius);
-    box-shadow:
-        0px 4px 3px 0px rgba(0, 0, 0, 0.05),
-        inset 0px 0px 4px 0px rgba(255, 255, 255, 0.05),
-        inset 0px 2px 3px 1px rgba(255, 255, 255, 0.25);
     padding: var(--phone-frame-padding);
     overflow: hidden;
 }
 
-/* Inner shadow overlay for depth */
-.phone-frame::before {
-    content: "";
+/* Inner shadow overlay - uses gradient instead of box-shadow for squircle compatibility */
+.phone-inner-shadow {
     position: absolute;
     inset: 0;
-    border-radius: var(--phone-frame-radius);
-    box-shadow:
-        inset 0px 0px 4px 0px rgba(255, 255, 255, 0.05),
-        inset 0px 2px 3px 1px rgba(255, 255, 255, 0.25);
+    background:
+        /* Top edge - strongest highlight */
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.25) 0%,
+            rgba(255, 255, 255, 0.08) 2%,
+            rgba(255, 255, 255, 0.02) 5%,
+            transparent 15%
+        ),
+        /* Left edge - subtle */
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.08) 0%,
+            rgba(255, 255, 255, 0.02) 1.5%,
+            transparent 6%
+        ),
+        /* Right edge - subtle */
+        linear-gradient(
+            270deg,
+            rgba(255, 255, 255, 0.06) 0%,
+            rgba(255, 255, 255, 0.02) 1.5%,
+            transparent 6%
+        ),
+        /* Bottom edge - very subtle */
+        linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.04) 0%,
+            rgba(255, 255, 255, 0.01) 1%,
+            transparent 4%
+        );
     pointer-events: none;
     z-index: 101;
+    /* Mask will be applied via JavaScript using squircle path */
 }
 
 /* Bezel overlay - real element so we can apply squircle mask via JS */
