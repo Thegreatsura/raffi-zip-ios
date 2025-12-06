@@ -1128,6 +1128,31 @@
             // Attach click listeners to folder app items
             function attachFolderItemListeners() {
                 const springConfig = { type: 'spring', stiffness: 300, damping: 24 };
+                const scrollArea = document.querySelector('.folder-scroll-area');
+                let currentHoveredItem = null;
+
+                // Instant hover tracking via mousemove (works during scroll)
+                if (scrollArea) {
+                    scrollArea.addEventListener('mousemove', (e) => {
+                        const item = e.target.closest('.folder-app-item');
+                        if (item !== currentHoveredItem) {
+                            if (currentHoveredItem) {
+                                currentHoveredItem.classList.remove('hover');
+                            }
+                            currentHoveredItem = item;
+                            if (item) {
+                                item.classList.add('hover');
+                            }
+                        }
+                    });
+
+                    scrollArea.addEventListener('mouseleave', () => {
+                        if (currentHoveredItem) {
+                            currentHoveredItem.classList.remove('hover');
+                            currentHoveredItem = null;
+                        }
+                    });
+                }
 
                 document.querySelectorAll('.folder-app-item').forEach((item) => {
                     item.addEventListener('click', () => {
