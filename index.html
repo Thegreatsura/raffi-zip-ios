@@ -1122,6 +1122,10 @@
                 // Add click handlers to folder app items (after DOM update)
                 setTimeout(() => {
                     attachFolderItemListeners();
+                    // Apply squircles to dynamically created folder icons
+                    if (window.applyFolderIconSquircles) {
+                        window.applyFolderIconSquircles();
+                    }
                 }, 0);
             }
 
@@ -1262,14 +1266,21 @@
             const dynamicIsland = document.querySelector('.dynamic-island');
             if (dynamicIsland) squircleObserver(dynamicIsland, { cornerRadius: 13 });
 
-            // App icons in folders: 52px * 0.224 ≈ 11.6px
-            document.querySelectorAll('.folder-app-icon').forEach(el => {
-                squircleObserver(el, { cornerRadius: 11.6 });
-            });
+            // App icons in folders: 12px radius
+            // Expose globally for dynamic folder icons
+            window.applyFolderIconSquircles = () => {
+                document.querySelectorAll('.folder-app-icon').forEach(el => {
+                    if (!el.dataset.squircled) {
+                        squircleObserver(el, { cornerRadius: 12 });
+                        el.dataset.squircled = 'true';
+                    }
+                });
+            };
+            window.applyFolderIconSquircles();
 
-            // QR code: 84px * 0.224 ≈ 18.8px
+            // QR code: 20px radius
             document.querySelectorAll('.qr-code').forEach(el => {
-                squircleObserver(el, { cornerRadius: 18.8 });
+                squircleObserver(el, { cornerRadius: 20 });
             });
         </script>
     </body>
