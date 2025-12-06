@@ -499,7 +499,7 @@
                                 name: "Arena",
                                 icon: "assets/icons/arena.jpg",
                                 description:
-                                    "Yihuis recent v2 iOS build (available on TestFlight for supporters) has finally gotten me fully into Arena. Ive been having so much more fun stashing gems that I find (mostly on twitter) and browsing other peoples collections.",
+                                    '<a href="https://x.com/_yihui/status/1956036181306568873?s=20" target="_blank">Yihuis recent v2 iOS build</a> (available on TestFlight for supporters) has finally gotten me fully into Arena. Ive been having so much more fun stashing gems that I find (mostly on twitter) and browsing other peoples collections.',
                             },
                             {
                                 name: "WSJ",
@@ -529,6 +529,9 @@
             // Track active video sheet
             let activeVideoSheet = null;
 
+            // Track folder context for video switching
+            let currentFolderContext = null; // { folderName, selectedIndex }
+
             // Global mouse tracking for cursor pickup after video dismiss
             let lastMouseX = 0;
             let lastMouseY = 0;
@@ -537,7 +540,7 @@
                 lastMouseY = e.clientY;
             });
 
-            // Hover effect helpers (extracted for reuse)
+            // Hover effect helpers (fade out non-hovered targets)
             function applyHoverEffect(hoveredTarget) {
                 document
                     .querySelectorAll(".tap-target")
@@ -661,6 +664,9 @@
                 const video = activeVideoSheet;
                 activeVideoSheet = null;
 
+                // Clear folder context
+                currentFolderContext = null;
+
                 // Spring animation config
                 const springConfig = {
                     type: "spring",
@@ -724,6 +730,8 @@
                             phoneScreen.style.transform = "scale(1)";
                             activeVideoSheet = null;
                         }
+                        // Clear folder context
+                        currentFolderContext = null;
                     }
                     wasPhoneHidden = isPhoneHidden;
                 });
@@ -1059,12 +1067,18 @@
                         .currentFolder;
                 if (currentFolder === folderName) return;
 
+                // Set folder context - first app selected by default
+                currentFolderContext = { folderName, selectedIndex: 0 };
+
+                // Open video for first app (using retro.mp4 as placeholder for all folder apps)
+                openVideoSheet('retro');
+
                 const appsHtml = folder.apps
                     .map(
-                        (app) => `
-        <div class="folder-app-item">
+                        (app, index) => `
+        <div class="folder-app-item${index === 0 ? ' selected' : ''}" data-folder-app-index="${index}">
           <img src="${app.icon}" alt="${app.name}" class="folder-app-icon">
-          <p class="folder-app-description"><span class="app-name">${app.name}</span> ${app.description.replace(app.name, "")}</p>
+          <p class="folder-app-description">${app.description}</p>
         </div>
       `,
                     )
@@ -1104,11 +1118,62 @@
       `;
 
                 swapContent(html);
+
+                // Add click handlers to folder app items (after DOM update)
+                setTimeout(() => {
+                    attachFolderItemListeners();
+                }, 0);
+            }
+
+            // Attach click listeners to folder app items
+            function attachFolderItemListeners() {
+                document.querySelectorAll('.folder-app-item').forEach((item) => {
+                    item.addEventListener('click', () => {
+                        const index = parseInt(item.dataset.folderAppIndex);
+                        if (currentFolderContext && index !== currentFolderContext.selectedIndex) {
+                            selectFolderApp(index);
+                        }
+                    });
+                });
+            }
+
+            // Select a different app within the folder (fade transition)
+            function selectFolderApp(index) {
+                if (!currentFolderContext) return;
+
+                // Update selected index
+                currentFolderContext.selectedIndex = index;
+
+                // Update selected state in DOM
+                document.querySelectorAll('.folder-app-item').forEach((item, i) => {
+                    if (i === index) {
+                        item.classList.add('selected');
+                    } else {
+                        item.classList.remove('selected');
+                    }
+                });
+
+                // Fade transition to new video (using retro as placeholder for all)
+                // For now all apps use retro.mp4, so just do a subtle fade
+                if (activeVideoSheet) {
+                    // Fade out current video slightly and back in (visual feedback)
+                    Motion.animate(activeVideoSheet,
+                        { opacity: [1, 0.7, 1] },
+                        { duration: 0.3, easing: 'ease-in-out' }
+                    );
+                }
             }
 
             function closeOverlay() {
-                // Return to home content
-                swapContent(homeContentHTML);
+                // Close video if open
+                if (activeVideoSheet) {
+                    closeVideoSheet();
+                } else {
+                    // Return to home content
+                    swapContent(homeContentHTML);
+                }
+                // Clear folder context
+                currentFolderContext = null;
             }
 
             // Shake the phone when "tap around" is clicked
