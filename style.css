@@ -36,6 +36,13 @@
   --folder-top-mask-height: 144px;
   --folder-bottom-mask-height: 244px;
 
+  /* Dynamic Island */
+  --dynamic-island-width: 88px;
+  --dynamic-island-height: 26px;
+  --dynamic-island-top: 10.5px;
+  --dynamic-island-radius: 13px;
+  --dynamic-island-radius-squircle: 52px;  /* 4x for pill squircle */
+
   /* Tap target dimensions */
   --widget-width: 139px;
   --widget-height: 152px;
@@ -264,7 +271,7 @@ body {
   width: 316px;
   height: 666px;
   flex-shrink: 0;
-  cursor: default;
+  cursor: pointer;
 }
 
 .phone-frame {
@@ -346,6 +353,20 @@ body {
   object-position: center;
   z-index: 2;
   transform-origin: center center;
+}
+
+/* Dynamic Island */
+.dynamic-island {
+  position: absolute;
+  top: calc(var(--phone-frame-padding) + var(--dynamic-island-top));
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--dynamic-island-width);
+  height: var(--dynamic-island-height);
+  background: #000000;
+  border-radius: var(--dynamic-island-radius);
+  z-index: 200;
+  pointer-events: none;
 }
 
 /* Video sheets - slide up from below, positioned above tap targets */

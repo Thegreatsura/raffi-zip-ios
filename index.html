@@ -25,6 +25,9 @@
             <img src="assets/phone-mockups/home-desktop.jpg" alt="Home Screen" class="phone-mockup-image">
           </div>
 
+          <!-- Dynamic Island (outside phone-screen to persist over videos) -->
+          <div class="dynamic-island"></div>
+
           <!-- Video sheets (above tap targets, outside phone-screen for z-index) -->
           <video class="video-sheet" data-app="retro" src="assets/videos/retro.mp4" muted playsinline loop></video>
           <video class="video-sheet" data-app="notes" src="assets/videos/notes.mp4" muted playsinline loop></video>
@@ -60,7 +63,7 @@
           <div class="content-body">
             <div class="content-text">
               <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
-              <p>I think our Home Screen setups say a lot about our true preferences, so here's mine.</p>
+              <p>I think our Home Screen setups say a lot about us (at least us who care about apps), so here's mine.</p>
               <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
             </div>
             <div class="social-icons">
@@ -98,7 +101,7 @@
           video: 'assets/videos/notes.mp4',
           qrCode: 'assets/qr-codes/notes.png',
           appStoreURL: 'https://apps.apple.com/notes',
-          longDescription: 'Notes app description...'
+          longDescription: 'My life runs on Apple Notes. Ive gone back and forth with different todo apps and pen/paper combinations, but Ive most recently landed on Notes for all of my todos, ideas, and document writing (bookmarking is really the only thing I could do in notes that I do on Arena these days). I love shared folders/notes and wish other people used them more. If I could have one wish for 2026 it would be better table formatting.'
         },
         photos: {
           name: 'Photos',
@@ -106,7 +109,7 @@
           video: 'assets/videos/photos.mp4',
           qrCode: 'assets/qr-codes/photos.png',
           appStoreURL: 'https://apps.apple.com/photos',
-          longDescription: 'Photos app description...'
+          longDescription: 'Not much more to say here. Maybe some day my grandchildren will train my AI clone on my camera roll. Discovering awesome camera apps like !camera, Stops, and Soft have given me a stronger incentive to protect my camera roll from screenshots, so despite the task being impossible I try to tend to it often and also use an app called Shutter Declutter.'
         },
         notboringcamera: {
           name: '!Camera',
@@ -114,7 +117,7 @@
           video: 'assets/videos/notboringcamera.mp4',
           qrCode: 'assets/qr-codes/notboringcamera.png',
           appStoreURL: 'https://apps.apple.com/notboringcamera',
-          longDescription: '!Camera app description...'
+          longDescription: 'Ive bounced between Stops, Soft, and !Camera over the past couple years as my action button but am currently using this guy because I love the Andy and Retro filters on 3x zoom. Its still crazy to me how these little apps have gotten me so much more excited to capture moments in my life and be the person in the friend group that snaps pics. There are so many more out there that I havent even tried (Halide, Dazzcam, the list goes on) but I just cant think of what more I would want and the asallen craft obviously doesnt hurt.'
         },
         claude: {
           name: 'Claude',
@@ -155,60 +158,60 @@
           name: 'Money',
           emoji: '🌳',
           apps: [
-            { name: 'Capital One', icon: 'assets/icons/capitalone.jpg', description: 'Capital One is one of my credit card apps.' },
-            { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe.' },
-            { name: 'Mercury', icon: 'assets/icons/mercury.jpg', description: 'Mercury is my business banking app.' },
-            { name: 'Venmo', icon: 'assets/icons/venmo.jpg', description: 'Venmo makes splitting bills super easy.' },
-            { name: 'Chase', icon: 'assets/icons/chase.jpg', description: 'Chase is my primary banking app.' },
-            { name: 'Stripe', icon: 'assets/icons/stripe.jpg', description: 'Stripe helps me manage payments for my apps.' },
-            { name: 'Cash App', icon: 'assets/icons/cashapp.jpg', description: 'Cash App is my backup payment app.' },
-            { name: 'Robinhood', icon: 'assets/icons/robinhood.jpg', description: 'Robinhood is where I occasionally trade stocks.' },
-            { name: 'Wallet', icon: 'assets/icons/wallet.jpg', description: 'Wallet stores all my cards and passes.' }
+            { name: 'Capital One', icon: 'assets/icons/capitalone.jpg', description: 'Oh the Capital One Quicksilver 1.5% cash back card... simpler times. This was my first credit card and I think youre not supposed to cancel these or something so I still have it paying for some subscriptions.' },
+            { name: 'WSB', icon: 'assets/icons/wsb.jpg', description: 'I grew up in Watertown, MA (15 min outside of Boston) and mostly keep my local bank account for the nostalgia. Looking at the app icon makes me think of the Dunkin Donuts and 711 around the corner.' },
+            { name: 'Mercury', icon: 'assets/icons/mercury.jpg', description: 'I want Mercury to IPO so I can own some stock. I love this shit so much. Its so good. I love you guys the craft the usability the brand and the product velocity. The idea of winner take all in fintech and banking is really interesting to me.' },
+            { name: 'Venmo', icon: 'assets/icons/venmo.jpg', description: 'Venmooooooooooooo has a solid 5.2/10 UI but its a staple you cant avoid and it completes the grid.' },
+            { name: 'Chase', icon: 'assets/icons/chase.jpg', description: 'I got my first and only big tech job at Shopify instantly bought a Chase Sapphire card. This was one of the biggest simp moves of my life and then I got canned six months later. Also kind of need it because Chase branches are a convenient way to deposit cash and now I have a joint account here so kinda locked in ugh. I just hate it. I hate crusty antiquated UI. Mercury glass ATMs wen.' },
+            { name: 'Stripe', icon: 'assets/icons/stripe.jpg', description: 'For checking Spotted in Prod subscription revenue. I open this app, look at churn, think about how much better our platform could be, and close the app. Thats about it.' },
+            { name: 'Cash App', icon: 'assets/icons/cashapp.jpg', description: 'The downfall of Cash App and recent slight bounceback of Cash App needs to be studied. Obviously there are oodles of talented folks there but how did we lose that rounded font with the iconic white on green and how are there so many hard edges/shadow overflow in the app? It could be perfect but since its not I dont really use it and just let it hang out here for the looks. Cash App Taxes is lovely though.' },
+            { name: 'Robinhood', icon: 'assets/icons/robinhood.jpg', description: 'I like Robinhood. I think about stocks and buy them and I think investing and thinking about the relative market cap of companies is a great way to develop your worldview. I also think HOOD itself is one of the best stocks you could buy. This is financial advice.' },
+            { name: 'Wallet', icon: 'assets/icons/wallet.jpg', description: 'Apple is probably a sleeper financial giant and Wallet is just such a beautiful app. Its on my todo list to think a bit more deeply about how the fintech side of Apple should be factored into the value of the company.' }
           ]
         },
         work: {
           name: 'Work',
           emoji: '💼',
           apps: [
-            { name: 'Empty', icon: 'assets/icons/empty.jpg', description: 'Empty is a placeholder app.' },
-            { name: 'Numbies', icon: 'assets/icons/numbies.jpg', description: 'Numbies is my favorite calorie tracking app.' },
-            { name: 'Runbuds', icon: 'assets/icons/runbuds.jpg', description: 'Runbuds is a social running app I built with friends.' },
-            { name: 'Shift', icon: 'assets/icons/shift.jpg', description: 'Shift is my gym tracker app that I built.' },
-            { name: 'Shift Dev', icon: 'assets/icons/shift-dev.jpg', description: 'Shift Dev is the development build of my gym app.' },
-            { name: 'Figma', icon: 'assets/icons/figma.jpg', description: 'Figma is where all my design work happens.' },
-            { name: 'App Store', icon: 'assets/icons/appstore.jpg', description: 'App Store is where I download new apps.' },
-            { name: 'TestFlight', icon: 'assets/icons/testflight.jpg', description: 'TestFlight is where I test apps before they go live.' },
-            { name: 'Linear', icon: 'assets/icons/linear.jpg', description: 'Linear is the best project management tool I\'ve used.' }
+            { name: 'Empty', icon: 'assets/icons/empty.jpg', description: 'Empty is an intermittent fasting app that I made with Rafael. It was the first app that I shipped that people really loved and continue to use daily. This lovely app icon (along with the 17 alts in the app) was crafted by Hannah Lee.' },
+            { name: 'Numbies', icon: 'assets/icons/numbies.jpg', description: 'Numbies was a social exercise rep counter that allowed you to buzz your friends and track bodyweight exercises together in realtime websocket-based sessions. Anthony and Caleb built this. In hindsight it was a VERY dumb app to build and invest so much effort into. But despite the bummer of putting all that effort into a UI that isnt used by anyone, I still smile when I open it up and tap around. The lesson here is that you might regret the bad idea, but youll never regret doing good work.' },
+            { name: 'Runbuds', icon: 'assets/icons/runbuds.jpg', description: 'Runbuds is my current focus. Rafael, Qasim, Gabriel and I are working on a more expressive social running app.' },
+            { name: 'Shift', icon: 'assets/icons/shift.jpg', description: 'Shift is my only solo iOS build on the App Store and is a fun way for me to learn with Claude code without worrying about breaking prod. Its a utility meant to help you become a morning person by shifting your alarm clock by only a few minutes each day. A simple idea that I believe in.' },
+            { name: 'Shift Dev', icon: 'assets/icons/shift-dev.jpg', description: 'Shift Dev is the development build for Shift. Necessary since Im trying to properly dogfood the process of using the app over the course of weeks and I need to constantly restart and change settings.' },
+            { name: 'Figma', icon: 'assets/icons/figma.jpg', description: 'Ive been building fewer and fewer prototypes in Figma with Claude Code allowing me to prototype rapidly in code, but I still like mirroring initial design concepts and holding things in my hand to think about how an app will really feel at the earliest stage possible.' },
+            { name: 'App Store', icon: 'assets/icons/appstore.jpg', description: 'I am constantly checking ratings, downloads, and using the App Stats shortcut to creep on revenue (reliable idk?) of all the startups that Im a fan of. This is also where I download my new apps. Design award for Shift, Runbuds, or maybe the SIP iOS app is definitely a goal of mine for 2026.' },
+            { name: 'TestFlight', icon: 'assets/icons/testflight.jpg', description: 'Exclusive TestFlights used to be cool but now I think they are cope just SHIP it people!!! Of course time and place but I also just hate seeing the little dot next to apps on my home screen.' },
+            { name: 'Linear', icon: 'assets/icons/linear.jpg', description: 'Linear. Great app. Love watching Gavin keep pushing his craft with highly custom motion. I think the share sheet extension is a bit broken though or was for a bit. I also feel like Im not fully taking advantage of everything Linear has to offer (so many integrations) on desktop but oh well.' }
           ]
         },
         social: {
           name: 'Social',
           emoji: '👥',
           apps: [
-            { name: 'Messages', icon: 'assets/icons/messages.jpg', description: 'Messages is how I stay in touch with my iPhone friends.' },
-            { name: 'WhatsApp', icon: 'assets/icons/whatsapp.jpg', description: 'WhatsApp is essential for staying connected internationally.' },
-            { name: 'Net', icon: 'assets/icons/net.jpg', description: 'Net helps me track my net worth.' },
-            { name: 'X', icon: 'assets/icons/x.jpg', description: 'X (formerly Twitter) is where I keep up with tech news and memes.' },
-            { name: 'TikTok', icon: 'assets/icons/tiktok.jpg', description: 'TikTok is a black hole but the algorithm is incredible.' },
-            { name: 'Bump', icon: 'assets/icons/bump.jpg', description: 'Bump helps track pregnancy milestones week by week.' },
-            { name: 'Instagram', icon: 'assets/icons/instagram.jpg', description: 'Instagram is where I lurk and occasionally post stories.' },
-            { name: 'Messenger', icon: 'assets/icons/messenger.jpg', description: 'Messenger is for my friends who still use Facebook.' },
-            { name: 'YouTube', icon: 'assets/icons/youtube.jpg', description: 'YouTube is my go-to for tutorials and entertainment.' }
+            { name: 'Messages', icon: 'assets/icons/messages.jpg', description: 'Ill never forget the moment from Carl Peis TBPN interview where he was just like "you cant beat blue texts its impossible." Messages is probably the #1 reason to HODL Apple stock until you die.' },
+            { name: 'WhatsApp', icon: 'assets/icons/whatsapp.jpg', description: 'Im looking at this app icon and wishing Telegram was here so I could pay homage to a truly GOATed UI but thats just not true to how I use my phone (I have just enough inernational friends that I need WhatsApp).' },
+            { name: 'Net', icon: 'assets/icons/net.jpg', description: 'Nets email card stack is too good, especially the roundup of non-essential emails that I can simply swipe aside. It seems like multiple teams are trying their hand at email again in the AI era but so far Im riding with Net. Excited to see what they ship on desktop so I can fully ditch Superhuman.' },
+            { name: 'X', icon: 'assets/icons/x.jpg', description: 'X becoming my LinkedIn and basically the foundation of my career was not on my life bingo card I will certainly tell you that. No matter who leads the platform or how the algo changes, the concentration of interesting and talented people who are willing to just yap and connect with each other is the most magical thing ever.' },
+            { name: 'TikTok', icon: 'assets/icons/tiktok.jpg', description: 'If you think you are above TikTok I take issue with that. I understand not having it because its too addictive and you need to go cold turkey, but the quality of short form on this platform is head and shoulders above the rest.' },
+            { name: 'Bump', icon: 'assets/icons/bump.jpg', description: 'The pain of being a millenial is that my friends refuse to download Bump and we cant use it instead of Find my Friends. But Ive got my wife and a few Twitter friends on here so I use it often enough to justify home screen status. Best iOS team in the game right now.' },
+            { name: 'Instagram', icon: 'assets/icons/instagram.jpg', description: 'Ive been trying to use IG more like Retro and post randomly because the grid archive is really nice to have. My content is mostly soccer and sports memes. Kinda want to follow more art & graphic design accounts on here.' },
+            { name: 'Messenger', icon: 'assets/icons/messenger.jpg', description: 'My dad exclusively sends me tennis/soccer reels here and very unfunny epic fail videos that are reminiscient of Americas Funniest Home Videos which we watched together as I was growing up. Also communicate with Armenian friends and family via Messenger for whatever reason.' },
+            { name: 'YouTube', icon: 'assets/icons/youtube.jpg', description: 'I grew up watching soccer skills edits and full game Messi/Neymar highlights on YouTube. I learned my first bit of code by watching React Native tutorials. I still use YouTube every day and I just never think about it as a brand. Its like electricity.' }
           ]
         },
         vibes: {
           name: 'Vibes',
           emoji: '🌏',
           apps: [
-            { name: 'Fotmob', icon: 'assets/icons/fotmob.jpg', description: 'Fotmob is how I keep up with the beautiful game.' },
-            { name: 'Radio Garden', icon: 'assets/icons/radiogarden.jpg', description: 'Radio Garden has stations from all over the world.' },
-            { name: 'Pokemon', icon: 'assets/icons/pokemontcgp.jpg', description: 'Pokemon artwork will never not give me nostalgia.' },
-            { name: 'Anki', icon: 'assets/icons/anki.jpg', description: 'Anki is a studying method that smart people sweat by.' },
-            { name: 'Particle', icon: 'assets/icons/particle.jpg', description: 'Particle is a beautiful and free AI news app.' },
-            { name: 'GOAT', icon: 'assets/icons/goat.jpg', description: 'GOAT has all the sneakers and cleats I could ever dream of.' },
-            { name: 'Arena', icon: 'assets/icons/arena.jpg', description: "Arena is where I've been stashing all of my favorite internet tidbits." },
-            { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe.' },
-            { name: 'Poolsuite', icon: 'assets/icons/poolsuite.jpg', description: 'Poolsuite has a lovely set of playlists and immaculate UI.' }
+            { name: 'Fotmob', icon: 'assets/icons/fotmob.jpg', description: 'Fotmob is how I keep up with the beautiful game. Im happiest when Im playing soccer, followed by watching soccer, and grew up a Barcelona & Ronaldinho fan. I support Crystal Palace in the Premier League after falling in love with Selhurst Park the one time I was lucky enough to watch a game there.' },
+            { name: 'Radio Garden', icon: 'assets/icons/radiogarden.jpg', description: 'Radio Garden has stations from all over the world. I love using radio to ambiently support language learning (I try to improve my Armenian and Spanish skills every now and then) and its also a gret way to mix it up when you want something a bit different to listen to.' },
+            { name: 'Pokemon', icon: 'assets/icons/pokemontcgp.jpg', description: 'Pokemon artwork will never not give me nostalgia, and Im especially feeling it right now after my first ever Japan trip. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldnt see the light coming from my room.' },
+            { name: 'Anki', icon: 'assets/icons/anki.jpg', description: 'The spaced repetition studying method that smart people swear by, and Anki is the most popular app for it. I started getting into it for my Armenian vocab/alphabet and havent touched the app for months but its one of those things you keep around not to forget about it.' },
+            { name: 'Particle', icon: 'assets/icons/particle.jpg', description: 'Particle is a beautiful and free AI news app. Super fluid navigation, high quality summaries, and tons of fun features like crosswords, political bias comparisons, and more.' },
+            { name: 'GOAT', icon: 'assets/icons/goat.jpg', description: 'Im not a full on sneakerhead but I like sneakers a lot, and GOAT has all the footwear I could ever dream of. Maybe Ill try buying some clothes from there some day as well. Their brand and aesthetic is up there for me. Just need them to bump their font size by like 2pt.' },
+            { name: 'Arena', icon: 'assets/icons/arena.jpg', description: "Yihuis recent v2 iOS build (available on TestFlight for supporters) has finally gotten me fully into Arena. Ive been having so much more fun stashing gems that I find (mostly on twitter) and browsing other peoples collections." },
+            { name: 'WSJ', icon: 'assets/icons/wsj.jpg', description: 'The Wall Street Journal is expensive but I dig their vibe, and theyre the least biased publication with a solid iOS app (IMO).' },
+            { name: 'Poolsuite', icon: 'assets/icons/poolsuite.jpg', description: 'Poolsuite is just such a cool brand, such a great app, and the playlists aint bad either. Marty & co epitomize the level of creativity that all small consumer teams (indie or VC-backed) should aspire to. Theyre clearly just having fun with it.' }
           ]
         }
       }
@@ -271,7 +274,7 @@
       <div class="content-body">
         <div class="content-text">
           <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
-          <p>I think our Home Screen setups say a lot about our true preferences, so here's mine.</p>
+          <p>I think our Home Screen setups say a lot about us (at least us who care about apps), so here's mine.</p>
           <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
         </div>
         <div class="social-icons">
@@ -601,12 +604,12 @@
         }
       });
 
-      // Click on deadspace (content area background) returns to home
-      document.querySelector('.content-area').addEventListener('click', (e) => {
-        // Only trigger if clicking on the container itself or non-interactive children
-        const isInteractive = e.target.closest('a, button, .folder-app-item, .social-icon');
+      // Click on phone deadspace (not app/widget) returns to home when folder is open
+      document.querySelector('.phone-frame').addEventListener('click', (e) => {
+        // Only trigger if clicking on deadspace (not a tap target)
+        const isTapTarget = e.target.closest('.tap-target');
         const isFolder = contentAreaInner.querySelector('.folder-container');
-        if (!isInteractive && isFolder) {
+        if (!isTapTarget && isFolder) {
           closeOverlay();
         }
       });
