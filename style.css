@@ -31,7 +31,7 @@
     --folder-title-height: 64px;
     --folder-title-gap: 24px;
     --folder-top-padding: 88px; /* title height (64px) + gap (24px) */
-    --folder-bottom-padding: 72px;
+    --folder-bottom-padding: 0px;
     --folder-top-mask-height: 144px;
     --folder-bottom-mask-height: 244px;
 

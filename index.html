@@ -1122,11 +1122,48 @@
                 // Add click handlers to folder app items (after DOM update)
                 setTimeout(() => {
                     attachFolderItemListeners();
+                    attachGradientScrollListener();
                     // Apply squircles to dynamically created folder icons
                     if (window.applyFolderIconSquircles) {
                         window.applyFolderIconSquircles();
                     }
                 }, 0);
+            }
+
+            // Dynamic gradient masks based on scroll position
+            function attachGradientScrollListener() {
+                const scrollArea = document.querySelector(".folder-scroll-area");
+                const topMask = document.querySelector(".folder-top-mask");
+                const bottomMask = document.querySelector(".folder-bottom-mask");
+
+                if (!scrollArea || !topMask || !bottomMask) return;
+
+                const TOP_MIN = 48;
+                const TOP_MAX = 144;
+                const BOTTOM_MIN = 0;
+                const BOTTOM_MAX = 244;
+
+                function updateGradients() {
+                    const scrollTop = scrollArea.scrollTop;
+                    const scrollHeight = scrollArea.scrollHeight - scrollArea.clientHeight;
+                    const progress = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+
+                    // Top gradient: 48px → 144px between 0-10% scroll
+                    const topProgress = Math.min(progress / 0.1, 1);
+                    const topHeight = TOP_MIN + (TOP_MAX - TOP_MIN) * topProgress;
+                    topMask.style.height = `${topHeight}px`;
+
+                    // Bottom gradient: 244px → 48px between 90-100% scroll
+                    const bottomProgress = Math.max((progress - 0.9) / 0.1, 0);
+                    const bottomHeight = BOTTOM_MAX - (BOTTOM_MAX - BOTTOM_MIN) * bottomProgress;
+                    bottomMask.style.height = `${bottomHeight}px`;
+                }
+
+                // Initial update
+                updateGradients();
+
+                // Update on scroll
+                scrollArea.addEventListener("scroll", updateGradients, { passive: true });
             }
 
             // Attach click listeners to folder app items
