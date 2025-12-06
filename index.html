@@ -1071,12 +1071,12 @@
                 currentFolderContext = { folderName, selectedIndex: 0 };
 
                 // Open video for first app (using retro.mp4 as placeholder for all folder apps)
-                openVideoSheet('retro');
+                openVideoSheet("retro");
 
                 const appsHtml = folder.apps
                     .map(
                         (app, index) => `
-        <div class="folder-app-item${index === 0 ? ' selected' : ''}" data-folder-app-index="${index}">
+        <div class="folder-app-item${index === 0 ? " selected" : ""}" data-folder-app-index="${index}">
           <img src="${app.icon}" alt="${app.name}" class="folder-app-icon">
           <p class="folder-app-description">${app.description}</p>
         </div>
@@ -1131,58 +1131,71 @@
 
             // Attach click listeners to folder app items
             function attachFolderItemListeners() {
-                const springConfig = { type: 'spring', stiffness: 300, damping: 24 };
-                const scrollArea = document.querySelector('.folder-scroll-area');
+                const springConfig = {
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 24,
+                };
+                const scrollArea = document.querySelector(
+                    ".folder-scroll-area",
+                );
                 let currentHoveredItem = null;
 
                 // Instant hover tracking via mousemove (works during scroll)
                 if (scrollArea) {
-                    scrollArea.addEventListener('mousemove', (e) => {
-                        const item = e.target.closest('.folder-app-item');
+                    scrollArea.addEventListener("mousemove", (e) => {
+                        const item = e.target.closest(".folder-app-item");
                         if (item !== currentHoveredItem) {
                             if (currentHoveredItem) {
-                                currentHoveredItem.classList.remove('hover');
+                                currentHoveredItem.classList.remove("hover");
                             }
                             currentHoveredItem = item;
                             if (item) {
-                                item.classList.add('hover');
+                                item.classList.add("hover");
                             }
                         }
                     });
 
-                    scrollArea.addEventListener('mouseleave', () => {
+                    scrollArea.addEventListener("mouseleave", () => {
                         if (currentHoveredItem) {
-                            currentHoveredItem.classList.remove('hover');
+                            currentHoveredItem.classList.remove("hover");
                             currentHoveredItem = null;
                         }
                     });
                 }
 
-                document.querySelectorAll('.folder-app-item').forEach((item) => {
-                    item.addEventListener('click', () => {
-                        const index = parseInt(item.dataset.folderAppIndex);
-                        if (currentFolderContext && index !== currentFolderContext.selectedIndex) {
-                            selectFolderApp(index);
-                        }
+                document
+                    .querySelectorAll(".folder-app-item")
+                    .forEach((item) => {
+                        item.addEventListener("click", () => {
+                            const index = parseInt(item.dataset.folderAppIndex);
+                            if (
+                                currentFolderContext &&
+                                index !== currentFolderContext.selectedIndex
+                            ) {
+                                selectFolderApp(index);
+                            }
+                        });
+
+                        // Scale down on press
+                        const scaleDown = () => {
+                            Motion.animate(item, { scale: 0.98 }, springConfig);
+                        };
+
+                        // Scale back up on release
+                        const scaleUp = () => {
+                            Motion.animate(item, { scale: 1 }, springConfig);
+                        };
+
+                        item.addEventListener("mousedown", scaleDown);
+                        item.addEventListener("touchstart", scaleDown, {
+                            passive: true,
+                        });
+                        item.addEventListener("mouseup", scaleUp);
+                        item.addEventListener("mouseleave", scaleUp);
+                        item.addEventListener("touchend", scaleUp);
+                        item.addEventListener("touchcancel", scaleUp);
                     });
-
-                    // Scale down on press
-                    const scaleDown = () => {
-                        Motion.animate(item, { scale: 0.98 }, springConfig);
-                    };
-
-                    // Scale back up on release
-                    const scaleUp = () => {
-                        Motion.animate(item, { scale: 1 }, springConfig);
-                    };
-
-                    item.addEventListener('mousedown', scaleDown);
-                    item.addEventListener('touchstart', scaleDown, { passive: true });
-                    item.addEventListener('mouseup', scaleUp);
-                    item.addEventListener('mouseleave', scaleUp);
-                    item.addEventListener('touchend', scaleUp);
-                    item.addEventListener('touchcancel', scaleUp);
-                });
             }
 
             // Select a different app within the folder (fade transition)
@@ -1193,21 +1206,24 @@
                 currentFolderContext.selectedIndex = index;
 
                 // Update selected state in DOM
-                document.querySelectorAll('.folder-app-item').forEach((item, i) => {
-                    if (i === index) {
-                        item.classList.add('selected');
-                    } else {
-                        item.classList.remove('selected');
-                    }
-                });
+                document
+                    .querySelectorAll(".folder-app-item")
+                    .forEach((item, i) => {
+                        if (i === index) {
+                            item.classList.add("selected");
+                        } else {
+                            item.classList.remove("selected");
+                        }
+                    });
 
                 // Fade transition to new video (using retro as placeholder for all)
                 // For now all apps use retro.mp4, so just do a subtle fade
                 if (activeVideoSheet) {
                     // Fade out current video slightly and back in (visual feedback)
-                    Motion.animate(activeVideoSheet,
+                    Motion.animate(
+                        activeVideoSheet,
                         { opacity: [1, 0.7, 1] },
-                        { duration: 0.3, easing: 'ease-in-out' }
+                        { duration: 0.3, easing: "ease-in-out" },
                     );
                 }
             }
@@ -1245,41 +1261,43 @@
 
         <!-- Corner smoothing module -->
         <script type="module">
-            import { squircleObserver } from 'https://esm.sh/corner-smoothing';
+            import { squircleObserver } from "https://esm.sh/corner-smoothing";
 
             // Phone frame: 44px radius
-            const phoneFrame = document.querySelector('.phone-frame');
+            const phoneFrame = document.querySelector(".phone-frame");
             if (phoneFrame) squircleObserver(phoneFrame, { cornerRadius: 44 });
 
             // Phone screen & sheet-bg: 36px radius
-            const phoneScreen = document.querySelector('.phone-screen');
-            const sheetBg = document.querySelector('.sheet-bg');
-            if (phoneScreen) squircleObserver(phoneScreen, { cornerRadius: 36 });
+            const phoneScreen = document.querySelector(".phone-screen");
+            const sheetBg = document.querySelector(".sheet-bg");
+            if (phoneScreen)
+                squircleObserver(phoneScreen, { cornerRadius: 36 });
             if (sheetBg) squircleObserver(sheetBg, { cornerRadius: 36 });
 
             // Video sheets: 36px radius
-            document.querySelectorAll('.video-sheet').forEach(el => {
+            document.querySelectorAll(".video-sheet").forEach((el) => {
                 squircleObserver(el, { cornerRadius: 36 });
             });
 
             // Dynamic island: pill shape (half of height)
-            const dynamicIsland = document.querySelector('.dynamic-island');
-            if (dynamicIsland) squircleObserver(dynamicIsland, { cornerRadius: 13 });
+            const dynamicIsland = document.querySelector(".dynamic-island");
+            if (dynamicIsland)
+                squircleObserver(dynamicIsland, { cornerRadius: 13 });
 
             // App icons in folders: 12px radius
             // Expose globally for dynamic folder icons
             window.applyFolderIconSquircles = () => {
-                document.querySelectorAll('.folder-app-icon').forEach(el => {
+                document.querySelectorAll(".folder-app-icon").forEach((el) => {
                     if (!el.dataset.squircled) {
                         squircleObserver(el, { cornerRadius: 12 });
-                        el.dataset.squircled = 'true';
+                        el.dataset.squircled = "true";
                     }
                 });
             };
             window.applyFolderIconSquircles();
 
             // QR code: 20px radius
-            document.querySelectorAll('.qr-code').forEach(el => {
+            document.querySelectorAll(".qr-code").forEach((el) => {
                 squircleObserver(el, { cornerRadius: 20 });
             });
         </script>

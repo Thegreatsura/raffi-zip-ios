@@ -37,11 +37,11 @@
 
     /* Folder list styles */
     --folder-item-padding-top: 14px;
-    --folder-item-padding-right: 24px;
+    --folder-item-padding-right: 18px;
     --folder-item-padding-bottom: 20px;
     --folder-item-padding-left: 14px;
     --folder-item-radius: 22px;
-    --folder-item-gap: 6px;
+    --folder-item-gap: 10px;
     --folder-item-bg: #3a352b;
     --folder-item-border-color: rgba(255, 255, 255, 0.6);
     --folder-icon-size: 52px;
@@ -704,6 +704,11 @@ body {
     backface-visibility: hidden;
     transform: translateZ(0);
     -webkit-font-smoothing: antialiased;
+    /* Prevent text selection on tap */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .folder-app-item.hover {
@@ -730,8 +735,8 @@ body {
     line-height: var(--list-line-height);
     letter-spacing: var(--list-letter-spacing);
     flex: 1;
-    max-width: var(--folder-text-width-max);
-    min-width: var(--folder-text-width-min);
+    min-width: 0;
+    padding-top: -1px;
 }
 
 .folder-app-description .app-name {
