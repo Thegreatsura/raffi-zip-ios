@@ -463,28 +463,28 @@ body {
 }
 
 /* App icons (row below widgets) */
-.tap-app-notes {
+.tap-app-1 {
     top: calc(var(--tap-offset-top) + var(--widget-height));
     left: var(--col-1);
     width: var(--app-width);
     height: var(--app-height);
 }
 
-.tap-app-photos {
+.tap-app-2 {
     top: calc(var(--tap-offset-top) + var(--widget-height));
     left: var(--col-2);
     width: var(--app-width);
     height: var(--app-height);
 }
 
-.tap-app-retro {
+.tap-app-3 {
     top: calc(var(--tap-offset-top) + var(--widget-height));
     left: var(--col-3);
     width: var(--app-width);
     height: var(--app-height);
 }
 
-.tap-app-notboringcamera {
+.tap-app-4 {
     top: calc(var(--tap-offset-top) + var(--widget-height));
     left: var(--col-4);
     width: var(--app-width);
@@ -521,21 +521,21 @@ body {
 }
 
 /* Dock apps: 66w x 66h */
-.tap-dock-claude {
+.tap-dock-1 {
     bottom: var(--dock-offset-bottom);
     left: var(--dock-col-1);
     width: var(--dock-width);
     height: var(--dock-height);
 }
 
-.tap-dock-safari {
+.tap-dock-2 {
     bottom: var(--dock-offset-bottom);
     left: var(--dock-col-2);
     width: var(--dock-width);
     height: var(--dock-height);
 }
 
-.tap-dock-maps {
+.tap-dock-3 {
     bottom: var(--dock-offset-bottom);
     left: var(--dock-col-3);
     width: var(--dock-width);
