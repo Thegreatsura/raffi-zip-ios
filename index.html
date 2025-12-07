@@ -111,6 +111,14 @@
                             playsinline
                             loop
                         ></video>
+                        <!-- Dynamic video sheet for folder apps -->
+                        <video
+                            class="video-sheet"
+                            id="folder-video-sheet"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
 
                         <!-- Invisible tap target overlays -->
                         <div
@@ -404,56 +412,65 @@
                         emoji: "🌳",
                         apps: [
                             {
-                                name: "Capital One",
-                                icon: "assets/icons/capitalone.jpg",
-                                description:
-                                    "Oh the Capital One Quicksilver 1.5% cash back card... simpler times. This was my first credit card and I think you're not supposed to cancel these or something so I still have it paying for some subscriptions.",
-                            },
-                            {
-                                name: "WSB",
-                                icon: "assets/icons/wsb.jpg",
-                                description:
-                                    "I grew up in Watertown, MA (15 min outside of Boston) and mostly keep my local bank account for the nostalgia. Looking at the app icon makes me think of the Dunkin Donuts and 711 around the corner.",
-                            },
-                            {
                                 name: "Mercury",
                                 icon: "assets/icons/mercury.jpg",
+                                video: "assets/videos/mercury.mp4",
                                 description:
                                     "I want Mercury to IPO so I can own some stock. I love this shit so much. It's so good. I love you guys the craft the usability the brand and the product velocity. The idea of winner take all in fintech and banking is really interesting to me.",
                             },
                             {
-                                name: "Venmo",
-                                icon: "assets/icons/venmo.jpg",
-                                description:
-                                    "Venmooooooooooooo has a solid 5.2/10 UI but it's a staple you can't avoid and it completes the grid.",
-                            },
-                            {
-                                name: "Chase",
-                                icon: "assets/icons/chase.jpg",
-                                description:
-                                    "I got my first and only big tech job at Shopify instantly bought a Chase Sapphire card. This was one of the biggest simp moves of my life and then I got canned six months later. Also kind of need it because Chase branches are a convenient way to deposit cash and now I have a joint account here so kinda locked in ugh. I just hate it. I hate crusty antiquated UI. Mercury glass ATMs wen.",
-                            },
-                            {
-                                name: "Stripe",
-                                icon: "assets/icons/stripe.jpg",
-                                description:
-                                    "For checking Spotted in Prod subscription revenue. I open this app, look at churn, think about how much better our platform could be, and close the app. That's about it.",
-                            },
-                            {
                                 name: "Cash App",
                                 icon: "assets/icons/cashapp.jpg",
+                                video: "assets/videos/cashapp.mp4",
                                 description:
                                     "The downfall of Cash App and recent slight bounceback of Cash App needs to be studied. Obviously there are oodles of talented folks there but how did we lose that rounded font with the iconic white on green and how are there so many hard edges/shadow overflow in the app? It could be perfect but since it's not I don't really use it and just let it hang out here for the looks. Cash App Taxes is lovely though.",
                             },
                             {
                                 name: "Robinhood",
                                 icon: "assets/icons/robinhood.jpg",
+                                video: "assets/videos/robinhood.mp4",
                                 description:
                                     "I like Robinhood. I think about stocks and buy them and I think investing and thinking about the relative market cap of companies is a great way to develop your worldview. I also think HOOD itself is one of the best stocks you could buy. This is financial advice.",
                             },
                             {
+                                name: "Coinbase",
+                                icon: "assets/icons/coinbase.jpg",
+                                video: "assets/videos/coinbase.mp4",
+                                description:
+                                    "I have a lot of respect for what Coinbase has built and their position as the most trusted crypto exchange. The app is clean and their brand is strong. I don't trade crypto often but when I do, it's here.",
+                            },
+                            {
+                                name: "Chase",
+                                icon: "assets/icons/chase.jpg",
+                                video: "assets/videos/chase.mp4",
+                                description:
+                                    "I got my first and only big tech job at Shopify instantly bought a Chase Sapphire card. This was one of the biggest simp moves of my life and then I got canned six months later. Also kind of need it because Chase branches are a convenient way to deposit cash and now I have a joint account here so kinda locked in ugh. I just hate it. I hate crusty antiquated UI. Mercury glass ATMs wen.",
+                            },
+                            {
+                                name: "Stripe",
+                                icon: "assets/icons/stripe.jpg",
+                                video: "assets/videos/stripe.mp4",
+                                description:
+                                    "For checking Spotted in Prod subscription revenue. I open this app, look at churn, think about how much better our platform could be, and close the app. That's about it.",
+                            },
+                            {
+                                name: "Capital One",
+                                icon: "assets/icons/capitalone.jpg",
+                                video: "assets/videos/capitalone.mp4",
+                                description:
+                                    "Oh the Capital One Quicksilver 1.5% cash back card... simpler times. This was my first credit card and I think you're not supposed to cancel these or something so I still have it paying for some subscriptions.",
+                            },
+                            {
+                                name: "WSB",
+                                icon: "assets/icons/wsb.jpg",
+                                video: "assets/videos/wsb.mp4",
+                                description:
+                                    "I grew up in Watertown, MA (15 min outside of Boston) and mostly keep my local bank account for the nostalgia. Looking at the app icon makes me think of the Dunkin Donuts and 711 around the corner.",
+                            },
+                            {
                                 name: "Wallet",
                                 icon: "assets/icons/wallet.jpg",
+                                video: "assets/videos/wallet.mp4",
                                 description:
                                     "Apple is probably a sleeper financial giant and Wallet is just such a beautiful app. It's on my todo list to think a bit more deeply about how the fintech side of Apple should be factored into the value of the company.",
                             },
@@ -464,34 +481,46 @@
                         emoji: "💼",
                         apps: [
                             {
-                                name: "Empty",
-                                icon: "assets/icons/empty.jpg",
-                                description:
-                                    "Empty is an intermittent fasting app that I made with Rafael. It was the first app that I shipped that people really loved and continue to use daily. This lovely app icon (along with the 17 alts in the app) was crafted by Hannah Lee.",
-                            },
-                            {
-                                name: "Numbies",
-                                icon: "assets/icons/numbies.jpg",
-                                description:
-                                    "Numbies was a social exercise rep counter that allowed you to buzz your friends and track bodyweight exercises together in realtime websocket-based sessions. Anthony and Caleb built this. In hindsight it was a VERY dumb app to build and invest so much effort into. But despite the bummer of putting all that effort into a UI that isn't used by anyone, I still smile when I open it up and tap around. The lesson here is that you might regret the bad idea, but you'll never regret doing good work.",
-                            },
-                            {
                                 name: "Runbuds",
                                 icon: "assets/icons/runbuds.jpg",
+                                video: "assets/videos/runbuds.mp4",
                                 description:
                                     "Runbuds is my current focus. Rafael, Qasim, Gabriel and I are working on a more expressive social running app.",
                             },
                             {
                                 name: "Shift",
                                 icon: "assets/icons/shift.jpg",
+                                video: "assets/videos/shift.mov",
                                 description:
                                     "Shift is my only solo iOS build on the App Store and is a fun way for me to learn with Claude code without worrying about breaking prod. Its a utility meant to help you become a morning person by shifting your alarm clock by only a few minutes each day. A simple idea that I believe in.",
                             },
                             {
                                 name: "Shift Dev",
                                 icon: "assets/icons/shift-dev.jpg",
+                                video: "assets/videos/shiftdev.mov",
                                 description:
                                     "Shift Dev is the development build for Shift. Necessary since I'm trying to properly dogfood the process of using the app over the course of weeks and I need to constantly restart and change settings.",
+                            },
+                            {
+                                name: "Empty",
+                                icon: "assets/icons/empty.jpg",
+                                video: "assets/videos/empty.mp4",
+                                description:
+                                    "Empty is an intermittent fasting app that I made with Rafael. It was the first app that I shipped that people really loved and continue to use daily. This lovely app icon (along with the 17 alts in the app) was crafted by Hannah Lee.",
+                            },
+                            {
+                                name: "Numbies",
+                                icon: "assets/icons/numbies.jpg",
+                                video: "assets/videos/numbies.mp4",
+                                description:
+                                    "Numbies was a social exercise rep counter that allowed you to buzz your friends and track bodyweight exercises together in realtime websocket-based sessions. Anthony and Caleb built this. In hindsight it was a VERY dumb app to build and invest so much effort into. But despite the bummer of putting all that effort into a UI that isn't used by anyone, I still smile when I open it up and tap around. The lesson here is that you might regret the bad idea, but you'll never regret doing good work.",
+                            },
+                            {
+                                name: "App Store",
+                                icon: "assets/icons/appstore.jpg",
+                                video: "assets/videos/appstore.mp4",
+                                description:
+                                    "I am constantly checking ratings, downloads, and using the App Stats shortcut to creep on revenue (reliable idk?) of all the startups that I'm a fan of. This is also where I download my new apps. Design award for Shift, Runbuds, or maybe the SIP iOS app is definitely a goal of mine for 2026.",
                             },
                             {
                                 name: "Figma",
@@ -500,22 +529,17 @@
                                     "I've been building fewer and fewer prototypes in Figma with Claude Code allowing me to prototype rapidly in code, but I still like mirroring initial design concepts and holding things in my hand to think about how an app will really feel at the earliest stage possible.",
                             },
                             {
-                                name: "App Store",
-                                icon: "assets/icons/appstore.jpg",
-                                description:
-                                    "I am constantly checking ratings, downloads, and using the App Stats shortcut to creep on revenue (reliable idk?) of all the startups that I'm a fan of. This is also where I download my new apps. Design award for Shift, Runbuds, or maybe the SIP iOS app is definitely a goal of mine for 2026.",
-                            },
-                            {
-                                name: "TestFlight",
-                                icon: "assets/icons/testflight.jpg",
-                                description:
-                                    "Exclusive TestFlights used to be cool but now I think they are cope just SHIP it people!!! Of course time and place but I also just hate seeing the little dot next to apps on my home screen.",
-                            },
-                            {
                                 name: "Linear",
                                 icon: "assets/icons/linear.jpg",
                                 description:
                                     "Linear. Great app. Love watching Gavin keep pushing his craft with highly custom motion. I think the share sheet extension is a bit broken though or was for a bit. I also feel like I'm not fully taking advantage of everything Linear has to offer (so many integrations) on desktop but oh well.",
+                            },
+                            {
+                                name: "TestFlight",
+                                icon: "assets/icons/testflight.jpg",
+                                video: "assets/videos/testflight.mp4",
+                                description:
+                                    "Exclusive TestFlights used to be cool but now I think they are cope just SHIP it people!!! Of course time and place but I also just hate seeing the little dot next to apps on my home screen.",
                             },
                         ],
                     },
@@ -526,12 +550,14 @@
                             {
                                 name: "Messages",
                                 icon: "assets/icons/messages.jpg",
+                                video: "assets/videos/messages.mp4",
                                 description:
                                     "I'll never forget the moment from Carl Pei's TBPN interview where he was just like <em>you can't beat blue texts it's impossible.</em> Messages is probably the #1 reason to HODL Apple stock until you die.",
                             },
                             {
                                 name: "WhatsApp",
                                 icon: "assets/icons/whatsapp.jpg",
+                                video: "assets/videos/whatsapp.mp4",
                                 description:
                                     "I'm looking at this app icon and wishing Telegram was here so I could pay homage to a truly 🐐🐐🐐 UI but unfortunately I just use WhatsApp for international comms.",
                             },
@@ -542,38 +568,44 @@
                                     "Net's email card stack is so good. It seems like multiple teams are trying their hand at email again in the AI era but so far I'm riding with Net. Excited to see what they ship on desktop so I can fully ditch Superhuman.",
                             },
                             {
-                                name: "X",
-                                icon: "assets/icons/x.jpg",
-                                description:
-                                    "X becoming the foundation of my career was certainly not on my life bingo card. The concentration of interesting and talented people who are down to just chat here is so magical.",
-                            },
-                            {
                                 name: "TikTok",
                                 icon: "assets/icons/tiktok.jpg",
+                                video: "assets/videos/tiktok.mp4",
                                 description:
                                     "If you think you are above TikTok I take issue with that. I understand not having it because its too addictive and you need to go cold turkey, but don't pretend this shit isn't awesome.",
                             },
                             {
+                                name: "X",
+                                icon: "assets/icons/x.jpg",
+                                video: "assets/videos/x.mp4",
+                                description:
+                                    "X becoming the foundation of my career was certainly not on my life bingo card. The concentration of interesting and talented people who are down to just chat here is so magical.",
+                            },
+                            {
                                 name: "Bump",
                                 icon: "assets/icons/bump.jpg",
+                                video: "assets/videos/bump.mp4",
                                 description:
                                     "The pain of being a millennial is that my friends refuse to download Bump and we can't use it instead of Find my Friends. But I've got my wife and a few Twitter friends on here so I use it often enough to justify home screen status. Best iOS team in the game right now.",
                             },
                             {
                                 name: "Instagram",
                                 icon: "assets/icons/instagram.jpg",
+                                video: "assets/videos/instagram.mp4",
                                 description:
                                     "I've been trying to use IG more like Retro and post randomly because the grid archive is really nice to have. My content is mostly soccer and sports memes. Kinda want to follow more art & graphic design accounts on here.",
                             },
                             {
                                 name: "Messenger",
                                 icon: "assets/icons/messenger.jpg",
+                                video: "assets/videos/messenger.mp4",
                                 description:
                                     "My dad exclusively sends me tennis & soccer reels here and very unfunny epic fail videos that are reminiscient of Americas Funniest Home Videos. Also communicate with Armenian friends and family via Messenger.",
                             },
                             {
                                 name: "YouTube",
                                 icon: "assets/icons/youtube.jpg",
+                                video: "assets/videos/youtube.mp4",
                                 description:
                                     "I grew up watching soccer skills edits and full game Messi/Neymar highlights on YouTube. I learned my first bit of code by watching React Native tutorials. I still use YouTube every day and I just never think about it as a brand. Its like electricity.",
                             },
@@ -584,58 +616,67 @@
                         emoji: "🌏",
                         apps: [
                             {
-                                name: "Fotmob",
-                                icon: "assets/icons/fotmob.jpg",
-                                description:
-                                    "Fotmob is how I keep up with the beautiful game. I'm happiest when I'm playing soccer, followed by watching soccer, and grew up a Barcelona & Ronaldinho fan. I support Crystal Palace in the Premier League after falling in love with Selhurst Park the one time I was lucky enough to watch a game there.",
-                            },
-                            {
-                                name: "Radio Garden",
-                                icon: "assets/icons/radiogarden.jpg",
-                                description:
-                                    "Radio Garden has stations from all over the world. I love using radio to ambiently support language learning (I try to improve my Armenian and Spanish skills every now and then) and it's also a great way to mix it up when you want something a bit different to listen to.",
-                            },
-                            {
-                                name: "Pokemon",
-                                icon: "assets/icons/pokemontcgp.jpg",
-                                description:
-                                    "Pokemon artwork will never not give me nostalgia, and I'm especially feeling it right now after my first ever Japan trip. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldn't see the light coming from my room.",
-                            },
-                            {
-                                name: "Anki",
-                                icon: "assets/icons/anki.jpg",
-                                description:
-                                    "The spaced repetition studying method that smart people swear by, and Anki is the most popular app for it. I started getting into it for my Armenian vocab/alphabet and haven't touched the app for months but it's one of those things you keep around not to forget about it.",
-                            },
-                            {
-                                name: "Particle",
-                                icon: "assets/icons/particle.jpg",
-                                description:
-                                    "Particle is a beautiful and free AI news app. Super fluid navigation, high quality summaries, and tons of fun features like crosswords, political bias comparisons, and more.",
-                            },
-                            {
-                                name: "GOAT",
-                                icon: "assets/icons/goat.jpg",
-                                description:
-                                    "I'm not a full on sneakerhead but I like sneakers a lot, and GOAT has all the footwear I could ever dream of. Maybe I'll try buying some clothes from there some day as well. Their brand and aesthetic is up there for me. Just need them to bump their font size by like 2pt.",
-                            },
-                            {
                                 name: "Arena",
                                 icon: "assets/icons/arena.jpg",
+                                video: "assets/videos/arena.mp4",
                                 description:
                                     '<a href="https://x.com/_yihui/status/1956036181306568873?s=20" target="_blank">Yihui\'s recent v2 iOS build</a> (available on TestFlight for supporters) has finally gotten me fully into Arena. I\'ve been having so much more fun stashing gems that I find (mostly on Twitter) and browsing other people\'s collections.',
                             },
                             {
                                 name: "WSJ",
                                 icon: "assets/icons/wsj.jpg",
+                                video: "assets/videos/wsj.mp4",
                                 description:
                                     "The Wall Street Journal is expensive but I dig their vibe, and theyre the least biased publication with a solid iOS app (IMO).",
                             },
                             {
                                 name: "Poolsuite",
                                 icon: "assets/icons/poolsuite.jpg",
+                                video: "assets/videos/poolsuite.mp4",
                                 description:
                                     "Poolsuite is just such a cool brand, such a great app, and the playlists ain't bad either. Marty & co epitomize the level of creativity that all small consumer teams (indie or VC-backed) should aspire to. They're clearly just having fun with it.",
+                            },
+                            {
+                                name: "Pokemon",
+                                icon: "assets/icons/pokemontcgp.jpg",
+                                video: "assets/videos/pokemon.mp4",
+                                description:
+                                    "Pokemon artwork will never not give me nostalgia, and I'm especially feeling it right now after my first ever Japan trip. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldn't see the light coming from my room.",
+                            },
+                            {
+                                name: "Anki",
+                                icon: "assets/icons/anki.jpg",
+                                video: "assets/videos/anki.mp4",
+                                description:
+                                    "The spaced repetition studying method that smart people swear by, and Anki is the most popular app for it. I started getting into it for my Armenian vocab/alphabet and haven't touched the app for months but it's one of those things you keep around not to forget about it.",
+                            },
+                            {
+                                name: "Radio Garden",
+                                icon: "assets/icons/radiogarden.jpg",
+                                video: "assets/videos/radiogarden.mp4",
+                                description:
+                                    "Radio Garden has stations from all over the world. I love using radio to ambiently support language learning (I try to improve my Armenian and Spanish skills every now and then) and it's also a great way to mix it up when you want something a bit different to listen to.",
+                            },
+                            {
+                                name: "Fotmob",
+                                icon: "assets/icons/fotmob.jpg",
+                                video: "assets/videos/fotmob.mp4",
+                                description:
+                                    "Fotmob is how I keep up with the beautiful game. I'm happiest when I'm playing soccer, followed by watching soccer, and grew up a Barcelona & Ronaldinho fan. I support Crystal Palace in the Premier League after falling in love with Selhurst Park the one time I was lucky enough to watch a game there.",
+                            },
+                            {
+                                name: "Particle",
+                                icon: "assets/icons/particle.jpg",
+                                video: "assets/videos/particle.mp4",
+                                description:
+                                    "Particle is a beautiful and free AI news app. Super fluid navigation, high quality summaries, and tons of fun features like crosswords, political bias comparisons, and more.",
+                            },
+                            {
+                                name: "GOAT",
+                                icon: "assets/icons/goat.jpg",
+                                video: "assets/videos/goat.mp4",
+                                description:
+                                    "I'm not a full on sneakerhead but I like sneakers a lot, and GOAT has all the footwear I could ever dream of. Maybe I'll try buying some clothes from there some day as well. Their brand and aesthetic is up there for me. Just need them to bump their font size by like 2pt.",
                             },
                         ],
                     },
@@ -781,6 +822,39 @@
                 return true;
             }
 
+            // Open folder video sheet with a specific video source
+            function openFolderVideoSheet(videoSrc) {
+                const video = document.getElementById("folder-video-sheet");
+                if (!video) return false;
+
+                // Set the video source
+                video.src = videoSrc;
+                activeVideoSheet = video;
+
+                // Clear any hover effects when opening video
+                clearHoverEffect();
+
+                // Start video playback
+                video.currentTime = 0;
+                video.play();
+
+                // Spring animation config
+                const springConfig = {
+                    type: "spring",
+                    stiffness: 400,
+                    damping: 40,
+                    mass: 1,
+                };
+
+                // Animate entire phone screen down (includes home image and masks)
+                Motion.animate(phoneScreen, { scale: [1, 0.92] }, springConfig);
+
+                // Animate video sheet up
+                Motion.animate(video, { y: [650, 0] }, springConfig);
+
+                return true;
+            }
+
             // Close video sheet
             function closeVideoSheet() {
                 if (!activeVideoSheet) return;
@@ -810,6 +884,11 @@
                 ).finished.then(() => {
                     video.pause();
                     video.currentTime = 0;
+                    // Clear src for folder video to free resources
+                    if (video.id === "folder-video-sheet") {
+                        video.removeAttribute("src");
+                        video.load();
+                    }
                     // Instantly pickup cursor hover state
                     pickupCursorHover();
                 });
@@ -1207,8 +1286,11 @@
                 // Set folder context - first app selected by default
                 currentFolderContext = { folderName, selectedIndex: 0 };
 
-                // Open video for first app (using retro.mp4 as placeholder for all folder apps)
-                openVideoSheet("retro");
+                // Open video for first app using its actual video (or no video if none)
+                const firstApp = folder.apps[0];
+                if (firstApp && firstApp.video) {
+                    openFolderVideoSheet(firstApp.video);
+                }
 
                 const appsHtml = folder.apps
                     .map(
@@ -1395,6 +1477,10 @@
             function selectFolderApp(index) {
                 if (!currentFolderContext) return;
 
+                const folder = appData.folders[currentFolderContext.folderName];
+                const app = folder?.apps[index];
+                if (!app) return;
+
                 // Update selected index
                 currentFolderContext.selectedIndex = index;
 
@@ -1409,12 +1495,28 @@
                         }
                     });
 
-                // Fade transition to new video (using retro as placeholder for all)
-                // For now all apps use retro.mp4, so just do a subtle fade
-                if (activeVideoSheet) {
-                    // Fade out current video slightly and back in (visual feedback)
+                // Switch to the new app's video
+                const folderVideo = document.getElementById("folder-video-sheet");
+                if (folderVideo && app.video) {
+                    // Crossfade to new video
                     Motion.animate(
-                        activeVideoSheet,
+                        folderVideo,
+                        { opacity: [1, 0] },
+                        { duration: 0.15, easing: "ease-out" },
+                    ).finished.then(() => {
+                        folderVideo.src = app.video;
+                        folderVideo.currentTime = 0;
+                        folderVideo.play();
+                        Motion.animate(
+                            folderVideo,
+                            { opacity: [0, 1] },
+                            { duration: 0.15, easing: "ease-in" },
+                        );
+                    });
+                } else if (folderVideo && !app.video) {
+                    // App has no video - just fade feedback
+                    Motion.animate(
+                        folderVideo,
                         { opacity: [1, 0.7, 1] },
                         { duration: 0.3, easing: "ease-in-out" },
                     );
