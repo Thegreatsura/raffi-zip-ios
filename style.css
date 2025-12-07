@@ -33,7 +33,7 @@
     --folder-title-gap: 24px;
     --folder-top-padding: 88px; /* title height (64px) + gap (24px) */
     --folder-bottom-padding: 0px;
-    --folder-top-mask-height: 144px;
+    --folder-top-mask-height: 244px;
     --folder-bottom-mask-height: 244px;
 
     /* Folder list styles */
@@ -165,6 +165,7 @@ body {
     flex-direction: column;
     overflow-y: clip;
     overflow-x: visible;
+    margin-top: -12px;
 }
 
 .content-header {

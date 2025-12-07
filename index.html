@@ -1412,10 +1412,12 @@
 
                 if (!scrollArea || !topMask || !bottomMask) return;
 
+                // Read mask heights from CSS variables
+                const styles = getComputedStyle(document.documentElement);
                 const TOP_MIN = 48;
-                const TOP_MAX = 144;
+                const TOP_MAX = parseInt(styles.getPropertyValue('--folder-top-mask-height')) || 168;
                 const BOTTOM_MIN = 0;
-                const BOTTOM_MAX = 244;
+                const BOTTOM_MAX = parseInt(styles.getPropertyValue('--folder-bottom-mask-height')) || 244;
 
                 function updateGradients() {
                     const scrollTop = scrollArea.scrollTop;
