@@ -420,6 +420,15 @@ body {
     border-radius: var(--phone-mockup-radius);
 }
 
+/* Folder videos - stacked for crossfade, B on top */
+#folder-video-a {
+    z-index: 21;
+}
+
+#folder-video-b {
+    z-index: 22;
+}
+
 /* Tap Targets - positioned absolutely over the phone image */
 .tap-target {
     position: absolute;

@@ -111,10 +111,17 @@
                             playsinline
                             loop
                         ></video>
-                        <!-- Dynamic video sheet for folder apps -->
+                        <!-- Dynamic video sheets for folder apps (two for crossfade) -->
                         <video
-                            class="video-sheet"
-                            id="folder-video-sheet"
+                            class="video-sheet folder-video"
+                            id="folder-video-a"
+                            muted
+                            playsinline
+                            loop
+                        ></video>
+                        <video
+                            class="video-sheet folder-video"
+                            id="folder-video-b"
                             muted
                             playsinline
                             loop
@@ -697,6 +704,9 @@
             // Track folder context for video switching
             let currentFolderContext = null; // { folderName, selectedIndex }
 
+            // Track which folder video element is active (for crossfade)
+            let activeFolderVideo = "a"; // "a" or "b"
+
             // Global mouse tracking for cursor pickup after video dismiss
             let lastMouseX = 0;
             let lastMouseY = 0;
@@ -824,19 +834,26 @@
 
             // Open folder video sheet with a specific video source
             function openFolderVideoSheet(videoSrc) {
-                const video = document.getElementById("folder-video-sheet");
-                if (!video) return false;
+                const videoA = document.getElementById("folder-video-a");
+                const videoB = document.getElementById("folder-video-b");
+                if (!videoA || !videoB) return false;
 
-                // Set the video source
-                video.src = videoSrc;
-                activeVideoSheet = video;
+                // Reset state - A is active and visible, B is hidden behind
+                activeFolderVideo = "a";
+                videoA.style.opacity = "1";
+                videoB.style.opacity = "0";
+                videoB.removeAttribute("src");
+
+                // Set the video source on A
+                videoA.src = videoSrc;
+                activeVideoSheet = videoA;
 
                 // Clear any hover effects when opening video
                 clearHoverEffect();
 
                 // Start video playback
-                video.currentTime = 0;
-                video.play();
+                videoA.currentTime = 0;
+                videoA.play();
 
                 // Spring animation config
                 const springConfig = {
@@ -849,8 +866,9 @@
                 // Animate entire phone screen down (includes home image and masks)
                 Motion.animate(phoneScreen, { scale: [1, 0.92] }, springConfig);
 
-                // Animate video sheet up
-                Motion.animate(video, { y: [650, 0] }, springConfig);
+                // Animate both folder videos up together (they stack, B hidden behind A)
+                Motion.animate(videoA, { y: [650, 0] }, springConfig);
+                Motion.animate(videoB, { y: [650, 0] }, springConfig);
 
                 return true;
             }
@@ -876,6 +894,9 @@
                 // Animate phone screen back up
                 Motion.animate(phoneScreen, { scale: [0.92, 1] }, springConfig);
 
+                // Check if this is a folder video
+                const isFolderVideo = video.classList.contains("folder-video");
+
                 // Animate video sheet down
                 Motion.animate(
                     video,
@@ -884,14 +905,32 @@
                 ).finished.then(() => {
                     video.pause();
                     video.currentTime = 0;
-                    // Clear src for folder video to free resources
-                    if (video.id === "folder-video-sheet") {
-                        video.removeAttribute("src");
-                        video.load();
-                    }
                     // Instantly pickup cursor hover state
                     pickupCursorHover();
                 });
+
+                // If folder video, also animate the other one down and clean up both
+                if (isFolderVideo) {
+                    const videoA = document.getElementById("folder-video-a");
+                    const videoB = document.getElementById("folder-video-b");
+                    const otherVideo = video === videoA ? videoB : videoA;
+
+                    Motion.animate(
+                        otherVideo,
+                        { y: [0, 650] },
+                        springConfig,
+                    ).finished.then(() => {
+                        // Clean up both folder videos
+                        [videoA, videoB].forEach((v) => {
+                            v.pause();
+                            v.currentTime = 0;
+                            v.removeAttribute("src");
+                            v.load();
+                            v.style.opacity = "";
+                        });
+                        activeFolderVideo = "a";
+                    });
+                }
 
                 // Return RHS to home content
                 swapContent(homeContentHTML);
@@ -946,6 +985,18 @@
                             phoneScreen.style.transform = "scale(1)";
                             activeVideoSheet = null;
                         }
+                        // Reset folder videos
+                        const videoA = document.getElementById("folder-video-a");
+                        const videoB = document.getElementById("folder-video-b");
+                        [videoA, videoB].forEach((v) => {
+                            if (v) {
+                                v.pause();
+                                v.removeAttribute("src");
+                                v.style.transform = "translateY(650px)";
+                                v.style.opacity = "";
+                            }
+                        });
+                        activeFolderVideo = "a";
                         // Clear folder context
                         currentFolderContext = null;
                     }
@@ -1473,7 +1524,7 @@
                     });
             }
 
-            // Select a different app within the folder (fade transition)
+            // Select a different app within the folder (crossfade transition)
             function selectFolderApp(index) {
                 if (!currentFolderContext) return;
 
@@ -1495,28 +1546,57 @@
                         }
                     });
 
-                // Switch to the new app's video
-                const folderVideo = document.getElementById("folder-video-sheet");
-                if (folderVideo && app.video) {
-                    // Crossfade to new video
-                    Motion.animate(
-                        folderVideo,
-                        { opacity: [1, 0] },
-                        { duration: 0.15, easing: "ease-out" },
-                    ).finished.then(() => {
-                        folderVideo.src = app.video;
-                        folderVideo.currentTime = 0;
-                        folderVideo.play();
+                // Get both folder video elements
+                const videoA = document.getElementById("folder-video-a");
+                const videoB = document.getElementById("folder-video-b");
+                if (!videoA || !videoB) return;
+
+                // Determine current and next video elements
+                const currentVideo = activeFolderVideo === "a" ? videoA : videoB;
+                const nextVideo = activeFolderVideo === "a" ? videoB : videoA;
+
+                if (app.video) {
+                    // Preload the new video in the inactive element
+                    nextVideo.src = app.video;
+                    nextVideo.currentTime = 0;
+
+                    // Wait for video to be ready, then crossfade
+                    const startCrossfade = () => {
+                        nextVideo.play();
+
+                        // Simultaneous crossfade - 250ms butter smooth
                         Motion.animate(
-                            folderVideo,
-                            { opacity: [0, 1] },
-                            { duration: 0.15, easing: "ease-in" },
+                            currentVideo,
+                            { opacity: 0 },
+                            { duration: 0.25, easing: "ease-in-out" },
+                        ).finished.then(() => {
+                            // Clean up old video after fade
+                            currentVideo.pause();
+                            currentVideo.removeAttribute("src");
+                            currentVideo.load();
+                        });
+
+                        Motion.animate(
+                            nextVideo,
+                            { opacity: 1 },
+                            { duration: 0.25, easing: "ease-in-out" },
                         );
-                    });
-                } else if (folderVideo && !app.video) {
-                    // App has no video - just fade feedback
+
+                        // Swap active video tracker
+                        activeFolderVideo = activeFolderVideo === "a" ? "b" : "a";
+                        activeVideoSheet = nextVideo;
+                    };
+
+                    // Check if video is already ready or wait for canplay
+                    if (nextVideo.readyState >= 3) {
+                        startCrossfade();
+                    } else {
+                        nextVideo.addEventListener("canplay", startCrossfade, { once: true });
+                    }
+                } else {
+                    // App has no video - just pulse the current video as feedback
                     Motion.animate(
-                        folderVideo,
+                        currentVideo,
                         { opacity: [1, 0.7, 1] },
                         { duration: 0.3, easing: "ease-in-out" },
                     );
