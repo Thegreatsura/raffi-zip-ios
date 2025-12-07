@@ -146,9 +146,9 @@
                                         target="_blank"
                                         >Spotted in Prod</a
                                     >
-                                    - a platform that features great iOS apps
-                                    and the developers behind them. I also build
-                                    fitness apps on my own and with friends.
+                                    - a platform featuring great iOS apps and
+                                    the people behind them. I also build fitness
+                                    apps on my own and with friends.
                                 </p>
                                 <p>
                                     I think our Home Screen setups say a lot
@@ -228,22 +228,44 @@
                 const h = canvas.height;
 
                 // Screen: sample from left edge, between widget rows (cleaner area)
-                const screenPixel = ctx.getImageData(8, Math.floor(h * 0.35), 1, 1).data;
+                const screenPixel = ctx.getImageData(
+                    8,
+                    Math.floor(h * 0.35),
+                    1,
+                    1,
+                ).data;
                 SCREEN_OVERLAY_COLOR = `rgba(${screenPixel[0]}, ${screenPixel[1]}, ${screenPixel[2]}, 0.7)`;
 
                 // Dock: sample from bottom-left corner of dock area (avoids icons)
-                const dockPixel = ctx.getImageData(80, Math.floor(h * 0.94), 1, 1).data;
+                const dockPixel = ctx.getImageData(
+                    80,
+                    Math.floor(h * 0.94),
+                    1,
+                    1,
+                ).data;
                 DOCK_OVERLAY_COLOR = `rgba(${dockPixel[0]}, ${dockPixel[1]}, ${dockPixel[2]}, 0.7)`;
 
                 // Frame gradient: sample from very top and bottom edges
-                const topPixel = ctx.getImageData(Math.floor(w * 0.5), 2, 1, 1).data;
-                const bottomPixel = ctx.getImageData(Math.floor(w * 0.5), h - 3, 1, 1).data;
+                const topPixel = ctx.getImageData(
+                    Math.floor(w * 0.5),
+                    2,
+                    1,
+                    1,
+                ).data;
+                const bottomPixel = ctx.getImageData(
+                    Math.floor(w * 0.5),
+                    h - 3,
+                    1,
+                    1,
+                ).data;
                 FRAME_GRADIENT_TOP = `rgb(${topPixel[0]}, ${topPixel[1]}, ${topPixel[2]})`;
                 FRAME_GRADIENT_BOTTOM = `rgb(${bottomPixel[0]}, ${bottomPixel[1]}, ${bottomPixel[2]})`;
 
                 // Apply frame gradient to CSS
                 const phoneFrame = document.querySelector(".phone-frame");
-                const bezelOverlay = document.querySelector(".phone-bezel-overlay");
+                const bezelOverlay = document.querySelector(
+                    ".phone-bezel-overlay",
+                );
                 const frameGradient = `
                     radial-gradient(100% 100% at 100% 100%, rgba(255, 0, 98, 0.02) 0%, rgba(0, 255, 255, 0) 100%),
                     linear-gradient(167deg, ${FRAME_GRADIENT_TOP} 0%, ${FRAME_GRADIENT_BOTTOM} 100%)
@@ -259,7 +281,7 @@
                     screen: SCREEN_OVERLAY_COLOR,
                     dock: DOCK_OVERLAY_COLOR,
                     frameTop: FRAME_GRADIENT_TOP,
-                    frameBottom: FRAME_GRADIENT_BOTTOM
+                    frameBottom: FRAME_GRADIENT_BOTTOM,
                 });
             }
 
@@ -658,7 +680,7 @@
       </div>
       <div class="content-body">
         <div class="content-text">
-          <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform that features great iOS apps and the developers behind them. I also build fitness apps on my own and with friends.</p>
+          <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform featuring great iOS apps and the people behind them. I also build fitness apps on my own and with friends.</p>
           <p>I think our Home Screen setups say a lot about us (at least us who care about apps), so here's mine.</p>
           <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
         </div>
@@ -767,7 +789,10 @@
                     if (mockupImg.complete) {
                         sampleColorsFromScreenshot();
                     } else {
-                        mockupImg.addEventListener("load", sampleColorsFromScreenshot);
+                        mockupImg.addEventListener(
+                            "load",
+                            sampleColorsFromScreenshot,
+                        );
                     }
                 }
 
@@ -787,10 +812,10 @@
                     true,
                 );
 
-                // Reset to home content when phone hides (720px breakpoint)
-                let wasPhoneHidden = window.innerWidth <= 720;
+                // Reset to home content when phone hides (800px breakpoint)
+                let wasPhoneHidden = window.innerWidth <= 800;
                 window.addEventListener("resize", () => {
-                    const isPhoneHidden = window.innerWidth <= 720;
+                    const isPhoneHidden = window.innerWidth <= 800;
                     if (isPhoneHidden && !wasPhoneHidden) {
                         // Just crossed into phone-hidden state - instantly show home content
                         contentAreaInner.innerHTML = homeContentHTML;
@@ -1204,9 +1229,13 @@
 
             // Dynamic gradient masks based on scroll position
             function attachGradientScrollListener() {
-                const scrollArea = document.querySelector(".folder-scroll-area");
+                const scrollArea = document.querySelector(
+                    ".folder-scroll-area",
+                );
                 const topMask = document.querySelector(".folder-top-mask");
-                const bottomMask = document.querySelector(".folder-bottom-mask");
+                const bottomMask = document.querySelector(
+                    ".folder-bottom-mask",
+                );
 
                 if (!scrollArea || !topMask || !bottomMask) return;
 
@@ -1217,7 +1246,8 @@
 
                 function updateGradients() {
                     const scrollTop = scrollArea.scrollTop;
-                    const maxScroll = scrollArea.scrollHeight - scrollArea.clientHeight;
+                    const maxScroll =
+                        scrollArea.scrollHeight - scrollArea.clientHeight;
 
                     // Add tolerance for near-bottom detection (within 2px = 100%)
                     let progress = 0;
@@ -1229,12 +1259,17 @@
 
                     // Top gradient: 48px → 144px between 0-10% scroll
                     const topProgress = Math.min(progress / 0.1, 1);
-                    const topHeight = TOP_MIN + (TOP_MAX - TOP_MIN) * topProgress;
+                    const topHeight =
+                        TOP_MIN + (TOP_MAX - TOP_MIN) * topProgress;
                     topMask.style.height = `${topHeight}px`;
 
                     // Bottom gradient: 244px → 0px between 90-100% scroll
-                    const bottomProgress = Math.min(Math.max((progress - 0.9) / 0.1, 0), 1);
-                    const bottomHeight = BOTTOM_MAX - (BOTTOM_MAX - BOTTOM_MIN) * bottomProgress;
+                    const bottomProgress = Math.min(
+                        Math.max((progress - 0.9) / 0.1, 0),
+                        1,
+                    );
+                    const bottomHeight =
+                        BOTTOM_MAX - (BOTTOM_MAX - BOTTOM_MIN) * bottomProgress;
                     bottomMask.style.height = `${bottomHeight}px`;
                 }
 
@@ -1242,7 +1277,9 @@
                 updateGradients();
 
                 // Update on scroll
-                scrollArea.addEventListener("scroll", updateGradients, { passive: true });
+                scrollArea.addEventListener("scroll", updateGradients, {
+                    passive: true,
+                });
             }
 
             // Attach click listeners to folder app items
@@ -1400,14 +1437,14 @@
                         width,
                         height,
                         cornerRadius: outerRadius,
-                        cornerSmoothing: 1,
+                        cornerSmoothing: 0.6,
                     });
 
                     const innerPath = getSvgPath({
                         width: innerWidth,
                         height: innerHeight,
                         cornerRadius: innerRadius,
-                        cornerSmoothing: 1,
+                        cornerSmoothing: 0.6,
                     });
 
                     const outerSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}"><path d="${outerPath}" fill="white"/></svg>`;
@@ -1450,7 +1487,7 @@
                         width,
                         height,
                         cornerRadius: outerRadius,
-                        cornerSmoothing: 1,
+                        cornerSmoothing: 0.6,
                     });
 
                     // Generate inner squircle path
@@ -1458,7 +1495,7 @@
                         width: innerWidth,
                         height: innerHeight,
                         cornerRadius: innerRadius,
-                        cornerSmoothing: 1,
+                        cornerSmoothing: 0.6,
                     });
 
                     // Create SVGs for mask

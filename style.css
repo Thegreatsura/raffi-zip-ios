@@ -321,25 +321,25 @@ body {
         ),
         /* Left edge - subtle */
         linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.08) 0%,
-            rgba(255, 255, 255, 0.02) 1.5%,
-            transparent 6%
-        ),
+                90deg,
+                rgba(255, 255, 255, 0.08) 0%,
+                rgba(255, 255, 255, 0.02) 1.5%,
+                transparent 6%
+            ),
         /* Right edge - subtle */
         linear-gradient(
-            270deg,
-            rgba(255, 255, 255, 0.06) 0%,
-            rgba(255, 255, 255, 0.02) 1.5%,
-            transparent 6%
-        ),
+                270deg,
+                rgba(255, 255, 255, 0.06) 0%,
+                rgba(255, 255, 255, 0.02) 1.5%,
+                transparent 6%
+            ),
         /* Bottom edge - very subtle */
         linear-gradient(
-            0deg,
-            rgba(255, 255, 255, 0.04) 0%,
-            rgba(255, 255, 255, 0.01) 1%,
-            transparent 4%
-        );
+                0deg,
+                rgba(255, 255, 255, 0.04) 0%,
+                rgba(255, 255, 255, 0.01) 1%,
+                transparent 4%
+            );
     pointer-events: none;
     z-index: 101;
     /* Mask will be applied via JavaScript using squircle path */
@@ -821,8 +821,8 @@ body {
     }
 }
 
-/* Phone hidden, content centered (720px - 451px) */
-@media (max-width: 720px) and (min-width: 451px) {
+/* Phone hidden, content centered (800px - 451px) */
+@media (max-width: 800px) and (min-width: 451px) {
     .main-container {
         padding: 0 24px;
     }
