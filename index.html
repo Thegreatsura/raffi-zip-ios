@@ -933,16 +933,17 @@
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return;
 
-                // Instantly set final positions (this interrupts any running animations)
-                Motion.animate(videoA, { y: 650 }, { duration: 0 });
-                Motion.animate(videoB, { y: 650 }, { duration: 0 });
-                Motion.animate(phoneScreen, { scale: 1 }, { duration: 0 });
+                // Instantly set final positions using direct style (more reliable than Motion with duration 0)
+                videoA.style.transform = "translateY(700px)";
+                videoB.style.transform = "translateY(700px)";
+                phoneScreen.style.transform = "scale(1)";
 
                 [videoA, videoB].forEach((v) => {
                     v.pause();
                     v.currentTime = 0;
                     v.removeAttribute("src");
-                    v.style.opacity = "";
+                    v.load(); // Force clear
+                    v.style.opacity = "0";
                 });
 
                 activeFolderVideo = "a";
@@ -964,15 +965,15 @@
 
                 folderVideoOpen = true;
 
-                // Set up video A (transforms already at 650 from reset)
-                videoA.style.opacity = "1";
-                videoB.style.opacity = "0";
-
-                // Set the video source and start loading
+                // Set the video source FIRST (before showing)
                 videoA.src = videoSrc;
                 videoA.load();
                 activeVideoSheet = videoA;
                 activeFolderVideo = "a";
+
+                // Now make video A visible (after src is set)
+                videoA.style.opacity = "1";
+                videoB.style.opacity = "0";
 
                 // Clear any hover effects
                 clearHoverEffect();
@@ -1461,6 +1462,9 @@
                     contentAreaInner.querySelector(".folder-container")?.dataset
                         .currentFolder;
                 if (currentFolder === folderName) return;
+
+                // Always reset folder videos first when switching folders
+                resetFolderVideos();
 
                 // Set folder context - first app selected by default
                 currentFolderContext = { folderName, selectedIndex: 0 };
