@@ -6,6 +6,9 @@
         <title>Raffi Chilingaryan</title>
         <link rel="icon" type="image/png" href="assets/favicon.png" />
         <link rel="apple-touch-icon" href="assets/favicon.png" />
+        <!-- Preload critical assets -->
+        <link rel="preload" href="assets/phone-mockups/home-desktop.jpg" as="image" />
+        <link rel="preload" href="assets/favicon.png" as="image" />
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <link rel="stylesheet" href="style.css" />
@@ -234,6 +237,86 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tablet View (text only, 451-920px) -->
+        <div class="tablet-view">
+            <div class="tablet-content">
+                <div class="content-header">
+                    <h1>Raffi Chilingaryan</h1>
+                </div>
+                <div class="content-body">
+                    <div class="content-text">
+                        <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform featuring great iOS apps and the people behind them. I also build fitness apps on my own and with friends.</p>
+                        <p>Thanks for stopping by and feel free to <a href="mailto:raffi.chilingaryan@gmail.com">get in touch.</a></p>
+                    </div>
+                    <div class="social-icons">
+                        <a href="https://x.com/raffichill" target="_blank" class="social-icon">
+                            <img src="assets/social/x-icon.svg" alt="X" />
+                        </a>
+                        <a href="https://instagram.com/raffichill" target="_blank" class="social-icon">
+                            <img src="assets/social/instagram-icon.svg" alt="Instagram" />
+                        </a>
+                        <a href="https://github.com/raffichill" target="_blank" class="social-icon">
+                            <img src="assets/social/github-icon.svg" alt="GitHub" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile View -->
+        <div class="mobile-view">
+            <div class="mobile-content">
+                <div class="mobile-main">
+                    <h1 class="mobile-title">Raffi Chilingaryan</h1>
+
+                    <div class="mobile-body">
+                        <p class="mobile-paragraph">
+                            I'm the founder of <a href="https://x.com/spottedinprod" target="_blank" class="mobile-highlight">Spotted in Prod</a> - a platform featuring great iOS apps and the people behind them. I also build fitness apps on my own and with friends.
+                        </p>
+
+                        <div class="mobile-projects-card">
+                            <div class="mobile-projects-header">
+                                <span class="mobile-projects-label">Project</span>
+                                <span class="mobile-hp-container"><span class="mobile-projects-label">HP</span></span>
+                            </div>
+                            <a href="https://apps.apple.com/app/runbuds-social-run-tracker/id6504522866" target="_blank" class="mobile-project-row">
+                                <span class="mobile-project-name">Runbuds</span>
+                                <span class="mobile-hp-container"><span class="mobile-hp-dot hp-100"></span></span>
+                            </a>
+                            <a href="https://apps.apple.com/app/shift-bodyweight-build-muscle/id6738706495" target="_blank" class="mobile-project-row">
+                                <span class="mobile-project-name">Shift</span>
+                                <span class="mobile-hp-container"><span class="mobile-hp-dot hp-80"></span></span>
+                            </a>
+                            <a href="https://apps.apple.com/app/empty-track-fasting-streaks/id6736436080" target="_blank" class="mobile-project-row">
+                                <span class="mobile-project-name">Empty</span>
+                                <span class="mobile-hp-container"><span class="mobile-hp-dot hp-50"></span></span>
+                            </a>
+                            <a href="https://apps.apple.com/app/numbies-nutrition-tracker/id6738984498" target="_blank" class="mobile-project-row">
+                                <span class="mobile-project-name">Numbies</span>
+                                <span class="mobile-hp-container"><span class="mobile-hp-dot"></span></span>
+                            </a>
+                        </div>
+
+                        <p class="mobile-paragraph">
+                            Thanks for stopping by and feel free to <a href="mailto:raffi.chilingaryan@gmail.com" class="mobile-highlight">get in touch.</a>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mobile-social-icons">
+                    <a href="https://x.com/raffichill" target="_blank" class="mobile-social-icon">
+                        <img src="assets/social/x-icon.svg" alt="X" />
+                    </a>
+                    <a href="https://instagram.com/raffichill" target="_blank" class="mobile-social-icon">
+                        <img src="assets/social/instagram-icon.svg" alt="Instagram" />
+                    </a>
+                    <a href="https://github.com/raffichill" target="_blank" class="mobile-social-icon">
+                        <img src="assets/social/github-icon.svg" alt="GitHub" />
+                    </a>
                 </div>
             </div>
         </div>
@@ -677,6 +760,10 @@
                 },
             };
 
+            // Detect layout breakpoints (matches CSS)
+            const isMobile = () => window.innerWidth <= 450;
+            const isTablet = () => window.innerWidth > 450 && window.innerWidth <= 920;
+
             // DOM elements
             const contentAreaInner = document.querySelector(
                 ".content-area-inner",
@@ -957,10 +1044,10 @@
                     true,
                 );
 
-                // Reset to home content when phone hides (800px breakpoint)
-                let wasPhoneHidden = window.innerWidth <= 800;
+                // Reset to home content when phone hides (920px breakpoint)
+                let wasPhoneHidden = window.innerWidth <= 920;
                 window.addEventListener("resize", () => {
-                    const isPhoneHidden = window.innerWidth <= 800;
+                    const isPhoneHidden = window.innerWidth <= 920;
                     if (isPhoneHidden && !wasPhoneHidden) {
                         // Just crossed into phone-hidden state - instantly show home content
                         contentAreaInner.innerHTML = homeContentHTML;
@@ -1663,13 +1750,13 @@
                 // P2 - broken into pause points
                 {
                     target: "intro-p2",
-                    text: "I think our Home Screen setups say a lot about us,",
+                    text: "I think our Home Screen setups say a lot about us",
                     pauseAfter: 400,
                     append: false,
                 },
                 {
                     target: "intro-p2",
-                    text: " so here's mine.",
+                    text: ", so here's mine.",
                     pauseAfter: 400,
                     append: true,
                 },
@@ -1847,6 +1934,9 @@
                 // Wait for videos if not ready yet
                 await videoPromise;
 
+                // Remember that user has seen intro
+                localStorage.setItem("hasSeenIntro", "true");
+
                 // Trigger the reveal animation
                 revealPhone();
             }
@@ -1860,15 +1950,20 @@
                 const desktopView = document.querySelector(".desktop-view");
                 const contentArea = document.querySelector(".content-area");
 
+                // Remove intro mode class
+                desktopView.classList.remove("intro-mode");
+
+                // On mobile, skip the phone animation entirely
+                if (isMobile()) {
+                    return;
+                }
+
                 // Get content area's current centered position
                 const contentStartRect = contentArea.getBoundingClientRect();
 
                 // Hide phone and clear its transform so we can measure correctly
                 phoneContainer.style.visibility = "hidden";
                 phoneContainer.style.transform = "none";
-
-                // Remove intro mode class
-                desktopView.classList.remove("intro-mode");
 
                 // Measure where both elements would naturally be in flex flow
                 const phoneEndRect = phoneContainer.getBoundingClientRect();
@@ -1926,18 +2021,78 @@
                 );
             }
 
+            // Skip intro - set content immediately
+            function skipIntro() {
+                const socialEl = document.querySelector(".intro-social-icons");
+
+                // Set all text content immediately
+                for (const segment of introSequence) {
+                    const el = document.getElementById(segment.target);
+                    if (segment.append) {
+                        el.innerHTML += segment.text;
+                    } else {
+                        el.innerHTML = segment.text;
+                    }
+                }
+
+                // Reveal social icons
+                socialEl.classList.add("revealed");
+
+                // Mark intro as complete
+                introComplete = true;
+
+                // Preload videos in background
+                preloadVideos();
+            }
+
             // Start the app
+            function skipIntro() {
+                const socialEl = document.querySelector(".intro-social-icons");
+
+                // Set all text content immediately
+                for (const segment of introSequence) {
+                    const el = document.getElementById(segment.target);
+                    if (segment.append) {
+                        el.innerHTML += segment.text;
+                    } else {
+                        el.innerHTML = segment.text;
+                    }
+                }
+
+                // Reveal social icons
+                socialEl.classList.add("revealed");
+
+                // Mark intro as complete
+                introComplete = true;
+
+                // Preload videos in background
+                preloadVideos();
+            }
+
             function startApp() {
-                // Add intro mode class
-                document
-                    .querySelector(".desktop-view")
-                    .classList.add("intro-mode");
+                // On mobile or tablet, the respective views handle everything via CSS
+                // No need to run any intro logic
+                if (isMobile() || isTablet()) {
+                    init();
+                    return;
+                }
 
-                // Initialize everything else
-                init();
+                // Desktop (>920px): check if returning visitor
+                const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
-                // Start intro sequence after a brief delay
-                setTimeout(runIntroSequence, 100);
+                if (hasSeenIntro) {
+                    // Skip intro for returning visitors
+                    init();
+                    skipIntro();
+                } else {
+                    // Show intro for first-time visitors
+                    document
+                        .querySelector(".desktop-view")
+                        .classList.add("intro-mode");
+
+                    init();
+                    setTimeout(runIntroSequence, 100);
+                }
             }
 
             startApp();
