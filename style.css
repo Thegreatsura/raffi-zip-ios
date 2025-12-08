@@ -852,12 +852,12 @@ body {
     .desktop-view {
         min-height: 100vh;
         height: auto;
-        padding: 30px;
     }
 
     .main-container {
-        padding: 0;
-        min-height: calc(100vh - 60px);
+        padding: 30px;
+        min-height: 100vh;
+        width: 100%;
     }
 
     .phone-container {
@@ -882,24 +882,31 @@ body {
     .social-icons {
         padding-bottom: 24px;
     }
+
+    /* Disable intro animations on mobile */
+    .intro-mode .content-area {
+        position: static;
+        transform: none;
+    }
 }
 
 /* ========== INTRO ANIMATION STATES ========== */
 
-/* Initial state: phone hidden below viewport */
-.intro-mode .phone-container {
-    transform: translateY(100vh);
-}
+/* Desktop intro mode only - phone slides up, content shifts */
+@media (min-width: 451px) {
+    .intro-mode .phone-container {
+        transform: translateY(100vh);
+    }
 
-/* Initial state: content area centered */
-.intro-mode .main-container {
-    justify-content: center;
-}
+    .intro-mode .main-container {
+        justify-content: center;
+    }
 
-.intro-mode .content-area {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    .intro-mode .content-area {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 /* Social icons start blurred */
