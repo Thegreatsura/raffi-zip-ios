@@ -6,7 +6,7 @@
 
     /* Colors */
     --bg-color: #433526;
-    --bg-color-rgb: 43, 39, 31; /* RGB of #2B271F */
+    --bg-color-rgb: 67, 53, 38; /* RGB of #433526 */
     --selection-color: #56493c; /* Hue-shifted lighter brown */
 
     /* Layout spacing */
@@ -985,8 +985,13 @@ body {
 
 /* Show mobile view, hide desktop view on mobile */
 @media (max-width: 450px) {
+    :root {
+        --bg-color: #2B271F;
+        --bg-color-rgb: 43, 39, 31; /* RGB of #2B271F */
+    }
+
     html, body {
-        background-color: #2B271F;
+        background-color: var(--bg-color);
     }
 
     .desktop-view {
@@ -996,7 +1001,7 @@ body {
     .mobile-view {
         display: flex;
         min-height: 100vh;
-        background-color: #2B271F;
+        background-color: var(--bg-color);
         padding: 0;
         padding-top: max(28px, env(safe-area-inset-top, 28px));
         padding-bottom: env(safe-area-inset-bottom, 0px);
