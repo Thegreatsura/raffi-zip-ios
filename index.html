@@ -1632,33 +1632,83 @@
             // Each segment: { text, pauseAfter (ms) }
             const introSequence = [
                 // Name
-                { target: "intro-name", text: "Raffi Chilingaryan", pauseAfter: 400 },
+                {
+                    target: "intro-name",
+                    text: "Raffi Chilingaryan",
+                    pauseAfter: 400,
+                },
 
                 // P1 - broken into pause points
-                { target: "intro-p1", text: 'I\'m the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a>', pauseAfter: 500, append: false },
-                { target: "intro-p1", text: ' - a platform featuring great iOS apps and the people behind them.', pauseAfter: 400, append: true },
-                { target: "intro-p1", text: ' I also build fitness apps on my own and with friends.', pauseAfter: 500, append: true },
+                {
+                    target: "intro-p1",
+                    text: 'I\'m the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a>',
+                    pauseAfter: 500,
+                    append: false,
+                },
+                {
+                    target: "intro-p1",
+                    text: " - a platform featuring great iOS apps and the people behind them.",
+                    pauseAfter: 400,
+                    append: true,
+                },
+                {
+                    target: "intro-p1",
+                    text: " I also build fitness apps on my own and with friends.",
+                    pauseAfter: 500,
+                    append: true,
+                },
 
                 // P2 - broken into pause points
-                { target: "intro-p2", text: 'I think our Home Screen setups say a lot about us', pauseAfter: 400, append: false },
-                { target: "intro-p2", text: ' (at least us who care about apps),', pauseAfter: 200, append: true },
-                { target: "intro-p2", text: " so here's mine.", pauseAfter: 400, append: true },
+                {
+                    target: "intro-p2",
+                    text: "I think our Home Screen setups say a lot about us",
+                    pauseAfter: 400,
+                    append: false,
+                },
+                {
+                    target: "intro-p2",
+                    text: " (at least us who care about apps),",
+                    pauseAfter: 400,
+                    append: true,
+                },
+                {
+                    target: "intro-p2",
+                    text: " so here's mine.",
+                    pauseAfter: 400,
+                    append: true,
+                },
 
                 // P3 - broken into pause points
-                { target: "intro-p3", text: 'Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a>', pauseAfter: 150, append: false },
-                { target: "intro-p3", text: ' and thanks for stopping by.', pauseAfter: 0, append: true },
+                {
+                    target: "intro-p3",
+                    text: 'Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a>',
+                    pauseAfter: 400,
+                    append: false,
+                },
+                {
+                    target: "intro-p3",
+                    text: " and thanks for stopping by.",
+                    pauseAfter: 0,
+                    append: true,
+                },
             ];
 
             let videosReady = false;
             let introComplete = false;
 
             // Typewriter effect - types out text character by character
+            // Handles word wrapping by adding whole words when they would overflow
             function typeWriter(element, html, speed = 20, append = false) {
                 return new Promise((resolve) => {
                     const startHTML = append ? element.innerHTML : "";
                     let htmlIndex = 0;
                     let currentHTML = startHTML;
                     let inTag = false;
+
+                    // Get the initial height to detect line wraps
+                    element.innerHTML = currentHTML || "\u200B"; // Zero-width space to establish height
+                    let lastHeight = element.scrollHeight;
+                    if (!currentHTML) element.innerHTML = "";
 
                     function type() {
                         if (htmlIndex < html.length) {
@@ -1671,19 +1721,68 @@
                             if (inTag) {
                                 // Add entire tag at once
                                 let tagEnd = html.indexOf(">", htmlIndex);
-                                currentHTML += html.substring(htmlIndex, tagEnd + 1);
+                                currentHTML += html.substring(
+                                    htmlIndex,
+                                    tagEnd + 1,
+                                );
                                 htmlIndex = tagEnd + 1;
 
-                                if (char === "<" && html[htmlIndex - 1] === ">") {
+                                if (
+                                    char === "<" &&
+                                    html[htmlIndex - 1] === ">"
+                                ) {
                                     inTag = false;
                                 }
 
                                 element.innerHTML = currentHTML;
                                 setTimeout(type, 0);
                             } else {
+                                // Check if we're starting a new word
+                                if (
+                                    char !== " " &&
+                                    (currentHTML.endsWith(" ") ||
+                                        currentHTML === startHTML ||
+                                        currentHTML === "")
+                                ) {
+                                    // Find the end of this word
+                                    let wordEnd = htmlIndex;
+                                    while (
+                                        wordEnd < html.length &&
+                                        html[wordEnd] !== " " &&
+                                        html[wordEnd] !== "<"
+                                    ) {
+                                        wordEnd++;
+                                    }
+                                    const word = html.substring(
+                                        htmlIndex,
+                                        wordEnd,
+                                    );
+
+                                    // Test if adding this word would cause a height change
+                                    const testHTML = currentHTML + word;
+                                    element.innerHTML = testHTML;
+                                    const newHeight = element.scrollHeight;
+
+                                    if (newHeight > lastHeight) {
+                                        // Word will wrap - insert line break so typing starts
+                                        // on the new line (prevents jarring mid-word jump)
+                                        currentHTML += '<br>';
+                                        lastHeight = newHeight;
+                                    }
+                                    // Reset and type char by char
+                                    element.innerHTML = currentHTML;
+                                }
+
                                 currentHTML += char;
                                 element.innerHTML = currentHTML;
                                 htmlIndex++;
+
+                                // Update height tracking
+                                const newHeight = element.scrollHeight;
+                                if (newHeight > lastHeight) {
+                                    lastHeight = newHeight;
+                                }
+
                                 setTimeout(type, speed);
                             }
                         } else {
@@ -1698,7 +1797,8 @@
             // Preload all videos and track when ready
             function preloadVideos() {
                 return new Promise((resolve) => {
-                    const videos = document.querySelectorAll(".video-sheet[src]");
+                    const videos =
+                        document.querySelectorAll(".video-sheet[src]");
                     if (videos.length === 0) {
                         resolve();
                         return;
@@ -1722,7 +1822,9 @@
                         if (video.readyState >= 3) {
                             onReady();
                         } else {
-                            video.addEventListener("canplaythrough", onReady, { once: true });
+                            video.addEventListener("canplaythrough", onReady, {
+                                once: true,
+                            });
                             // Fallback timeout in case video stalls
                             setTimeout(onReady, 5000);
                         }
@@ -1760,7 +1862,7 @@
             }
 
             function sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
+                return new Promise((resolve) => setTimeout(resolve, ms));
             }
 
             // Animate phone in and shift content to final position
@@ -1801,14 +1903,14 @@
                     type: "spring",
                     stiffness: 40,
                     damping: 10,
-                    mass: 1
+                    mass: 1,
                 };
 
                 // Animate content area sliding to the right
                 Motion.animate(
                     contentArea,
                     { x: [0, deltaX] },
-                    springConfig
+                    springConfig,
                 ).finished.then(() => {
                     // After animation, switch to normal flow
                     contentArea.style.position = "";
@@ -1828,16 +1930,18 @@
                     phoneContainer,
                     {
                         y: [startY, 0],
-                        rotate: [-6, 0]
+                        rotate: [-6, 0],
                     },
-                    springConfig
+                    springConfig,
                 );
             }
 
             // Start the app
             function startApp() {
                 // Add intro mode class
-                document.querySelector(".desktop-view").classList.add("intro-mode");
+                document
+                    .querySelector(".desktop-view")
+                    .classList.add("intro-mode");
 
                 // Initialize everything else
                 init();
