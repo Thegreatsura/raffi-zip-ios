@@ -581,31 +581,20 @@ body {
 }
 
 .back-link {
-    font-size: var(--list-font-size);
-    font-weight: var(--list-font-weight);
-    line-height: var(--list-line-height);
-    letter-spacing: var(--list-letter-spacing);
-    color: var(--title-color);
+    font-size: var(--body-font-size);
+    font-weight: var(--body-font-weight);
+    line-height: var(--body-line-height);
+    letter-spacing: var(--body-letter-spacing);
+    color: var(--body-color);
+    text-decoration: none;
     cursor: pointer;
-    margin-top: auto;
+    margin-top: 36px;
+    align-self: flex-start;
 }
 
 .back-link:hover {
-    text-decoration: underline;
-}
-
-.qr-container {
-    display: flex;
-    justify-content: flex-start;
-}
-
-.qr-code {
-    --qr-size: 84px;
-    width: var(--qr-size);
-    height: var(--qr-size);
-    border-radius: 20px;
-    border: 1px solid #ffffff;
-    padding: 6px;
+    color: var(--bg-color);
+    background-color: #ffffff;
 }
 
 /* Folder title row */

@@ -347,7 +347,7 @@
                         name: "Retro",
                         icon: "assets/icons/retro.jpg",
                         video: "assets/videos/retro.mp4",
-                        qrCode: "assets/qr-codes/retro.png",
+                        qrCode: "assets/qr-codes/retro.jpg",
                         appStoreURL: "https://apps.apple.com/retro",
                         longDescription:
                             "Retro is the social app that I wish everyone used instead of Instagram. I use it as a personal photo journal and try to get whoever I can to download it.\nYou can send people postcards directly from the app too :) Give it a try with the QR code below.",
@@ -356,7 +356,7 @@
                         name: "Notes",
                         icon: "assets/icons/notes.jpg",
                         video: "assets/videos/notes.mp4",
-                        qrCode: "assets/qr-codes/notes.png",
+                        qrCode: "assets/qr-codes/notes.jpg",
                         appStoreURL: "https://apps.apple.com/notes",
                         longDescription:
                             "My life runs on Apple Notes. Ive gone back and forth with different todo apps and pen/paper combinations, but Ive most recently landed on Notes for all of my todos, ideas, and document writing (bookmarking is really the only thing I could do in notes that I do on Arena these days). I love shared folders/notes and wish other people used them more. If I could have one wish for 2026 it would be better table formatting.",
@@ -365,7 +365,7 @@
                         name: "Photos",
                         icon: "assets/icons/photos.jpg",
                         video: "assets/videos/photos.mp4",
-                        qrCode: "assets/qr-codes/photos.png",
+                        qrCode: "assets/qr-codes/photos.jpg",
                         appStoreURL: "https://apps.apple.com/photos",
                         longDescription:
                             "Not much more to say here. Maybe some day my grandchildren will train my AI clone on my camera roll. Discovering awesome camera apps like !camera, Stops, and Soft have given me a stronger incentive to protect my camera roll from screenshots, so despite the task being impossible I try to tend to it often and also use an app called Shutter Declutter.",
@@ -374,7 +374,7 @@
                         name: "!Camera",
                         icon: "assets/icons/notboringcamera.jpg",
                         video: "assets/videos/notboringcamera.mp4",
-                        qrCode: "assets/qr-codes/notboringcamera.png",
+                        qrCode: "assets/qr-codes/notboringcamera.jpg",
                         appStoreURL: "https://apps.apple.com/notboringcamera",
                         longDescription:
                             "Ive bounced between Stops, Soft, and !Camera over the past couple years as my action button but am currently using this guy because I love the Andy and Retro filters on 3x zoom. Its still crazy to me how these little apps have gotten me so much more excited to capture moments in my life and be the person in the friend group that snaps pics. There are so many more out there that I havent even tried (Halide, Dazzcam, the list goes on) but I just cant think of what more I would want and the asallen craft obviously doesnt hurt.",
@@ -383,7 +383,7 @@
                         name: "Claude",
                         icon: "assets/icons/claude.png",
                         video: "assets/videos/claude.mp4",
-                        qrCode: "assets/qr-codes/claude.png",
+                        qrCode: "assets/qr-codes/claude.jpg",
                         appStoreURL: "https://apps.apple.com/claude",
                         longDescription: "Claude app description...",
                     },
@@ -391,7 +391,7 @@
                         name: "Safari",
                         icon: "assets/icons/safari.png",
                         video: "assets/videos/safari.mp4",
-                        qrCode: "assets/qr-codes/safari.png",
+                        qrCode: "assets/qr-codes/safari.jpg",
                         appStoreURL: "https://apps.apple.com/safari",
                         longDescription: "Safari browser description...",
                     },
@@ -399,7 +399,7 @@
                         name: "Google Maps",
                         icon: "assets/icons/googlemaps.png",
                         video: "assets/videos/googlemaps.mp4",
-                        qrCode: "assets/qr-codes/googlemaps.png",
+                        qrCode: "assets/qr-codes/googlemaps.jpg",
                         appStoreURL: "https://apps.apple.com/googlemaps",
                         longDescription: "Google Maps description...",
                     },
@@ -407,7 +407,7 @@
                         name: "GitHub",
                         icon: "assets/icons/github.jpg",
                         video: "assets/videos/github.mp4",
-                        qrCode: "assets/qr-codes/github.png",
+                        qrCode: "assets/qr-codes/github.jpg",
                         appStoreURL: "https://apps.apple.com/github",
                         longDescription:
                             "I mass-starred 7,000 repos during the mass Twitter migration a couple years ago, and now the GitHub mobile app is my favorite way to browse them. I love how native it feels and wish more developer tools had mobile apps this polished.",
@@ -416,10 +416,10 @@
                         name: "Spotify",
                         icon: "assets/icons/spotify.jpg",
                         video: "assets/videos/spotify.mp4",
-                        qrCode: "assets/qr-codes/spotify.png",
+                        qrCode: "assets/qr-codes/spotify.jpg",
                         appStoreURL: "https://apps.apple.com/spotify",
                         longDescription:
-                            "Spotify is my go-to for music and podcasts. The algorithm knows me better than I know myself at this point. I've been a premium subscriber for years and the CarPlay experience is unmatched.",
+                            "Spotify gets some flack on design twitter for its desktop UI which tbh is valid, but to me this product is just unchurnable. I tried switching to Apple Music and the switching process was just too much. I also recently consolidated my podcasts into Spotify from Pocket Casts (mostly for TBPN video streams).",
                     },
                 },
 
@@ -1325,11 +1325,8 @@
         <div class="content-body">
           <div class="app-content">
             <p class="app-description">${app.longDescription.replace(/\n/g, "<br><br>")}</p>
-            <p class="back-link" onclick="closeOverlay()">Back to home</p>
           </div>
-          <div class="qr-container">
-            <img src="${app.qrCode}" alt="QR Code" class="qr-code">
-          </div>
+          <a class="back-link" onclick="closeOverlay()">Back</a>
         </div>
       `;
 
@@ -1801,7 +1798,7 @@
 
             // QR code: 20px radius
             document.querySelectorAll(".qr-code").forEach((el) => {
-                squircleObserver(el, { cornerRadius: 20 });
+                squircleObserver(el, { cornerRadius: 0 });
             });
         </script>
     </body>
