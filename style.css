@@ -879,4 +879,8 @@ body {
     .content-body {
         flex: 1;
     }
+
+    .social-icons {
+        padding-bottom: 64px;
+    }
 }
