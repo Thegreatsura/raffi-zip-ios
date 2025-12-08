@@ -846,7 +846,7 @@
       <div class="content-body">
         <div class="content-text">
           <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform featuring great iOS apps and the people behind them. I also build fitness apps on my own and with friends.</p>
-          <p>I think our Home Screen setups say a lot about us (at least us who care about apps), so here's mine.</p>
+          <p>I think our Home Screen setups say a lot about us, so here's mine.</p>
           <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
         </div>
         <div class="social-icons">
@@ -1001,6 +1001,7 @@
                             v.removeAttribute("src");
                             v.load();
                             v.style.opacity = "";
+                            v.style.transform = "";
                         });
                         activeFolderVideo = "a";
                     });
@@ -1390,7 +1391,9 @@
           <div class="app-content">
             <p class="app-description">${app.longDescription.replace(/\n/g, "<br><br>")}</p>
           </div>
-          <a class="back-link" onclick="closeOverlay()">Back</a>
+          <button class="back-button" onclick="closeOverlay()">
+            <img src="assets/back-icon.svg" alt="Back" />
+          </button>
         </div>
       `;
 
@@ -1747,18 +1750,12 @@
                     append: true,
                 },
 
-                // P2 - broken into pause points
+                // P2
                 {
                     target: "intro-p2",
-                    text: "I think our Home Screen setups say a lot about us",
+                    text: "I think our Home Screen setups say a lot about us, so here's mine.",
                     pauseAfter: 400,
                     append: false,
-                },
-                {
-                    target: "intro-p2",
-                    text: ", so here's mine.",
-                    pauseAfter: 400,
-                    append: true,
                 },
 
                 // P3
@@ -2068,9 +2065,23 @@
                 const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
                 if (hasSeenIntro && !forceIntro) {
-                    // Skip intro for returning visitors
+                    // Skip intro for returning visitors - smooth fade in
+                    const desktopView = document.querySelector(".desktop-view");
+                    desktopView.style.opacity = "0";
+
                     init();
                     skipIntro();
+
+                    // 200ms delay, then 300ms fade in
+                    setTimeout(() => {
+                        Motion.animate(
+                            desktopView,
+                            { opacity: [0, 1] },
+                            { duration: 0.3, easing: "ease-out" }
+                        ).finished.then(() => {
+                            desktopView.style.opacity = "";
+                        });
+                    }, 200);
                 } else {
                     // Show intro for first-time visitors (or forced via ?intro=1)
                     document

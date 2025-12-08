@@ -599,22 +599,29 @@ body {
     color: #ffffff;
 }
 
-.back-link {
-    font-size: var(--body-font-size);
-    font-weight: var(--body-font-weight);
-    line-height: var(--body-line-height);
-    letter-spacing: var(--body-letter-spacing);
-    color: var(--body-color);
-    text-decoration: none;
+.back-button {
+    width: 36px;
+    height: 36px;
+    border: none;
+    border-radius: 18px;
+    background-color: #84715D;
+    color: var(--bg-color);
     cursor: pointer;
-    margin-top: 36px;
-    margin-bottom: 12px;
-    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin-bottom: 14px;
+    flex-shrink: 0;
 }
 
-.back-link:hover {
-    color: var(--bg-color);
+.back-button:hover {
     background-color: #ffffff;
+}
+
+.back-button img {
+    width: 24px;
+    height: 24px;
 }
 
 /* Folder title row */
