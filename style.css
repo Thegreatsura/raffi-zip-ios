@@ -190,6 +190,9 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
+    margin: 0;
+    padding: 0;
+    flex-shrink: 0;
 }
 
 .content-header h1 {
@@ -198,6 +201,8 @@ body {
     color: var(--title-color);
     letter-spacing: var(--title-letter-spacing);
     line-height: var(--title-line-height);
+    margin: 0;
+    padding: 0;
 }
 
 .content-body {

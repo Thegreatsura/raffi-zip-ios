@@ -1383,9 +1383,7 @@
 
                 const html = `
         <div class="content-header">
-          <div class="app-header">
-            <h1>${app.name}</h1>
-          </div>
+          <h1>${app.name}</h1>
         </div>
         <div class="content-body">
           <div class="app-content">
@@ -1721,13 +1719,14 @@
             // ========== INTRO ANIMATION SYSTEM ==========
 
             // Intro sequence with manual pause control
-            // Each segment: { text, pauseAfter (ms) }
+            // Each segment: { text, pauseAfter (ms), skipLineBreaks (optional) }
             const introSequence = [
-                // Name
+                // Name (skipLineBreaks to prevent br tags in fixed-height header)
                 {
                     target: "intro-name",
                     text: "Raffi Chilingaryan",
                     pauseAfter: 400,
+                    skipLineBreaks: true,
                 },
 
                 // P1 - broken into pause points
@@ -1772,17 +1771,20 @@
 
             // Typewriter effect - types out text character by character
             // Handles word wrapping by adding whole words when they would overflow
-            function typeWriter(element, html, speed = 20, append = false) {
+            function typeWriter(element, html, speed = 20, append = false, skipLineBreaks = false) {
                 return new Promise((resolve) => {
                     const startHTML = append ? element.innerHTML : "";
                     let htmlIndex = 0;
                     let currentHTML = startHTML;
                     let inTag = false;
 
-                    // Get the initial height to detect line wraps
-                    element.innerHTML = currentHTML || "\u200B"; // Zero-width space to establish height
-                    let lastHeight = element.scrollHeight;
-                    if (!currentHTML) element.innerHTML = "";
+                    // Get the initial height to detect line wraps (skip if linebreaks disabled)
+                    let lastHeight = 0;
+                    if (!skipLineBreaks) {
+                        element.innerHTML = currentHTML || "\u200B"; // Zero-width space to establish height
+                        lastHeight = element.scrollHeight;
+                        if (!currentHTML) element.innerHTML = "";
+                    }
 
                     function type() {
                         if (htmlIndex < html.length) {
@@ -1811,8 +1813,9 @@
                                 element.innerHTML = currentHTML;
                                 setTimeout(type, 0);
                             } else {
-                                // Check if we're starting a new word
+                                // Check if we're starting a new word (only if line breaks enabled)
                                 if (
+                                    !skipLineBreaks &&
                                     char !== " " &&
                                     (currentHTML.endsWith(" ") ||
                                         currentHTML === startHTML ||
@@ -1851,10 +1854,12 @@
                                 element.innerHTML = currentHTML;
                                 htmlIndex++;
 
-                                // Update height tracking
-                                const newHeight = element.scrollHeight;
-                                if (newHeight > lastHeight) {
-                                    lastHeight = newHeight;
+                                // Update height tracking (only if line breaks enabled)
+                                if (!skipLineBreaks) {
+                                    const newHeight = element.scrollHeight;
+                                    if (newHeight > lastHeight) {
+                                        lastHeight = newHeight;
+                                    }
                                 }
 
                                 setTimeout(type, speed);
@@ -1916,7 +1921,7 @@
                 // Run through each segment
                 for (const segment of introSequence) {
                     const el = document.getElementById(segment.target);
-                    await typeWriter(el, segment.text, 20, segment.append);
+                    await typeWriter(el, segment.text, 20, segment.append, segment.skipLineBreaks);
                     if (segment.pauseAfter > 0) {
                         await sleep(segment.pauseAfter);
                     }
