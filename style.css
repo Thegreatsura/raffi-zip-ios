@@ -5,7 +5,7 @@
         "calt" 1;
 
     /* Colors */
-    --bg-color: #2b271f;
+    --bg-color: #433526;
     --bg-color-rgb: 43, 39, 31; /* RGB of #2B271F */
     --selection-color: #56493c; /* Hue-shifted lighter brown */
 
@@ -992,7 +992,7 @@ body {
     .mobile-view {
         display: flex;
         min-height: 100vh;
-        background-color: var(--bg-color);
+        background-color: #2B271F;
         padding: 24px 0;
         animation: fadeIn 0.3s ease-out;
     }
