@@ -329,6 +329,7 @@ body {
     border-radius: var(--phone-frame-radius);
     padding: var(--phone-frame-padding);
     overflow: hidden;
+    will-change: transform;
 }
 
 /* Inner shadow overlay - uses gradient instead of box-shadow for squircle compatibility */
@@ -439,10 +440,11 @@ body {
     height: calc(100% - var(--phone-frame-padding) * 2);
     object-fit: cover;
     z-index: 20; /* Above tap targets (z-index: 10) */
-    transform: translateY(650px);
+    transform: translateY(700px);
     cursor: pointer;
     pointer-events: auto;
     border-radius: var(--phone-mockup-radius);
+    background: black; /* Prevent white flash before video loads */
 }
 
 /* Folder videos - stacked for crossfade, B on top */

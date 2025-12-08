@@ -1032,7 +1032,10 @@
                 };
 
                 // Animate phone screen back up
-                Motion.animate(phoneScreen, { scale: 1 }, springConfig);
+                Motion.animate(phoneScreen, { scale: 1 }, springConfig).finished.then(() => {
+                    // Clear inline transform to prevent subpixel rendering issues
+                    phoneScreen.style.transform = "";
+                });
 
                 if (isFolderVideo) {
                     folderVideoOpen = false;
@@ -1054,6 +1057,7 @@
                                 v.currentTime = 0;
                                 v.removeAttribute("src");
                                 v.style.opacity = "";
+                                v.style.transform = ""; // Clear to let CSS default take over
                             });
                             activeFolderVideo = "a";
                             pickupCursorHover();
@@ -1064,6 +1068,7 @@
                     Motion.animate(video, { y: 650 }, springConfig).finished.then(() => {
                         video.pause();
                         video.currentTime = 0;
+                        video.style.transform = ""; // Clear to let CSS default take over
                         pickupCursorHover();
                     });
                 }
