@@ -985,6 +985,10 @@ body {
 
 /* Show mobile view, hide desktop view on mobile */
 @media (max-width: 450px) {
+    html, body {
+        background-color: #2B271F;
+    }
+
     .desktop-view {
         display: none;
     }
@@ -993,7 +997,9 @@ body {
         display: flex;
         min-height: 100vh;
         background-color: #2B271F;
-        padding: 24px 0;
+        padding: 0;
+        padding-top: max(28px, env(safe-area-inset-top, 28px));
+        padding-bottom: env(safe-area-inset-bottom, 0px);
         animation: fadeIn 0.3s ease-out;
     }
 
@@ -1002,14 +1008,13 @@ body {
         flex-direction: column;
         justify-content: space-between;
         width: 100%;
-        min-height: calc(100vh - 48px);
+        min-height: calc(100vh - max(28px, env(safe-area-inset-top, 28px)) - env(safe-area-inset-bottom, 0px));
     }
 
     .mobile-main {
         display: flex;
         flex-direction: column;
         gap: 32px;
-        padding-top: 4px;
     }
 
     /* Each block is full width with its own padding */
@@ -1116,9 +1121,10 @@ body {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%, -50%);
-        width: 2px;
-        height: 2px;
+        width: 36px;
+        height: 36px;
+        margin-left: -18px;
+        margin-top: -18px;
         border-radius: 50%;
         background-color: #ffffff;
         animation: pulse-expand 2s ease-out infinite;
@@ -1126,18 +1132,15 @@ body {
 
     @keyframes pulse-expand {
         0% {
-            width: 2px;
-            height: 2px;
+            transform: scale(0.055);
             opacity: 0.6;
         }
-        61.5% {
-            width: 36px;
-            height: 36px;
+        40% {
+            transform: scale(1);
             opacity: 0;
         }
         100% {
-            width: 36px;
-            height: 36px;
+            transform: scale(1);
             opacity: 0;
         }
     }
@@ -1156,7 +1159,7 @@ body {
     .mobile-social-icons {
         display: flex;
         gap: 12px;
-        padding: 0 28px 40px 28px;
+        padding: 0 28px calc(40px + env(safe-area-inset-bottom, 0px)) 28px;
     }
 
     .mobile-social-icon {
