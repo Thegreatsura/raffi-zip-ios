@@ -627,49 +627,49 @@
                                 icon: "assets/icons/arena.jpg",
                                 video: "assets/videos/arena.mp4",
                                 description:
-                                    '<a href="https://x.com/_yihui/status/1956036181306568873?s=20" target="_blank">Yihui\'s recent v2 iOS build</a> (available on TestFlight for supporters) has finally gotten me fully into Arena. I\'ve been having so much more fun stashing gems that I find (mostly on Twitter) and browsing other people\'s collections.',
+                                    '<a href="https://x.com/_yihui/status/1956036181306568873?s=20" target="_blank">Yihui\'s recent v2 iOS build</a> (available on TestFlight for supporters) has finally gotten me fully into Arena. I\'ve been having so much more fun stashing gems that I find (mostly on Twitter) and browsing other people\'s channels.',
                             },
                             {
                                 name: "WSJ",
                                 icon: "assets/icons/wsj.jpg",
                                 video: "assets/videos/wsj.mp4",
                                 description:
-                                    "The Wall Street Journal is expensive but I dig their vibe, and theyre the least biased publication with a solid iOS app (IMO).",
+                                    "Sometimes it's nice to know that a human sat down and put a lot of time and effort into the thing you're reading. My media diet is mostly X and podcasts, but I just subscribed to WSJ digital + print so we'll see how it goes.",
                             },
                             {
                                 name: "Poolsuite",
                                 icon: "assets/icons/poolsuite.jpg",
                                 video: "assets/videos/poolsuite.mp4",
                                 description:
-                                    "Poolsuite is just such a cool brand, such a great app, and the playlists ain't bad either. Marty & co epitomize the level of creativity that all small consumer teams (indie or VC-backed) should aspire to. They're clearly just having fun with it.",
+                                    "Poolsuite is such a fun project and the playlists are great too. Marty & co epitomize the level of creativity that I thihnk all small consumer teams should aspire to.",
                             },
                             {
                                 name: "Pokemon",
                                 icon: "assets/icons/pokemontcgp.jpg",
                                 video: "assets/videos/pokemon.mp4",
                                 description:
-                                    "Pokemon artwork will never not give me nostalgia, and I'm especially feeling it right now after my first ever Japan trip. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldn't see the light coming from my room.",
+                                    "Pokemon artwork will never not give me nostalgia. I grew up playing Ruby on a red Nintendo DS and hiding under my bedcovers so my parents couldn't see the light coming from my room.",
                             },
                             {
                                 name: "Anki",
                                 icon: "assets/icons/anki.jpg",
                                 video: "assets/videos/anki.mp4",
                                 description:
-                                    "The spaced repetition studying method that smart people swear by, and Anki is the most popular app for it. I started getting into it for my Armenian vocab/alphabet and haven't touched the app for months but it's one of those things you keep around not to forget about it.",
+                                    "I started getting into spaced repetition flashcards for my Armenian vocab & alphabet. Haven't touched the app for months but I keep it here to guilt myself. Vegetable app for sure.",
                             },
                             {
                                 name: "Radio Garden",
                                 icon: "assets/icons/radiogarden.jpg",
                                 video: "assets/videos/radiogarden.mp4",
                                 description:
-                                    "Radio Garden has stations from all over the world. I love using radio to ambiently support language learning (I try to improve my Armenian and Spanish skills every now and then) and it's also a great way to mix it up when you want something a bit different to listen to.",
+                                    "I love using radio for language learning (Armenian & Spanish mostly) and just to hear soundbites from across the world. I highly recommend trying this app in the car - it's the closest thing I've felt to teleportation.",
                             },
                             {
                                 name: "Fotmob",
                                 icon: "assets/icons/fotmob.jpg",
                                 video: "assets/videos/fotmob.mp4",
                                 description:
-                                    "Fotmob is how I keep up with the beautiful game. I'm happiest when I'm playing soccer, followed by watching soccer, and grew up a Barcelona & Ronaldinho fan. I support Crystal Palace in the Premier League after falling in love with Selhurst Park the one time I was lucky enough to watch a game there.",
+                                    "I'm happiest when I'm playing or watching soccer and grew up a Barcelona/Ronaldinho fan. Fotmob sits right at the intersection of my two passions: soccer and great software.",
                             },
                             {
                                 name: "Particle",
@@ -683,7 +683,7 @@
                                 icon: "assets/icons/goat.jpg",
                                 video: "assets/videos/goat.mp4",
                                 description:
-                                    "I'm not a full on sneakerhead but I like sneakers a lot, and GOAT has all the footwear I could ever dream of. Maybe I'll try buying some clothes from there some day as well. Their brand and aesthetic is up there for me. Just need them to bump their font size by like 2pt.",
+                                    "I like sneakers (and soccer cleats) a lot, and GOAT has all the footwear I could ever dream of. Their brand and aesthetic is up there for me.",
                             },
                         ],
                     },
@@ -986,8 +986,10 @@
                             activeVideoSheet = null;
                         }
                         // Reset folder videos
-                        const videoA = document.getElementById("folder-video-a");
-                        const videoB = document.getElementById("folder-video-b");
+                        const videoA =
+                            document.getElementById("folder-video-a");
+                        const videoB =
+                            document.getElementById("folder-video-b");
                         [videoA, videoB].forEach((v) => {
                             if (v) {
                                 v.pause();
@@ -1415,9 +1417,15 @@
                 // Read mask heights from CSS variables
                 const styles = getComputedStyle(document.documentElement);
                 const TOP_MIN = 48;
-                const TOP_MAX = parseInt(styles.getPropertyValue('--folder-top-mask-height')) || 168;
+                const TOP_MAX =
+                    parseInt(
+                        styles.getPropertyValue("--folder-top-mask-height"),
+                    ) || 168;
                 const BOTTOM_MIN = 0;
-                const BOTTOM_MAX = parseInt(styles.getPropertyValue('--folder-bottom-mask-height')) || 244;
+                const BOTTOM_MAX =
+                    parseInt(
+                        styles.getPropertyValue("--folder-bottom-mask-height"),
+                    ) || 244;
 
                 function updateGradients() {
                     const scrollTop = scrollArea.scrollTop;
@@ -1554,7 +1562,8 @@
                 if (!videoA || !videoB) return;
 
                 // Determine current and next video elements
-                const currentVideo = activeFolderVideo === "a" ? videoA : videoB;
+                const currentVideo =
+                    activeFolderVideo === "a" ? videoA : videoB;
                 const nextVideo = activeFolderVideo === "a" ? videoB : videoA;
 
                 if (app.video) {
@@ -1585,7 +1594,8 @@
                         );
 
                         // Swap active video tracker
-                        activeFolderVideo = activeFolderVideo === "a" ? "b" : "a";
+                        activeFolderVideo =
+                            activeFolderVideo === "a" ? "b" : "a";
                         activeVideoSheet = nextVideo;
                     };
 
@@ -1593,7 +1603,9 @@
                     if (nextVideo.readyState >= 3) {
                         startCrossfade();
                     } else {
-                        nextVideo.addEventListener("canplay", startCrossfade, { once: true });
+                        nextVideo.addEventListener("canplay", startCrossfade, {
+                            once: true,
+                        });
                     }
                 } else {
                     // App has no video - just pulse the current video as feedback
