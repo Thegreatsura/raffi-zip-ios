@@ -874,3 +874,34 @@ body {
         padding-bottom: 24px;
     }
 }
+
+/* ========== INTRO ANIMATION STATES ========== */
+
+/* Initial state: phone hidden below viewport */
+.intro-mode .phone-container {
+    transform: translateY(100vh);
+}
+
+/* Initial state: content area centered */
+.intro-mode .main-container {
+    justify-content: center;
+}
+
+.intro-mode .content-area {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+
+/* Social icons start blurred */
+.intro-social-icons {
+    filter: blur(8px);
+    opacity: 0;
+    transition: filter 0.5s ease-out, opacity 0.5s ease-out;
+}
+
+.intro-social-icons.revealed {
+    filter: blur(0);
+    opacity: 1;
+}

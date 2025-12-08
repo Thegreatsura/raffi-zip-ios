@@ -190,40 +190,15 @@
                 <div class="content-area">
                     <div class="content-area-inner">
                         <div class="content-header">
-                            <h1>Raffi Chilingaryan</h1>
+                            <h1 id="intro-name" class="typewriter-target"></h1>
                         </div>
                         <div class="content-body">
                             <div class="content-text">
-                                <p>
-                                    I'm the founder of
-                                    <a
-                                        href="https://x.com/spottedinprod"
-                                        target="_blank"
-                                        >Spotted in Prod</a
-                                    >
-                                    - a platform featuring great iOS apps and
-                                    the people behind them. I also build fitness
-                                    apps on my own and with friends.
-                                </p>
-                                <p>
-                                    I think our Home Screen setups say a lot
-                                    about us (at least us who care about apps),
-                                    so here's mine.
-                                </p>
-                                <p>
-                                    Feel free to
-                                    <a href="#" class="tap-around-link"
-                                        >tap around</a
-                                    >
-                                    or
-                                    <a
-                                        href="mailto:raffi.chilingaryan@gmail.com"
-                                        >get in touch</a
-                                    >
-                                    and thanks for stopping by.
-                                </p>
+                                <p id="intro-p1" class="typewriter-target"></p>
+                                <p id="intro-p2" class="typewriter-target"></p>
+                                <p id="intro-p3" class="typewriter-target"></p>
                             </div>
-                            <div class="social-icons">
+                            <div class="social-icons intro-social-icons">
                                 <a
                                     href="https://x.com/raffichill"
                                     target="_blank"
@@ -1651,8 +1626,227 @@
                 );
             }
 
+            // ========== INTRO ANIMATION SYSTEM ==========
+
+            // Intro sequence with manual pause control
+            // Each segment: { text, pauseAfter (ms) }
+            const introSequence = [
+                // Name
+                { target: "intro-name", text: "Raffi Chilingaryan", pauseAfter: 400 },
+
+                // P1 - broken into pause points
+                { target: "intro-p1", text: 'I\'m the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a>', pauseAfter: 500, append: false },
+                { target: "intro-p1", text: ' - a platform featuring great iOS apps and the people behind them.', pauseAfter: 400, append: true },
+                { target: "intro-p1", text: ' I also build fitness apps on my own and with friends.', pauseAfter: 500, append: true },
+
+                // P2 - broken into pause points
+                { target: "intro-p2", text: 'I think our Home Screen setups say a lot about us', pauseAfter: 400, append: false },
+                { target: "intro-p2", text: ' (at least us who care about apps),', pauseAfter: 200, append: true },
+                { target: "intro-p2", text: " so here's mine.", pauseAfter: 400, append: true },
+
+                // P3 - broken into pause points
+                { target: "intro-p3", text: 'Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a>', pauseAfter: 150, append: false },
+                { target: "intro-p3", text: ' and thanks for stopping by.', pauseAfter: 0, append: true },
+            ];
+
+            let videosReady = false;
+            let introComplete = false;
+
+            // Typewriter effect - types out text character by character
+            function typeWriter(element, html, speed = 20, append = false) {
+                return new Promise((resolve) => {
+                    const startHTML = append ? element.innerHTML : "";
+                    let htmlIndex = 0;
+                    let currentHTML = startHTML;
+                    let inTag = false;
+
+                    function type() {
+                        if (htmlIndex < html.length) {
+                            const char = html[htmlIndex];
+
+                            if (char === "<") {
+                                inTag = true;
+                            }
+
+                            if (inTag) {
+                                // Add entire tag at once
+                                let tagEnd = html.indexOf(">", htmlIndex);
+                                currentHTML += html.substring(htmlIndex, tagEnd + 1);
+                                htmlIndex = tagEnd + 1;
+
+                                if (char === "<" && html[htmlIndex - 1] === ">") {
+                                    inTag = false;
+                                }
+
+                                element.innerHTML = currentHTML;
+                                setTimeout(type, 0);
+                            } else {
+                                currentHTML += char;
+                                element.innerHTML = currentHTML;
+                                htmlIndex++;
+                                setTimeout(type, speed);
+                            }
+                        } else {
+                            resolve();
+                        }
+                    }
+
+                    type();
+                });
+            }
+
+            // Preload all videos and track when ready
+            function preloadVideos() {
+                return new Promise((resolve) => {
+                    const videos = document.querySelectorAll(".video-sheet[src]");
+                    if (videos.length === 0) {
+                        resolve();
+                        return;
+                    }
+
+                    let loadedCount = 0;
+                    const totalVideos = videos.length;
+
+                    videos.forEach((video) => {
+                        // Force load
+                        video.load();
+
+                        const onReady = () => {
+                            loadedCount++;
+                            if (loadedCount >= totalVideos) {
+                                videosReady = true;
+                                resolve();
+                            }
+                        };
+
+                        if (video.readyState >= 3) {
+                            onReady();
+                        } else {
+                            video.addEventListener("canplaythrough", onReady, { once: true });
+                            // Fallback timeout in case video stalls
+                            setTimeout(onReady, 5000);
+                        }
+                    });
+                });
+            }
+
+            // Run the intro sequence
+            async function runIntroSequence() {
+                const socialEl = document.querySelector(".intro-social-icons");
+
+                // Start video preloading immediately
+                const videoPromise = preloadVideos();
+
+                // Run through each segment
+                for (const segment of introSequence) {
+                    const el = document.getElementById(segment.target);
+                    await typeWriter(el, segment.text, 20, segment.append);
+                    if (segment.pauseAfter > 0) {
+                        await sleep(segment.pauseAfter);
+                    }
+                }
+
+                // Reveal social icons
+                socialEl.classList.add("revealed");
+                await sleep(800);
+
+                introComplete = true;
+
+                // Wait for videos if not ready yet
+                await videoPromise;
+
+                // Trigger the reveal animation
+                revealPhone();
+            }
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            // Animate phone in and shift content to final position
+            function revealPhone() {
+                const desktopView = document.querySelector(".desktop-view");
+                const contentArea = document.querySelector(".content-area");
+
+                // Get content area's current centered position
+                const contentStartRect = contentArea.getBoundingClientRect();
+
+                // Hide phone and clear its transform so we can measure correctly
+                phoneContainer.style.visibility = "hidden";
+                phoneContainer.style.transform = "none";
+
+                // Remove intro mode class
+                desktopView.classList.remove("intro-mode");
+
+                // Measure where both elements would naturally be in flex flow
+                const phoneEndRect = phoneContainer.getBoundingClientRect();
+                const contentEndRect = contentArea.getBoundingClientRect();
+
+                // Position BOTH elements absolutely at their animation start positions
+                // Phone at its final X but off-screen Y
+                phoneContainer.style.position = "absolute";
+                phoneContainer.style.left = phoneEndRect.left + "px";
+                phoneContainer.style.top = phoneEndRect.top + "px";
+
+                // Content area at its START position (centered)
+                contentArea.style.position = "absolute";
+                contentArea.style.left = contentStartRect.left + "px";
+                contentArea.style.top = contentStartRect.top + "px";
+
+                // Calculate the delta for content area
+                const deltaX = contentEndRect.left - contentStartRect.left;
+
+                // Spring config for both animations
+                const springConfig = {
+                    type: "spring",
+                    stiffness: 40,
+                    damping: 10,
+                    mass: 1
+                };
+
+                // Animate content area sliding to the right
+                Motion.animate(
+                    contentArea,
+                    { x: [0, deltaX] },
+                    springConfig
+                ).finished.then(() => {
+                    // After animation, switch to normal flow
+                    contentArea.style.position = "";
+                    contentArea.style.left = "";
+                    contentArea.style.top = "";
+                    contentArea.style.transform = "";
+                    phoneContainer.style.position = "";
+                    phoneContainer.style.left = "";
+                    phoneContainer.style.top = "";
+                    phoneContainer.style.transform = "";
+                });
+
+                // Show phone and animate it sliding up from bottom
+                phoneContainer.style.visibility = "";
+                const startY = window.innerHeight - phoneEndRect.top;
+                Motion.animate(
+                    phoneContainer,
+                    {
+                        y: [startY, 0],
+                        rotate: [-6, 0]
+                    },
+                    springConfig
+                );
+            }
+
             // Start the app
-            init();
+            function startApp() {
+                // Add intro mode class
+                document.querySelector(".desktop-view").classList.add("intro-mode");
+
+                // Initialize everything else
+                init();
+
+                // Start intro sequence after a brief delay
+                setTimeout(runIntroSequence, 100);
+            }
+
+            startApp();
         </script>
 
         <!-- Corner smoothing module -->
