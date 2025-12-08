@@ -7,6 +7,7 @@
     /* Colors */
     --bg-color: #433526;
     --bg-color-rgb: 67, 53, 38; /* RGB of #433526 */
+    --selection-color: #56493c; /* Hue-shifted lighter brown */
 
     /* Layout spacing */
     --home-top-padding: 223px;
@@ -106,6 +107,11 @@
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+    background-color: var(--selection-color);
+    color: #ffffff;
 }
 
 html {
@@ -289,6 +295,7 @@ body {
     height: 668px;
     flex-shrink: 0;
     cursor: pointer;
+    z-index: 10;
     /* Outer drop shadow here since phone-frame's clip-path would clip it */
     filter: drop-shadow(0px 6px 12px rgba(0, 0, 0, 0.15));
 }
@@ -895,12 +902,13 @@ body {
     transform: translateX(-50%);
 }
 
-
 /* Social icons start blurred */
 .intro-social-icons {
     filter: blur(8px);
     opacity: 0;
-    transition: filter 0.5s ease-out, opacity 0.5s ease-out;
+    transition:
+        filter 0.5s ease-out,
+        opacity 0.5s ease-out;
 }
 
 .intro-social-icons.revealed {
