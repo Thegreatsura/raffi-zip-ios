@@ -1041,7 +1041,7 @@ body {
     .mobile-paragraph {
         font-size: var(--body-font-size);
         font-weight: var(--body-font-weight);
-        color: var(--body-color);
+        color: #C1BCB4;
         line-height: var(--body-line-height);
         letter-spacing: var(--body-letter-spacing);
         padding: 0 28px;
