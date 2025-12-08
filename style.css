@@ -127,6 +127,12 @@ body {
     min-height: 100vh;
     overscroll-behavior: none;
     height: 100%;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 /* Desktop View */
@@ -887,19 +893,21 @@ body {
 /* ========== INTRO ANIMATION STATES ========== */
 
 /* Initial state: phone hidden below viewport */
-.intro-mode .phone-container {
-    transform: translateY(100vh);
-}
+/* Desktop intro mode only - phone slides up, content shifts */
+@media (min-width: 801px) {
+    .intro-mode .phone-container {
+        transform: translateY(100vh);
+    }
 
-/* Initial state: content area centered */
-.intro-mode .main-container {
-    justify-content: center;
-}
+    .intro-mode .main-container {
+        justify-content: center;
+    }
 
-.intro-mode .content-area {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    .intro-mode .content-area {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+    }
 }
 
 /* Social icons start blurred */

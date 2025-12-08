@@ -6,6 +6,9 @@
         <title>Raffi Chilingaryan</title>
         <link rel="icon" type="image/png" href="assets/favicon.png" />
         <link rel="apple-touch-icon" href="assets/favicon.png" />
+        <!-- Preload critical assets -->
+        <link rel="preload" href="assets/phone-mockups/home-desktop.jpg" as="image" />
+        <link rel="preload" href="assets/favicon.png" as="image" />
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <link rel="stylesheet" href="style.css" />
@@ -676,6 +679,9 @@
                     },
                 },
             };
+
+            // Detect mobile layout (matches CSS breakpoint)
+            const isMobile = () => window.innerWidth <= 800;
 
             // DOM elements
             const contentAreaInner = document.querySelector(
@@ -1847,6 +1853,9 @@
                 // Wait for videos if not ready yet
                 await videoPromise;
 
+                // Remember that user has seen intro
+                localStorage.setItem("hasSeenIntro", "true");
+
                 // Trigger the reveal animation
                 revealPhone();
             }
@@ -1860,15 +1869,20 @@
                 const desktopView = document.querySelector(".desktop-view");
                 const contentArea = document.querySelector(".content-area");
 
+                // Remove intro mode class
+                desktopView.classList.remove("intro-mode");
+
+                // On mobile, skip the phone animation entirely
+                if (isMobile()) {
+                    return;
+                }
+
                 // Get content area's current centered position
                 const contentStartRect = contentArea.getBoundingClientRect();
 
                 // Hide phone and clear its transform so we can measure correctly
                 phoneContainer.style.visibility = "hidden";
                 phoneContainer.style.transform = "none";
-
-                // Remove intro mode class
-                desktopView.classList.remove("intro-mode");
 
                 // Measure where both elements would naturally be in flex flow
                 const phoneEndRect = phoneContainer.getBoundingClientRect();
@@ -1927,17 +1941,45 @@
             }
 
             // Start the app
+            function skipIntro() {
+                const socialEl = document.querySelector(".intro-social-icons");
+
+                // Set all text content immediately
+                for (const segment of introSequence) {
+                    const el = document.getElementById(segment.target);
+                    if (segment.append) {
+                        el.innerHTML += segment.text;
+                    } else {
+                        el.innerHTML = segment.text;
+                    }
+                }
+
+                // Reveal social icons
+                socialEl.classList.add("revealed");
+
+                // Mark intro as complete
+                introComplete = true;
+
+                // Preload videos in background
+                preloadVideos();
+            }
+
             function startApp() {
-                // Add intro mode class
-                document
-                    .querySelector(".desktop-view")
-                    .classList.add("intro-mode");
+                const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
-                // Initialize everything else
-                init();
+                if (hasSeenIntro) {
+                    // Skip intro for returning visitors
+                    init();
+                    skipIntro();
+                } else {
+                    // Show intro for first-time visitors
+                    document
+                        .querySelector(".desktop-view")
+                        .classList.add("intro-mode");
 
-                // Start intro sequence after a brief delay
-                setTimeout(runIntroSequence, 100);
+                    init();
+                    setTimeout(runIntroSequence, 100);
+                }
             }
 
             startApp();
