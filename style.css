@@ -154,6 +154,7 @@ body {
     gap: var(--content-gap);
     flex-shrink: 1;
     position: relative;
+    will-change: transform, filter;
 }
 
 /* Folder component - self-contained */
@@ -220,6 +221,7 @@ body {
     display: flex;
     gap: 12px;
     flex-shrink: 0;
+    padding-bottom: 14px;
 }
 
 .social-icon {
