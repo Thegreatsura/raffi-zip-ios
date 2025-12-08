@@ -1950,37 +1950,37 @@
                 const desktopView = document.querySelector(".desktop-view");
                 const contentArea = document.querySelector(".content-area");
 
-                // Remove intro mode class
-                desktopView.classList.remove("intro-mode");
-
-                // On mobile, skip the phone animation entirely
-                if (isMobile()) {
+                // On mobile or tablet, skip the phone animation entirely
+                if (isMobile() || isTablet()) {
+                    desktopView.classList.remove("intro-mode");
                     return;
                 }
 
-                // Get content area's current centered position
+                // STEP 1: Measure content's START position (centered, in intro-mode)
                 const contentStartRect = contentArea.getBoundingClientRect();
 
-                // Hide phone and clear its transform so we can measure correctly
-                phoneContainer.style.visibility = "hidden";
-                phoneContainer.style.transform = "none";
+                // STEP 2: Remove intro-mode to calculate TRUE final flex positions
+                // JS is synchronous - browser won't repaint until we're done
+                desktopView.classList.remove("intro-mode");
 
-                // Measure where both elements would naturally be in flex flow
+                // STEP 3: Measure the ACTUAL final positions (before browser repaints)
                 const phoneEndRect = phoneContainer.getBoundingClientRect();
                 const contentEndRect = contentArea.getBoundingClientRect();
 
-                // Position BOTH elements absolutely at their animation start positions
-                // Phone at its final X but off-screen Y
+                // STEP 4: Immediately set absolute positioning to prevent visual jump
+                // Content starts at its centered position
+                contentArea.style.position = "absolute";
+                contentArea.style.left = contentStartRect.left + "px";
+                contentArea.style.top = contentEndRect.top + "px";
+                contentArea.style.willChange = "transform";
+
+                // Phone at its final X/Y position (will animate Y from below)
                 phoneContainer.style.position = "absolute";
                 phoneContainer.style.left = phoneEndRect.left + "px";
                 phoneContainer.style.top = phoneEndRect.top + "px";
+                phoneContainer.style.willChange = "transform";
 
-                // Content area at its START position (centered)
-                contentArea.style.position = "absolute";
-                contentArea.style.left = contentStartRect.left + "px";
-                contentArea.style.top = contentStartRect.top + "px";
-
-                // Calculate the delta for content area
+                // Calculate horizontal distance content needs to travel
                 const deltaX = contentEndRect.left - contentStartRect.left;
 
                 // Spring config for both animations
@@ -1991,25 +1991,26 @@
                     mass: 1,
                 };
 
-                // Animate content area sliding to the right
+                // STEP 5: Animate content sliding to its final position
                 Motion.animate(
                     contentArea,
                     { x: [0, deltaX] },
                     springConfig,
                 ).finished.then(() => {
-                    // After animation, switch to normal flow
+                    // After animation, switch back to normal flex flow
                     contentArea.style.position = "";
                     contentArea.style.left = "";
                     contentArea.style.top = "";
                     contentArea.style.transform = "";
+                    contentArea.style.willChange = "";
                     phoneContainer.style.position = "";
                     phoneContainer.style.left = "";
                     phoneContainer.style.top = "";
                     phoneContainer.style.transform = "";
+                    phoneContainer.style.willChange = "";
                 });
 
-                // Show phone and animate it sliding up from bottom
-                phoneContainer.style.visibility = "";
+                // STEP 6: Animate phone sliding up from bottom of screen
                 const startY = window.innerHeight - phoneEndRect.top;
                 Motion.animate(
                     phoneContainer,
@@ -2045,29 +2046,11 @@
                 preloadVideos();
             }
 
-            // Start the app
-            function skipIntro() {
-                const socialEl = document.querySelector(".intro-social-icons");
-
-                // Set all text content immediately
-                for (const segment of introSequence) {
-                    const el = document.getElementById(segment.target);
-                    if (segment.append) {
-                        el.innerHTML += segment.text;
-                    } else {
-                        el.innerHTML = segment.text;
-                    }
-                }
-
-                // Reveal social icons
-                socialEl.classList.add("revealed");
-
-                // Mark intro as complete
-                introComplete = true;
-
-                // Preload videos in background
-                preloadVideos();
-            }
+            // For testing: window.resetIntro() clears localStorage and reloads
+            window.resetIntro = () => {
+                localStorage.removeItem("hasSeenIntro");
+                location.reload();
+            };
 
             function startApp() {
                 // On mobile or tablet, the respective views handle everything via CSS
@@ -2077,15 +2060,19 @@
                     return;
                 }
 
+                // Check URL param to force intro (for testing)
+                const urlParams = new URLSearchParams(window.location.search);
+                const forceIntro = urlParams.get("intro") === "1";
+
                 // Desktop (>920px): check if returning visitor
                 const hasSeenIntro = localStorage.getItem("hasSeenIntro");
 
-                if (hasSeenIntro) {
+                if (hasSeenIntro && !forceIntro) {
                     // Skip intro for returning visitors
                     init();
                     skipIntro();
                 } else {
-                    // Show intro for first-time visitors
+                    // Show intro for first-time visitors (or forced via ?intro=1)
                     document
                         .querySelector(".desktop-view")
                         .classList.add("intro-mode");
