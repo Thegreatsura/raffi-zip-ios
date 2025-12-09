@@ -30,9 +30,7 @@
     --app-icon-radius: 12px;
 
     /* Folder view spacing */
-    --folder-title-height: 64px;
-    --folder-title-gap: 24px;
-    --folder-top-padding: 88px; /* title height (64px) + gap (24px) */
+    --folder-top-padding: 64px;
     --folder-bottom-padding: 0px;
     --folder-top-mask-height: 244px;
     --folder-bottom-mask-height: 244px;
@@ -182,7 +180,15 @@ body {
     flex-direction: column;
     overflow-y: clip;
     overflow-x: visible;
-    margin-top: -12px;
+}
+
+/* Folder header - absolutely positioned above gradient masks */
+.folder-container .content-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
 }
 
 .content-header {
@@ -630,48 +636,6 @@ body {
     height: 24px;
 }
 
-/* Folder title row */
-.folder-title-row {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--folder-title-height);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    z-index: 10; /* Above masks (which are z-index: 2) */
-}
-
-/* Emoji slot machine structure */
-.emoji-slot {
-    width: 48px;
-    height: 48px;
-    overflow: hidden;
-    position: relative;
-    flex-shrink: 0;
-}
-
-.emoji-reel {
-    display: flex;
-    flex-direction: column;
-}
-
-.folder-emoji-container {
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-}
-
-.folder-emoji {
-    font-size: 42px;
-    line-height: normal;
-    letter-spacing: -0.42px;
-}
-
 .folder-apps-container {
     flex: 1 0 0;
     display: flex;
@@ -986,11 +950,12 @@ body {
 /* Show mobile view, hide desktop view on mobile */
 @media (max-width: 450px) {
     :root {
-        --bg-color: #2B271F;
+        --bg-color: #2b271f;
         --bg-color-rgb: 43, 39, 31; /* RGB of #2B271F */
     }
 
-    html, body {
+    html,
+    body {
         background-color: var(--bg-color);
     }
 
@@ -1013,7 +978,10 @@ body {
         flex-direction: column;
         justify-content: space-between;
         width: 100%;
-        min-height: calc(100vh - max(28px, env(safe-area-inset-top, 28px)) - env(safe-area-inset-bottom, 0px));
+        min-height: calc(
+            100vh - max(28px, env(safe-area-inset-top, 28px)) -
+                env(safe-area-inset-bottom, 0px)
+        );
     }
 
     .mobile-main {
@@ -1041,7 +1009,7 @@ body {
     .mobile-paragraph {
         font-size: var(--body-font-size);
         font-weight: var(--body-font-weight);
-        color: #C1BCB4;
+        color: #c1bcb4;
         line-height: var(--body-line-height);
         letter-spacing: var(--body-letter-spacing);
         padding: 0 28px;
