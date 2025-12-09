@@ -939,10 +939,10 @@
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return;
 
-                // Instantly set final positions using direct style (more reliable than Motion with duration 0)
-                videoA.style.transform = "translateY(700px)";
-                videoB.style.transform = "translateY(700px)";
-                phoneScreen.style.transform = "scale(1)";
+                // Use Motion.animate with duration 0 to cancel any running animations AND set position
+                Motion.animate(videoA, { y: 700 }, { duration: 0 });
+                Motion.animate(videoB, { y: 700 }, { duration: 0 });
+                if (phoneScreen) Motion.animate(phoneScreen, { scale: 1 }, { duration: 0 });
 
                 [videoA, videoB].forEach((v) => {
                     v.pause();
@@ -1018,8 +1018,8 @@
             function closeVideoSheet() {
                 console.log(`[FolderVideo] closeVideoSheet called, activeVideoSheet=${activeVideoSheet?.id || 'none'}`);
 
-                if (!activeVideoSheet) {
-                    console.log(`[FolderVideo] No active video sheet, returning early`);
+                if (!activeVideoSheet || !activeVideoSheet.classList) {
+                    console.log(`[FolderVideo] No active video sheet or invalid element, returning early`);
                     return;
                 }
 
@@ -1111,7 +1111,7 @@
                 document.addEventListener(
                     "mouseenter",
                     (e) => {
-                        if (e.target.classList.contains("tap-around-link")) {
+                        if (e.target.classList?.contains("tap-around-link")) {
                             shakePhone();
                         }
                     },
