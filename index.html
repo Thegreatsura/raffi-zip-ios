@@ -1024,9 +1024,11 @@
 
             // Folder video state - simple flag to track if folder video is showing
             let folderVideoOpen = false;
+            let folderVideoVersion = 0; // Increments on each open to invalidate stale close callbacks
 
             // Reset folder videos to clean state (synchronous, immediate)
             function resetFolderVideos() {
+                console.log('[RESET] resetFolderVideos called');
                 const videoA = document.getElementById("folder-video-a");
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return;
@@ -1042,6 +1044,7 @@
                     v.currentTime = 0;
                     v.removeAttribute("src");
                     v.removeAttribute("poster");
+                    v.style.backgroundImage = "";
                     v.load(); // Force clear
                     v.style.opacity = "0";
                 });
@@ -1049,27 +1052,24 @@
                 activeFolderVideo = "a";
                 activeVideoSheet = null;
                 folderVideoOpen = false;
+                console.log('[RESET] Done - activeFolderVideo:', activeFolderVideo);
             }
 
             function openFolderVideoSheet(videoSrc) {
+                console.log('[OPEN] openFolderVideoSheet called with:', videoSrc);
                 const videoA = document.getElementById("folder-video-a");
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return false;
 
+                // Increment version to invalidate any pending close callbacks
+                folderVideoVersion++;
+                console.log('[OPEN] New version:', folderVideoVersion);
+
                 resetFolderVideos();
 
                 folderVideoOpen = true;
-
-                // Set poster from video path (e.g., assets/videos/foo.mp4 -> assets/video-posters/foo.jpg)
-                const posterSrc = videoSrc.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
-                videoA.poster = posterSrc;
-                videoA.src = videoSrc;
-                videoA.load();
                 activeVideoSheet = videoA;
                 activeFolderVideo = "a";
-
-                videoA.style.opacity = "1";
-                videoB.style.opacity = "0";
 
                 clearHoverEffect();
 
@@ -1080,25 +1080,63 @@
                     mass: 1,
                 };
 
-                // Cancel any pending phoneScreen animation before starting new one
-                if (phoneScreenAnimation) {
-                    phoneScreenAnimation.cancel();
-                }
-                phoneScreenAnimation = Motion.animate(phoneScreen, { scale: 0.92 }, springConfig);
-                Motion.animate(videoA, { y: 0 }, springConfig);
-                Motion.animate(videoB, { y: 0 }, springConfig);
+                // Preload poster first, then show video
+                const posterSrc = videoSrc.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
+                console.log('[OPEN] Poster path:', posterSrc);
+                const posterImg = new Image();
+                posterImg.src = posterSrc;
 
-                const tryPlay = () => {
-                    if (folderVideoOpen && videoA.src) {
-                        videoA.currentTime = 0;
-                        videoA.play().catch(() => {});
+                const showVideo = () => {
+                    console.log('[OPEN] showVideo called, folderVideoOpen:', folderVideoOpen);
+                    console.log('[OPEN] videoA opacity before:', videoA.style.opacity);
+
+                    // Set background-image as immediate fallback while video loads
+                    videoA.style.backgroundImage = `url(${posterSrc})`;
+                    videoA.style.backgroundSize = 'cover';
+                    videoA.style.backgroundPosition = 'center';
+                    videoA.poster = posterSrc;
+                    videoA.src = videoSrc;
+                    videoA.load();
+
+                    videoA.style.opacity = "1";
+                    videoB.style.opacity = "0";
+
+                    console.log('[OPEN] videoA opacity after:', videoA.style.opacity);
+                    console.log('[OPEN] videoA.poster:', videoA.poster);
+                    console.log('[OPEN] videoA.src:', videoA.src);
+
+                    // Cancel any pending phoneScreen animation before starting new one
+                    if (phoneScreenAnimation) {
+                        phoneScreenAnimation.cancel();
+                    }
+                    phoneScreenAnimation = Motion.animate(phoneScreen, { scale: 0.92 }, springConfig);
+                    Motion.animate(videoA, { y: 0 }, springConfig);
+                    Motion.animate(videoB, { y: 0 }, springConfig);
+
+                    const tryPlay = () => {
+                        console.log('[OPEN] tryPlay called, readyState:', videoA.readyState);
+                        console.log('[OPEN] videoA computed transform:', getComputedStyle(videoA).transform);
+                        console.log('[OPEN] videoB opacity:', videoB.style.opacity);
+                        if (folderVideoOpen && videoA.src) {
+                            videoA.currentTime = 0;
+                            videoA.play().catch(() => {});
+                        }
+                    };
+
+                    if (videoA.readyState >= 2) {
+                        tryPlay();
+                    } else {
+                        videoA.addEventListener("canplay", tryPlay, { once: true });
                     }
                 };
 
-                if (videoA.readyState >= 2) {
-                    tryPlay();
+                // Show video once poster is loaded (or immediately if cached/error)
+                console.log('[OPEN] posterImg.complete:', posterImg.complete);
+                if (posterImg.complete) {
+                    showVideo();
                 } else {
-                    videoA.addEventListener("canplay", tryPlay, { once: true });
+                    posterImg.onload = () => { console.log('[OPEN] poster onload'); showVideo(); };
+                    posterImg.onerror = () => { console.log('[OPEN] poster onerror'); showVideo(); };
                 }
 
                 return true;
@@ -1135,6 +1173,8 @@
 
                 if (isFolderVideo) {
                     folderVideoOpen = false;
+                    const closeVersion = folderVideoVersion; // Capture version at close time
+                    console.log('[CLOSE] Starting folder video close, version:', closeVersion);
                     const videoA = document.getElementById("folder-video-a");
                     const videoB = document.getElementById("folder-video-b");
 
@@ -1144,17 +1184,23 @@
                         Motion.animate(videoB, { y: 650 }, springConfig)
                             .finished,
                     ]).then(() => {
-                        if (!folderVideoOpen) {
+                        console.log('[CLOSE] Animation done, closeVersion:', closeVersion, 'currentVersion:', folderVideoVersion);
+                        // Only clear if no new folder has been opened since we started closing
+                        if (closeVersion === folderVideoVersion && !folderVideoOpen) {
+                            console.log('[CLOSE] Clearing videos');
                             [videoA, videoB].forEach((v) => {
                                 v.pause();
                                 v.currentTime = 0;
                                 v.removeAttribute("src");
                                 v.removeAttribute("poster");
+                                v.style.backgroundImage = "";
                                 v.style.opacity = "";
                                 v.style.transform = "";
                             });
                             activeFolderVideo = "a";
                             pickupCursorHover();
+                        } else {
+                            console.log('[CLOSE] Skipping clear - new folder opened');
                         }
                     });
                 } else {
@@ -1668,48 +1714,66 @@
                 const nextVideo = activeFolderVideo === "a" ? videoB : videoA;
 
                 if (app.video) {
-                    // Set poster and preload the new video in the inactive element
+                    // Preload poster first, then load video
                     const posterSrc = app.video.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
-                    nextVideo.poster = posterSrc;
-                    nextVideo.src = app.video;
-                    nextVideo.currentTime = 0;
+                    const posterImg = new Image();
+                    posterImg.src = posterSrc;
 
-                    // Wait for video to be ready, then crossfade
-                    const startCrossfade = () => {
-                        nextVideo.play();
+                    const loadAndCrossfade = () => {
+                        // Set background-image as immediate fallback
+                        nextVideo.style.backgroundImage = `url(${posterSrc})`;
+                        nextVideo.style.backgroundSize = 'cover';
+                        nextVideo.style.backgroundPosition = 'center';
+                        nextVideo.poster = posterSrc;
+                        nextVideo.src = app.video;
+                        nextVideo.currentTime = 0;
 
-                        // Simultaneous crossfade - 250ms butter smooth
-                        Motion.animate(
-                            currentVideo,
-                            { opacity: 0 },
-                            { duration: 0.25, easing: "ease-in-out" },
-                        ).finished.then(() => {
-                            // Clean up old video after fade
-                            currentVideo.pause();
-                            currentVideo.removeAttribute("src");
-                            currentVideo.removeAttribute("poster");
-                            currentVideo.load();
-                        });
+                        // Wait for video to be ready, then crossfade
+                        const startCrossfade = () => {
+                            nextVideo.play();
 
-                        Motion.animate(
-                            nextVideo,
-                            { opacity: 1 },
-                            { duration: 0.25, easing: "ease-in-out" },
-                        );
+                            // Simultaneous crossfade - 250ms butter smooth
+                            Motion.animate(
+                                currentVideo,
+                                { opacity: 0 },
+                                { duration: 0.25, easing: "ease-in-out" },
+                            ).finished.then(() => {
+                                // Clean up old video after fade
+                                currentVideo.pause();
+                                currentVideo.removeAttribute("src");
+                                currentVideo.removeAttribute("poster");
+                                currentVideo.style.backgroundImage = "";
+                                currentVideo.load();
+                            });
 
-                        // Swap active video tracker
-                        activeFolderVideo =
-                            activeFolderVideo === "a" ? "b" : "a";
-                        activeVideoSheet = nextVideo;
+                            Motion.animate(
+                                nextVideo,
+                                { opacity: 1 },
+                                { duration: 0.25, easing: "ease-in-out" },
+                            );
+
+                            // Swap active video tracker
+                            activeFolderVideo =
+                                activeFolderVideo === "a" ? "b" : "a";
+                            activeVideoSheet = nextVideo;
+                        };
+
+                        // Check if video is already ready or wait for canplay
+                        if (nextVideo.readyState >= 3) {
+                            startCrossfade();
+                        } else {
+                            nextVideo.addEventListener("canplay", startCrossfade, {
+                                once: true,
+                            });
+                        }
                     };
 
-                    // Check if video is already ready or wait for canplay
-                    if (nextVideo.readyState >= 3) {
-                        startCrossfade();
+                    // Load video once poster is ready (or immediately if cached/error)
+                    if (posterImg.complete) {
+                        loadAndCrossfade();
                     } else {
-                        nextVideo.addEventListener("canplay", startCrossfade, {
-                            once: true,
-                        });
+                        posterImg.onload = loadAndCrossfade;
+                        posterImg.onerror = loadAndCrossfade;
                     }
                 } else {
                     // App has no video - just pulse the current video as feedback
