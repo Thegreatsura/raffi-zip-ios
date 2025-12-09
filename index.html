@@ -713,12 +713,14 @@
                             {
                                 name: "Figma",
                                 icon: "assets/icons/figma.jpg",
+                                video: "assets/videos/figma.mp4",
                                 description:
                                     "Mirror mirror on the Figma app why don't u work actually to be fair I feel like you are getting slightly better.",
                             },
                             {
                                 name: "Linear",
                                 icon: "assets/icons/linear.jpg",
+                                video: "assets/videos/linear.mp4",
                                 description:
                                     "Don't use it as much as the desktop app but still great. Love watching Gavin keep pushing his craft with highly custom motion.",
                             },
@@ -751,6 +753,7 @@
                             {
                                 name: "Net",
                                 icon: "assets/icons/net.jpg",
+                                video: "assets/videos/net.mp4",
                                 description:
                                     "Net's card stack is so good. Excited to see what they ship on desktop so I can fully ditch Superhuman.",
                             },
@@ -1028,7 +1031,6 @@
 
             // Reset folder videos to clean state (synchronous, immediate)
             function resetFolderVideos() {
-                console.log('[RESET] resetFolderVideos called');
                 const videoA = document.getElementById("folder-video-a");
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return;
@@ -1052,18 +1054,15 @@
                 activeFolderVideo = "a";
                 activeVideoSheet = null;
                 folderVideoOpen = false;
-                console.log('[RESET] Done - activeFolderVideo:', activeFolderVideo);
             }
 
             function openFolderVideoSheet(videoSrc) {
-                console.log('[OPEN] openFolderVideoSheet called with:', videoSrc);
                 const videoA = document.getElementById("folder-video-a");
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return false;
 
                 // Increment version to invalidate any pending close callbacks
                 folderVideoVersion++;
-                console.log('[OPEN] New version:', folderVideoVersion);
 
                 resetFolderVideos();
 
@@ -1082,14 +1081,10 @@
 
                 // Preload poster first, then show video
                 const posterSrc = videoSrc.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
-                console.log('[OPEN] Poster path:', posterSrc);
                 const posterImg = new Image();
                 posterImg.src = posterSrc;
 
                 const showVideo = () => {
-                    console.log('[OPEN] showVideo called, folderVideoOpen:', folderVideoOpen);
-                    console.log('[OPEN] videoA opacity before:', videoA.style.opacity);
-
                     // Set background-image as immediate fallback while video loads
                     videoA.style.backgroundImage = `url(${posterSrc})`;
                     videoA.style.backgroundSize = 'cover';
@@ -1101,10 +1096,6 @@
                     videoA.style.opacity = "1";
                     videoB.style.opacity = "0";
 
-                    console.log('[OPEN] videoA opacity after:', videoA.style.opacity);
-                    console.log('[OPEN] videoA.poster:', videoA.poster);
-                    console.log('[OPEN] videoA.src:', videoA.src);
-
                     // Cancel any pending phoneScreen animation before starting new one
                     if (phoneScreenAnimation) {
                         phoneScreenAnimation.cancel();
@@ -1114,9 +1105,6 @@
                     Motion.animate(videoB, { y: 0 }, springConfig);
 
                     const tryPlay = () => {
-                        console.log('[OPEN] tryPlay called, readyState:', videoA.readyState);
-                        console.log('[OPEN] videoA computed transform:', getComputedStyle(videoA).transform);
-                        console.log('[OPEN] videoB opacity:', videoB.style.opacity);
                         if (folderVideoOpen && videoA.src) {
                             videoA.currentTime = 0;
                             videoA.play().catch(() => {});
@@ -1131,12 +1119,11 @@
                 };
 
                 // Show video once poster is loaded (or immediately if cached/error)
-                console.log('[OPEN] posterImg.complete:', posterImg.complete);
                 if (posterImg.complete) {
                     showVideo();
                 } else {
-                    posterImg.onload = () => { console.log('[OPEN] poster onload'); showVideo(); };
-                    posterImg.onerror = () => { console.log('[OPEN] poster onerror'); showVideo(); };
+                    posterImg.onload = showVideo;
+                    posterImg.onerror = showVideo;
                 }
 
                 return true;
@@ -1174,7 +1161,6 @@
                 if (isFolderVideo) {
                     folderVideoOpen = false;
                     const closeVersion = folderVideoVersion; // Capture version at close time
-                    console.log('[CLOSE] Starting folder video close, version:', closeVersion);
                     const videoA = document.getElementById("folder-video-a");
                     const videoB = document.getElementById("folder-video-b");
 
@@ -1184,10 +1170,8 @@
                         Motion.animate(videoB, { y: 650 }, springConfig)
                             .finished,
                     ]).then(() => {
-                        console.log('[CLOSE] Animation done, closeVersion:', closeVersion, 'currentVersion:', folderVideoVersion);
                         // Only clear if no new folder has been opened since we started closing
                         if (closeVersion === folderVideoVersion && !folderVideoOpen) {
-                            console.log('[CLOSE] Clearing videos');
                             [videoA, videoB].forEach((v) => {
                                 v.pause();
                                 v.currentTime = 0;
@@ -1199,8 +1183,6 @@
                             });
                             activeFolderVideo = "a";
                             pickupCursorHover();
-                        } else {
-                            console.log('[CLOSE] Skipping clear - new folder opened');
                         }
                     });
                 } else {
