@@ -447,7 +447,7 @@ body {
     z-index: 20; /* Above tap targets (z-index: 10) */
     transform: translateY(700px);
     cursor: pointer;
-    pointer-events: auto;
+    pointer-events: none; /* Disabled by default, enabled via JS when video is showing */
     border-radius: var(--phone-mockup-radius);
     background: black; /* Prevent white flash before video loads */
 }

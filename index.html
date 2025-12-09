@@ -9,7 +9,7 @@
         <title>Raffi Chilingaryan</title>
         <meta
             name="description"
-            content="Founder of Spotted in Prod, building fitness apps and featuring great iOS apps."
+            content="Founder of Spotted in Prod, building apps and featuring great iOS apps."
         />
 
         <!-- Open Graph (Facebook, LinkedIn, iMessage, etc.) -->
@@ -17,7 +17,7 @@
         <meta property="og:title" content="Raffi Chilingaryan" />
         <meta
             property="og:description"
-            content="Founder of Spotted in Prod, building fitness apps and featuring great iOS apps."
+            content="Founder of Spotted in Prod, building apps and featuring great iOS apps."
         />
         <meta
             property="og:image"
@@ -32,7 +32,7 @@
         <meta name="twitter:title" content="Raffi Chilingaryan" />
         <meta
             name="twitter:description"
-            content="Founder of Spotted in Prod, building fitness apps and featuring great iOS apps."
+            content="Founder of Spotted in Prod, building apps and featuring great iOS apps."
         />
         <meta
             name="twitter:image"
@@ -317,8 +317,9 @@
                                 target="_blank"
                                 >Spotted in Prod</a
                             >
-                            - a platform featuring great iOS apps and the people
-                            behind them. I also build fitness apps on my own and
+                            - a platform featuring great iOS apps and the
+                            developers behind them. I also build apps on my own
+                            and
                             <a
                                 href="https://x.com/raffichill/status/1981370446974243270"
                                 target="_blank"
@@ -380,8 +381,9 @@
                                 class="mobile-highlight"
                                 >Spotted in Prod</a
                             >
-                            - a platform featuring great iOS apps and the people
-                            behind them. I also build fitness apps on my own and
+                            - a platform featuring great iOS apps and the
+                            developers behind them. I also build apps on my own
+                            and
                             <a
                                 href="https://x.com/raffichill/status/1981370446974243270"
                                 target="_blank"
@@ -891,9 +893,6 @@
             // Track folder context for video switching
             let currentFolderContext = null; // { folderName, selectedIndex }
 
-            // Track which folder video element is active (for crossfade)
-            let activeFolderVideo = "a"; // "a" or "b"
-
             // Track active phoneScreen animation to cancel on new opens
             let phoneScreenAnimation = null;
 
@@ -961,7 +960,7 @@
       </div>
       <div class="content-body">
         <div class="content-text">
-          <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform featuring great iOS apps and the people behind them. I also build fitness apps on my own and <a href="https://x.com/raffichill/status/1981370446974243270" target="_blank">with friends</a>.</p>
+          <p>I'm the founder of <a href="https://x.com/spottedinprod" target="_blank">Spotted in Prod</a> - a platform featuring great iOS apps and the developers behind them. I also build apps on my own and <a href="https://x.com/raffichill/status/1981370446974243270" target="_blank">with friends</a>.</p>
           <p>I think our Home Screen setups say a lot about us, so here's mine.</p>
           <p>Feel free to <a href="#" class="tap-around-link">tap around</a> or <a href="mailto:raffi.chilingaryan@gmail.com">get in touch</a> and thanks for stopping by.</p>
         </div>
@@ -991,15 +990,28 @@
 
             // Open video sheet for an app
             function openVideoSheet(appName) {
+                // Block if animation in progress
+                if (isAnimating) return false;
+
                 const video = document.querySelector(
                     `.video-sheet[data-app="${appName}"]`,
                 );
                 if (!video) return false;
 
+                // Lock until animation completes
+                isAnimating = true;
+
                 activeVideoSheet = video;
+
+                // Enable pointer events for this video (disabled by default in CSS)
+                video.style.pointerEvents = "auto";
 
                 // Clear any hover effects when opening video
                 clearHoverEffect();
+
+                // Set starting positions
+                video.style.transform = "translateY(650px)";
+                phoneScreen.style.transform = "scale(1)";
 
                 // Start video playback
                 video.currentTime = 0;
@@ -1013,65 +1025,120 @@
                     mass: 1,
                 };
 
-                // Cancel any pending phoneScreen animation and animate down
-                if (phoneScreenAnimation) {
-                    phoneScreenAnimation.cancel();
-                }
-                phoneScreenAnimation = Motion.animate(phoneScreen, { scale: [1, 0.92] }, springConfig);
+                phoneScreenAnimation = Motion.animate(
+                    phoneScreen,
+                    { scale: [1, 0.92] },
+                    springConfig,
+                );
 
-                // Animate video sheet up
-                Motion.animate(video, { y: [650, 0] }, springConfig);
+                // Animate video sheet up, unlock when done
+                Motion.animate(video, { y: [650, 0] }, springConfig).finished.then(() => {
+                    isAnimating = false;
+                });
 
                 return true;
             }
 
-            // Folder video state - simple flag to track if folder video is showing
+            // Folder video state
             let folderVideoOpen = false;
-            let folderVideoVersion = 0; // Increments on each open to invalidate stale close callbacks
+            let activeFolderVideo = "a"; // Which video element is currently showing
+            let folderAnimation = null; // Animation reference
+            let isAnimating = false; // Lock - stays true until animation completes AND cleanup is done
 
-            // Reset folder videos to clean state (synchronous, immediate)
+            // Helper: Set up a video element with content
+            function setupFolderVideo(videoEl, videoSrc) {
+                const posterSrc = videoSrc
+                    .replace("/videos/", "/video-posters/")
+                    .replace(/\.(mp4|mov)$/, ".jpg");
+                videoEl.style.backgroundImage = `url(${posterSrc})`;
+                videoEl.style.backgroundSize = "cover";
+                videoEl.style.backgroundPosition = "center";
+                videoEl.poster = posterSrc;
+                videoEl.src = videoSrc;
+            }
+
+            // Helper: Clear a video element
+            function clearFolderVideo(videoEl) {
+                videoEl.pause();
+                videoEl.removeAttribute("src");
+                videoEl.removeAttribute("poster");
+                videoEl.style.backgroundImage = "";
+            }
+
+            // Helper: Cancel any running folder animation (don't reset styles - let caller handle that)
+            function cancelFolderAnimation() {
+                if (folderAnimation) {
+                    folderAnimation.cancel();
+                    folderAnimation = null;
+                }
+                if (phoneScreenAnimation) {
+                    phoneScreenAnimation.cancel();
+                    phoneScreenAnimation = null;
+                }
+            }
+
+            // Reset folder videos to clean state
             function resetFolderVideos() {
                 const videoA = document.getElementById("folder-video-a");
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return;
 
-                // Use Motion.animate with duration 0 to cancel any running animations AND set position
-                Motion.animate(videoA, { y: 700 }, { duration: 0 });
-                Motion.animate(videoB, { y: 700 }, { duration: 0 });
-                if (phoneScreen)
-                    Motion.animate(phoneScreen, { scale: 1 }, { duration: 0 });
+                cancelFolderAnimation();
 
-                [videoA, videoB].forEach((v) => {
-                    v.pause();
-                    v.currentTime = 0;
-                    v.removeAttribute("src");
-                    v.removeAttribute("poster");
-                    v.style.backgroundImage = "";
-                    v.load(); // Force clear
-                    v.style.opacity = "0";
-                });
+                clearFolderVideo(videoA);
+                clearFolderVideo(videoB);
+
+                videoA.style.opacity = "";
+                videoA.style.transform = "";
+                videoA.style.pointerEvents = "";
+                videoB.style.opacity = "";
+                videoB.style.transform = "";
+                videoB.style.pointerEvents = "";
+
+                if (phoneScreen) {
+                    phoneScreen.style.transform = "";
+                }
 
                 activeFolderVideo = "a";
                 activeVideoSheet = null;
                 folderVideoOpen = false;
             }
 
+            // Open a folder video - animate in from bottom
             function openFolderVideoSheet(videoSrc) {
+                // Block if animation in progress
+                if (isAnimating) return false;
+
                 const videoA = document.getElementById("folder-video-a");
                 const videoB = document.getElementById("folder-video-b");
                 if (!videoA || !videoB) return false;
 
-                // Increment version to invalidate any pending close callbacks
-                folderVideoVersion++;
+                // Lock until animation completes
+                isAnimating = true;
 
-                resetFolderVideos();
+                // Clear both videos completely
+                clearFolderVideo(videoA);
+                clearFolderVideo(videoB);
 
+                // Reset all styles to clean state
+                videoA.style.transform = "translateY(700px)";
+                videoA.style.opacity = "1";
+                videoA.style.pointerEvents = "auto";
+                videoB.style.transform = "translateY(700px)";
+                videoB.style.opacity = "0";
+                videoB.style.pointerEvents = "none";
+                phoneScreen.style.transform = "scale(1)";
+
+                // Set up videoA with new content
+                setupFolderVideo(videoA, videoSrc);
+
+                // Set state
                 folderVideoOpen = true;
                 activeVideoSheet = videoA;
                 activeFolderVideo = "a";
-
                 clearHoverEffect();
 
+                // Animate in
                 const springConfig = {
                     type: "spring",
                     stiffness: 400,
@@ -1079,61 +1146,49 @@
                     mass: 1,
                 };
 
-                // Preload poster first, then show video
-                const posterSrc = videoSrc.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
-                const posterImg = new Image();
-                posterImg.src = posterSrc;
+                phoneScreenAnimation = Motion.animate(
+                    phoneScreen,
+                    { scale: [1, 0.92] },
+                    springConfig,
+                );
+                folderAnimation = Motion.animate(
+                    videoA,
+                    { y: [700, 0] },
+                    springConfig,
+                );
+                Motion.animate(videoB, { y: [700, 0] }, springConfig); // Keep in sync
 
-                const showVideo = () => {
-                    // Set background-image as immediate fallback while video loads
-                    videoA.style.backgroundImage = `url(${posterSrc})`;
-                    videoA.style.backgroundSize = 'cover';
-                    videoA.style.backgroundPosition = 'center';
-                    videoA.poster = posterSrc;
-                    videoA.src = videoSrc;
-                    videoA.load();
+                // Unlock when animation completes
+                folderAnimation.finished.then(() => {
+                    isAnimating = false;
+                });
 
-                    videoA.style.opacity = "1";
-                    videoB.style.opacity = "0";
-
-                    // Cancel any pending phoneScreen animation before starting new one
-                    if (phoneScreenAnimation) {
-                        phoneScreenAnimation.cancel();
-                    }
-                    phoneScreenAnimation = Motion.animate(phoneScreen, { scale: 0.92 }, springConfig);
-                    Motion.animate(videoA, { y: 0 }, springConfig);
-                    Motion.animate(videoB, { y: 0 }, springConfig);
-
-                    const tryPlay = () => {
-                        if (folderVideoOpen && videoA.src) {
-                            videoA.currentTime = 0;
-                            videoA.play().catch(() => {});
-                        }
-                    };
-
-                    if (videoA.readyState >= 2) {
-                        tryPlay();
-                    } else {
-                        videoA.addEventListener("canplay", tryPlay, { once: true });
+                // Play video when ready
+                const tryPlay = () => {
+                    if (folderVideoOpen && videoA.src) {
+                        videoA.currentTime = 0;
+                        videoA.play().catch(() => {});
                     }
                 };
 
-                // Show video once poster is loaded (or immediately if cached/error)
-                if (posterImg.complete) {
-                    showVideo();
+                if (videoA.readyState >= 2) {
+                    tryPlay();
                 } else {
-                    posterImg.onload = showVideo;
-                    posterImg.onerror = showVideo;
+                    videoA.addEventListener("canplay", tryPlay, { once: true });
                 }
 
                 return true;
             }
 
             function closeVideoSheet() {
-                if (!activeVideoSheet) return;
+                // Block if animation in progress or no video showing
+                if (isAnimating || !activeVideoSheet) return;
 
                 const video = activeVideoSheet;
                 const isFolderVideo = video.classList.contains("folder-video");
+
+                // Lock until animation AND cleanup complete
+                isAnimating = true;
 
                 activeVideoSheet = null;
                 currentFolderContext = null;
@@ -1145,56 +1200,70 @@
                     mass: 1,
                 };
 
-                if (phoneScreenAnimation) {
-                    phoneScreenAnimation.cancel();
-                }
-                phoneScreenAnimation = Motion.animate(
-                    phoneScreen,
-                    { scale: 1 },
-                    springConfig,
-                );
-                phoneScreenAnimation.finished.then(() => {
-                    phoneScreen.style.transform = "";
-                    phoneScreenAnimation = null;
-                });
-
                 if (isFolderVideo) {
                     folderVideoOpen = false;
-                    const closeVersion = folderVideoVersion; // Capture version at close time
+
                     const videoA = document.getElementById("folder-video-a");
                     const videoB = document.getElementById("folder-video-b");
+                    const currentVideo =
+                        activeFolderVideo === "a" ? videoA : videoB;
 
-                    Promise.all([
-                        Motion.animate(videoA, { y: 650 }, springConfig)
-                            .finished,
-                        Motion.animate(videoB, { y: 650 }, springConfig)
-                            .finished,
-                    ]).then(() => {
-                        // Only clear if no new folder has been opened since we started closing
-                        if (closeVersion === folderVideoVersion && !folderVideoOpen) {
-                            [videoA, videoB].forEach((v) => {
-                                v.pause();
-                                v.currentTime = 0;
-                                v.removeAttribute("src");
-                                v.removeAttribute("poster");
-                                v.style.backgroundImage = "";
-                                v.style.opacity = "";
-                                v.style.transform = "";
-                            });
-                            activeFolderVideo = "a";
-                            pickupCursorHover();
-                        }
+                    // Set starting positions and animate out
+                    currentVideo.style.transform = "translateY(0)";
+                    phoneScreen.style.transform = "scale(0.92)";
+
+                    phoneScreenAnimation = Motion.animate(
+                        phoneScreen,
+                        { scale: [0.92, 1] },
+                        springConfig,
+                    );
+                    folderAnimation = Motion.animate(
+                        currentVideo,
+                        { y: [0, 650] },
+                        springConfig,
+                    );
+
+                    // Clean up after animation completes, then unlock
+                    folderAnimation.finished.then(() => {
+                        clearFolderVideo(videoA);
+                        clearFolderVideo(videoB);
+                        videoA.style.opacity = "";
+                        videoA.style.transform = "";
+                        videoA.style.pointerEvents = "";
+                        videoB.style.opacity = "";
+                        videoB.style.transform = "";
+                        videoB.style.pointerEvents = "";
+                        phoneScreen.style.transform = "";
+                        folderAnimation = null;
+                        phoneScreenAnimation = null;
+                        activeFolderVideo = "a";
+                        pickupCursorHover();
+                        isAnimating = false; // Unlock after cleanup
                     });
                 } else {
+                    // Regular video - set starting positions and animate out
+                    video.style.transform = "translateY(0)";
+                    phoneScreen.style.transform = "scale(0.92)";
+
+                    phoneScreenAnimation = Motion.animate(
+                        phoneScreen,
+                        { scale: [0.92, 1] },
+                        springConfig,
+                    );
+
                     Motion.animate(
                         video,
-                        { y: 650 },
+                        { y: [0, 650] },
                         springConfig,
                     ).finished.then(() => {
                         video.pause();
                         video.currentTime = 0;
                         video.style.transform = "";
+                        video.style.pointerEvents = "";
+                        phoneScreen.style.transform = "";
+                        phoneScreenAnimation = null;
                         pickupCursorHover();
+                        isAnimating = false; // Unlock after cleanup
                     });
                 }
 
@@ -1447,10 +1516,15 @@
             }
 
             function handleAppClick(appName) {
-                // Try to open video sheet
-                openVideoSheet(appName);
+                // Block if animation in progress
+                if (isAnimating) return;
 
-                // ALWAYS show app info on RHS (if available)
+                // Try to open video sheet - must succeed before updating RHS
+                if (!openVideoSheet(appName)) {
+                    return;
+                }
+
+                // Show app info on RHS (if available)
                 const app = appData.apps[appName];
                 if (!app || !app.longDescription) return;
 
@@ -1472,6 +1546,9 @@
             }
 
             function handleFolderClick(folderName) {
+                // Block if animation in progress
+                if (isAnimating) return;
+
                 const folder = appData.folders[folderName];
                 if (!folder) return;
 
@@ -1481,17 +1558,16 @@
                         .currentFolder;
                 if (currentFolder === folderName) return;
 
-                // Always reset folder videos first when switching folders
-                resetFolderVideos();
-
-                // Set folder context - first app selected by default
-                currentFolderContext = { folderName, selectedIndex: 0 };
-
-                // Open video for first app using its actual video (or no video if none)
+                // Open video for first app - MUST succeed before updating RHS
                 const firstApp = folder.apps[0];
                 if (firstApp && firstApp.video) {
-                    openFolderVideoSheet(firstApp.video);
+                    if (!openFolderVideoSheet(firstApp.video)) {
+                        return; // Video didn't open, don't update anything
+                    }
                 }
+
+                // Only set context AFTER video successfully opens
+                currentFolderContext = { folderName, selectedIndex: 0 };
 
                 const appsHtml = folder.apps
                     .map(
@@ -1665,25 +1741,15 @@
 
             // Select a different app within the folder (crossfade transition)
             function selectFolderApp(index) {
-                if (!currentFolderContext) return;
+                // Block if animation in progress or folder not properly open
+                if (isAnimating || !currentFolderContext || !folderVideoOpen) return;
 
                 const folder = appData.folders[currentFolderContext.folderName];
                 const app = folder?.apps[index];
                 if (!app) return;
 
-                // Update selected index
-                currentFolderContext.selectedIndex = index;
-
-                // Update selected state in DOM
-                document
-                    .querySelectorAll(".folder-app-item")
-                    .forEach((item, i) => {
-                        if (i === index) {
-                            item.classList.add("selected");
-                        } else {
-                            item.classList.remove("selected");
-                        }
-                    });
+                // Skip if already selected
+                if (currentFolderContext.selectedIndex === index) return;
 
                 // Get both folder video elements
                 const videoA = document.getElementById("folder-video-a");
@@ -1696,69 +1762,61 @@
                 const nextVideo = activeFolderVideo === "a" ? videoB : videoA;
 
                 if (app.video) {
-                    // Preload poster first, then load video
-                    const posterSrc = app.video.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
-                    const posterImg = new Image();
-                    posterImg.src = posterSrc;
+                    // Lock until crossfade completes
+                    isAnimating = true;
 
-                    const loadAndCrossfade = () => {
-                        // Set background-image as immediate fallback
-                        nextVideo.style.backgroundImage = `url(${posterSrc})`;
-                        nextVideo.style.backgroundSize = 'cover';
-                        nextVideo.style.backgroundPosition = 'center';
-                        nextVideo.poster = posterSrc;
-                        nextVideo.src = app.video;
-                        nextVideo.currentTime = 0;
+                    // Update state and DOM only after we've committed to the operation
+                    currentFolderContext.selectedIndex = index;
+                    document
+                        .querySelectorAll(".folder-app-item")
+                        .forEach((item, i) => {
+                            item.classList.toggle("selected", i === index);
+                        });
 
-                        // Wait for video to be ready, then crossfade
-                        const startCrossfade = () => {
-                            nextVideo.play();
+                    // Set up current and next video states
+                    currentVideo.style.opacity = "1";
+                    currentVideo.style.transform = "translateY(0)";
 
-                            // Simultaneous crossfade - 250ms butter smooth
-                            Motion.animate(
-                                currentVideo,
-                                { opacity: 0 },
-                                { duration: 0.25, easing: "ease-in-out" },
-                            ).finished.then(() => {
-                                // Clean up old video after fade
-                                currentVideo.pause();
-                                currentVideo.removeAttribute("src");
-                                currentVideo.removeAttribute("poster");
-                                currentVideo.style.backgroundImage = "";
-                                currentVideo.load();
-                            });
+                    setupFolderVideo(nextVideo, app.video);
+                    nextVideo.style.opacity = "0";
+                    nextVideo.style.transform = "translateY(0)";
+                    nextVideo.style.pointerEvents = "auto";
 
-                            Motion.animate(
-                                nextVideo,
-                                { opacity: 1 },
-                                { duration: 0.25, easing: "ease-in-out" },
-                            );
+                    // Crossfade
+                    Motion.animate(
+                        currentVideo,
+                        { opacity: [1, 0] },
+                        { duration: 0.25, easing: "ease-in-out" },
+                    );
+                    folderAnimation = Motion.animate(
+                        nextVideo,
+                        { opacity: [0, 1] },
+                        { duration: 0.25, easing: "ease-in-out" },
+                    );
 
-                            // Swap active video tracker
-                            activeFolderVideo =
-                                activeFolderVideo === "a" ? "b" : "a";
-                            activeVideoSheet = nextVideo;
-                        };
+                    // Clean up old video after crossfade, then unlock
+                    folderAnimation.finished.then(() => {
+                        clearFolderVideo(currentVideo);
+                        currentVideo.style.opacity = "0";
+                        currentVideo.style.pointerEvents = "none";
+                        folderAnimation = null;
+                        isAnimating = false; // Unlock after cleanup
+                    });
 
-                        // Check if video is already ready or wait for canplay
-                        if (nextVideo.readyState >= 3) {
-                            startCrossfade();
-                        } else {
-                            nextVideo.addEventListener("canplay", startCrossfade, {
-                                once: true,
-                            });
-                        }
-                    };
+                    // Play next video immediately
+                    nextVideo.play().catch(() => {});
 
-                    // Load video once poster is ready (or immediately if cached/error)
-                    if (posterImg.complete) {
-                        loadAndCrossfade();
-                    } else {
-                        posterImg.onload = loadAndCrossfade;
-                        posterImg.onerror = loadAndCrossfade;
-                    }
+                    // Swap tracker
+                    activeFolderVideo = activeFolderVideo === "a" ? "b" : "a";
+                    activeVideoSheet = nextVideo;
                 } else {
-                    // App has no video - just pulse the current video as feedback
+                    // App has no video - update selection and pulse as feedback
+                    currentFolderContext.selectedIndex = index;
+                    document
+                        .querySelectorAll(".folder-app-item")
+                        .forEach((item, i) => {
+                            item.classList.toggle("selected", i === index);
+                        });
                     Motion.animate(
                         currentVideo,
                         { opacity: [1, 0.7, 1] },
@@ -1816,13 +1874,13 @@
                 },
                 {
                     target: "intro-p1",
-                    text: " - a platform featuring great iOS apps and the people behind them.",
+                    text: " - a platform featuring great iOS apps and the developers behind them.",
                     pauseAfter: 400,
                     append: true,
                 },
                 {
                     target: "intro-p1",
-                    text: ' I also build fitness apps on my own and <a href="https://x.com/raffichill/status/1981370446974243270" target="_blank">with friends</a>.',
+                    text: ' I also build apps on my own and <a href="https://x.com/raffichill/status/1981370446974243270" target="_blank">with friends</a>.',
                     pauseAfter: 500,
                     append: true,
                 },
