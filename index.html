@@ -1003,6 +1003,14 @@
 
                 activeVideoSheet = video;
 
+                // Reset pointer events on ALL other regular video sheets
+                // This prevents stale state from previous close animations
+                document.querySelectorAll('.video-sheet[data-app]').forEach(v => {
+                    if (v !== video) {
+                        v.style.pointerEvents = "";
+                    }
+                });
+
                 // Enable pointer events for this video (disabled by default in CSS)
                 video.style.pointerEvents = "auto";
 
@@ -1132,6 +1140,11 @@
                 // Lock until animation completes
                 isAnimating = true;
 
+                // Reset pointer events on ALL regular video sheets (cleanup from any stuck state)
+                document.querySelectorAll('.video-sheet[data-app]').forEach(v => {
+                    v.style.pointerEvents = "";
+                });
+
                 // Increment version to invalidate any pending callbacks from previous operations
                 folderOperationVersion++;
                 const openVersion = folderOperationVersion;
@@ -1219,8 +1232,26 @@
             }
 
             function closeVideoSheet() {
-                // Block if animation in progress or no video showing
-                if (isAnimating || !activeVideoSheet) return;
+                // Block if animation in progress
+                if (isAnimating) return;
+
+                // If no activeVideoSheet but folder video is visible, recover state
+                if (!activeVideoSheet) {
+                    const videoA = document.getElementById("folder-video-a");
+                    const videoB = document.getElementById("folder-video-b");
+                    // Check if either folder video is visible (has src and not translated away)
+                    if (videoA && videoA.src && videoA.style.transform !== "translateY(650px)" && videoA.style.opacity !== "0") {
+                        activeVideoSheet = videoA;
+                        folderVideoOpen = true;
+                        activeFolderVideo = "a";
+                    } else if (videoB && videoB.src && videoB.style.transform !== "translateY(650px)" && videoB.style.opacity !== "0") {
+                        activeVideoSheet = videoB;
+                        folderVideoOpen = true;
+                        activeFolderVideo = "b";
+                    } else {
+                        return; // No video to close
+                    }
+                }
 
                 const video = activeVideoSheet;
                 const isFolderVideo = video.classList.contains("folder-video");
@@ -1271,6 +1302,8 @@
                     folderAnimation.finished.then(() => {
                         // Guard: Only run cleanup if no new folder operation started
                         if (folderOperationVersion !== closeVersion) {
+                            // Version changed - a new operation took over
+                            // That operation is responsible for state, just return
                             return;
                         }
                         clearFolderVideo(videoA);
