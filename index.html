@@ -1065,6 +1065,13 @@
                 videoEl.style.backgroundImage = "";
             }
 
+            // Track crossfade animations separately (for cancellation)
+            let crossfadeAnimationA = null;
+            let crossfadeAnimationB = null;
+
+            // Version counter - increments on every folder open/close to invalidate stale callbacks
+            let folderOperationVersion = 0;
+
             // Helper: Cancel any running folder animation (don't reset styles - let caller handle that)
             function cancelFolderAnimation() {
                 if (folderAnimation) {
@@ -1074,6 +1081,15 @@
                 if (phoneScreenAnimation) {
                     phoneScreenAnimation.cancel();
                     phoneScreenAnimation = null;
+                }
+                // Also cancel crossfade opacity animations
+                if (crossfadeAnimationA) {
+                    crossfadeAnimationA.cancel();
+                    crossfadeAnimationA = null;
+                }
+                if (crossfadeAnimationB) {
+                    crossfadeAnimationB.cancel();
+                    crossfadeAnimationB = null;
                 }
             }
 
@@ -1116,9 +1132,26 @@
                 // Lock until animation completes
                 isAnimating = true;
 
+                // Increment version to invalidate any pending callbacks from previous operations
+                folderOperationVersion++;
+                const openVersion = folderOperationVersion;
+
+                // Cancel any pending animations from previous folder/crossfade
+                // This prevents stale .finished.then() callbacks from overwriting our state
+                cancelFolderAnimation();
+
+                // Cancel ALL animations on both video elements (Web Animations API)
+                // This ensures no stale animations can write values after we set them
+                videoA.getAnimations().forEach(a => a.cancel());
+                videoB.getAnimations().forEach(a => a.cancel());
+
                 // Clear both videos completely
                 clearFolderVideo(videoA);
                 clearFolderVideo(videoB);
+
+                // Force browser to clear any cached video frames by toggling visibility
+                // This prevents stale frames from showing during new folder open
+                videoB.style.visibility = "hidden";
 
                 // Reset all styles to clean state
                 videoA.style.transform = "translateY(700px)";
@@ -1127,6 +1160,7 @@
                 videoB.style.transform = "translateY(700px)";
                 videoB.style.opacity = "0";
                 videoB.style.pointerEvents = "none";
+                videoB.style.visibility = "hidden";
                 phoneScreen.style.transform = "scale(1)";
 
                 // Set up videoA with new content
@@ -1157,6 +1191,10 @@
                     springConfig,
                 );
                 Motion.animate(videoB, { y: [700, 0] }, springConfig); // Keep in sync
+
+                // Force opacity with a separate instant animation to override Motion.js internal state
+                Motion.animate(videoA, { opacity: 1 }, { duration: 0 });
+                Motion.animate(videoB, { opacity: 0 }, { duration: 0 });
 
                 // Unlock when animation completes
                 folderAnimation.finished.then(() => {
@@ -1190,6 +1228,9 @@
                 // Lock until animation AND cleanup complete
                 isAnimating = true;
 
+                // Increment version to invalidate any pending crossfade callbacks
+                folderOperationVersion++;
+
                 activeVideoSheet = null;
                 currentFolderContext = null;
 
@@ -1202,6 +1243,9 @@
 
                 if (isFolderVideo) {
                     folderVideoOpen = false;
+
+                    // Capture version for callback guard
+                    const closeVersion = folderOperationVersion;
 
                     const videoA = document.getElementById("folder-video-a");
                     const videoB = document.getElementById("folder-video-b");
@@ -1225,6 +1269,10 @@
 
                     // Clean up after animation completes, then unlock
                     folderAnimation.finished.then(() => {
+                        // Guard: Only run cleanup if no new folder operation started
+                        if (folderOperationVersion !== closeVersion) {
+                            return;
+                        }
                         clearFolderVideo(videoA);
                         clearFolderVideo(videoB);
                         videoA.style.opacity = "";
@@ -1765,6 +1813,9 @@
                     // Lock until crossfade completes
                     isAnimating = true;
 
+                    // Capture version to guard against stale callbacks
+                    const crossfadeVersion = folderOperationVersion;
+
                     // Update state and DOM only after we've committed to the operation
                     currentFolderContext.selectedIndex = index;
                     document
@@ -1778,24 +1829,30 @@
                     currentVideo.style.transform = "translateY(0)";
 
                     setupFolderVideo(nextVideo, app.video);
+                    nextVideo.style.visibility = "visible";
                     nextVideo.style.opacity = "0";
                     nextVideo.style.transform = "translateY(0)";
                     nextVideo.style.pointerEvents = "auto";
 
-                    // Crossfade
-                    Motion.animate(
+                    // Crossfade - track both animations for cancellation
+                    crossfadeAnimationA = Motion.animate(
                         currentVideo,
                         { opacity: [1, 0] },
                         { duration: 0.25, easing: "ease-in-out" },
                     );
-                    folderAnimation = Motion.animate(
+                    crossfadeAnimationB = Motion.animate(
                         nextVideo,
                         { opacity: [0, 1] },
                         { duration: 0.25, easing: "ease-in-out" },
                     );
+                    folderAnimation = crossfadeAnimationB;
 
                     // Clean up old video after crossfade, then unlock
                     folderAnimation.finished.then(() => {
+                        // Guard: Only apply cleanup if version matches (no folder open/close since)
+                        if (folderOperationVersion !== crossfadeVersion) {
+                            return;
+                        }
                         clearFolderVideo(currentVideo);
                         currentVideo.style.opacity = "0";
                         currentVideo.style.pointerEvents = "none";
