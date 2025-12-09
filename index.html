@@ -100,6 +100,7 @@
                             class="video-sheet"
                             data-app="retro"
                             src="assets/videos/retro.mp4"
+                            poster="assets/video-posters/retro.jpg"
                             muted
                             playsinline
                             loop
@@ -108,6 +109,7 @@
                             class="video-sheet"
                             data-app="notes"
                             src="assets/videos/notes.mp4"
+                            poster="assets/video-posters/notes.jpg"
                             muted
                             playsinline
                             loop
@@ -116,6 +118,7 @@
                             class="video-sheet"
                             data-app="photos"
                             src="assets/videos/photos.mp4"
+                            poster="assets/video-posters/photos.jpg"
                             muted
                             playsinline
                             loop
@@ -124,6 +127,7 @@
                             class="video-sheet"
                             data-app="notboringcamera"
                             src="assets/videos/notboringcamera.mp4"
+                            poster="assets/video-posters/notboringcamera.jpg"
                             muted
                             playsinline
                             loop
@@ -132,6 +136,7 @@
                             class="video-sheet"
                             data-app="googlemaps"
                             src="assets/videos/googlemaps.mp4"
+                            poster="assets/video-posters/googlemaps.jpg"
                             muted
                             playsinline
                             loop
@@ -140,6 +145,7 @@
                             class="video-sheet"
                             data-app="claude"
                             src="assets/videos/claude.mp4"
+                            poster="assets/video-posters/claude.jpg"
                             muted
                             playsinline
                             loop
@@ -148,6 +154,7 @@
                             class="video-sheet"
                             data-app="safari"
                             src="assets/videos/safari.mp4"
+                            poster="assets/video-posters/safari.jpg"
                             muted
                             playsinline
                             loop
@@ -156,6 +163,7 @@
                             class="video-sheet"
                             data-app="github"
                             src="assets/videos/github.mp4"
+                            poster="assets/video-posters/github.jpg"
                             muted
                             playsinline
                             loop
@@ -164,6 +172,7 @@
                             class="video-sheet"
                             data-app="spotify"
                             src="assets/videos/spotify.mp4"
+                            poster="assets/video-posters/spotify.jpg"
                             muted
                             playsinline
                             loop
@@ -381,7 +390,23 @@
                             >.
                         </p>
 
-                        </div>
+                        <p class="mobile-paragraph">
+                            Feel free to
+                            <a
+                                href="https://x.com/raffichill"
+                                target="_blank"
+                                class="mobile-highlight"
+                                >DM</a
+                            >
+                            or shoot me an
+                            <a
+                                href="mailto:raffi.chilingaryan@gmail.com"
+                                class="mobile-highlight"
+                                >email</a
+                            >
+                            if you want to get in touch.
+                        </p>
+                    </div>
                 </div>
 
                 <div class="mobile-social-icons">
@@ -1016,6 +1041,7 @@
                     v.pause();
                     v.currentTime = 0;
                     v.removeAttribute("src");
+                    v.removeAttribute("poster");
                     v.load(); // Force clear
                     v.style.opacity = "0";
                 });
@@ -1034,6 +1060,9 @@
 
                 folderVideoOpen = true;
 
+                // Set poster from video path (e.g., assets/videos/foo.mp4 -> assets/video-posters/foo.jpg)
+                const posterSrc = videoSrc.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
+                videoA.poster = posterSrc;
                 videoA.src = videoSrc;
                 videoA.load();
                 activeVideoSheet = videoA;
@@ -1120,6 +1149,7 @@
                                 v.pause();
                                 v.currentTime = 0;
                                 v.removeAttribute("src");
+                                v.removeAttribute("poster");
                                 v.style.opacity = "";
                                 v.style.transform = "";
                             });
@@ -1638,7 +1668,9 @@
                 const nextVideo = activeFolderVideo === "a" ? videoB : videoA;
 
                 if (app.video) {
-                    // Preload the new video in the inactive element
+                    // Set poster and preload the new video in the inactive element
+                    const posterSrc = app.video.replace('/videos/', '/video-posters/').replace(/\.(mp4|mov)$/, '.jpg');
+                    nextVideo.poster = posterSrc;
                     nextVideo.src = app.video;
                     nextVideo.currentTime = 0;
 
@@ -1655,6 +1687,7 @@
                             // Clean up old video after fade
                             currentVideo.pause();
                             currentVideo.removeAttribute("src");
+                            currentVideo.removeAttribute("poster");
                             currentVideo.load();
                         });
 
