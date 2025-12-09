@@ -928,6 +928,9 @@
             // Track which folder video element is active (for crossfade)
             let activeFolderVideo = "a"; // "a" or "b"
 
+            // Track active phoneScreen animation to cancel on new opens
+            let phoneScreenAnimation = null;
+
             // Global mouse tracking for cursor pickup after video dismiss
             let lastMouseX = 0;
             let lastMouseY = 0;
@@ -1044,8 +1047,11 @@
                     mass: 1,
                 };
 
-                // Animate entire phone screen down (includes home image and masks)
-                Motion.animate(phoneScreen, { scale: [1, 0.92] }, springConfig);
+                // Cancel any pending phoneScreen animation and animate down
+                if (phoneScreenAnimation) {
+                    phoneScreenAnimation.cancel();
+                }
+                phoneScreenAnimation = Motion.animate(phoneScreen, { scale: [1, 0.92] }, springConfig);
 
                 // Animate video sheet up
                 Motion.animate(video, { y: [650, 0] }, springConfig);
@@ -1107,7 +1113,11 @@
                     mass: 1,
                 };
 
-                Motion.animate(phoneScreen, { scale: 0.92 }, springConfig);
+                // Cancel any pending phoneScreen animation before starting new one
+                if (phoneScreenAnimation) {
+                    phoneScreenAnimation.cancel();
+                }
+                phoneScreenAnimation = Motion.animate(phoneScreen, { scale: 0.92 }, springConfig);
                 Motion.animate(videoA, { y: 0 }, springConfig);
                 Motion.animate(videoB, { y: 0 }, springConfig);
 
@@ -1143,12 +1153,17 @@
                     mass: 1,
                 };
 
-                Motion.animate(
+                if (phoneScreenAnimation) {
+                    phoneScreenAnimation.cancel();
+                }
+                phoneScreenAnimation = Motion.animate(
                     phoneScreen,
                     { scale: 1 },
                     springConfig,
-                ).finished.then(() => {
+                );
+                phoneScreenAnimation.finished.then(() => {
                     phoneScreen.style.transform = "";
+                    phoneScreenAnimation = null;
                 });
 
                 if (isFolderVideo) {
