@@ -764,7 +764,7 @@ body {
     letter-spacing: var(--list-letter-spacing);
     flex: 1;
     min-width: 0;
-    padding-top: -1px;
+    margin-top: -1px;
 }
 
 .folder-app-description .app-name {
