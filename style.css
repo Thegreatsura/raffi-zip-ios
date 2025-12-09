@@ -971,17 +971,32 @@ body {
         padding-top: max(28px, env(safe-area-inset-top, 28px));
         padding-bottom: env(safe-area-inset-bottom, 0px);
         animation: fadeIn 0.3s ease-out;
+        /* Hide scrollbar on mobile */
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .mobile-view::-webkit-scrollbar {
+        display: none;
     }
 
     .mobile-content {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         width: 100%;
         min-height: calc(
             100vh - max(28px, env(safe-area-inset-top, 28px)) -
                 env(safe-area-inset-bottom, 0px)
         );
+        /* Hide scrollbar on mobile */
+        overflow-y: auto;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .mobile-content::-webkit-scrollbar {
+        display: none;
     }
 
     .mobile-main {
@@ -1028,7 +1043,8 @@ body {
     .mobile-social-icons {
         display: flex;
         gap: 12px;
-        padding: 0 28px calc(40px + env(safe-area-inset-bottom, 0px)) 28px;
+        padding: 0 28px calc(40px + env(safe-area-inset-bottom, 0px)) 24px; /* 28px - 3px for optical alignment */
+        margin-top: 32px; /* Same as gap between header and paragraphs in mobile-main */
     }
 
     .mobile-social-icon {
