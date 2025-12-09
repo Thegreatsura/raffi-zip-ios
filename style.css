@@ -992,7 +992,7 @@ body {
 
     /* Each block is full width with its own padding */
     .mobile-title {
-        font-size: var(--title-font-size);
+        font-size: 21px;
         font-weight: var(--title-font-weight);
         color: var(--title-color);
         letter-spacing: var(--title-letter-spacing);
@@ -1007,7 +1007,7 @@ body {
     }
 
     .mobile-paragraph {
-        font-size: var(--body-font-size);
+        font-size: 17px;
         font-weight: var(--body-font-weight);
         color: #c1bcb4;
         line-height: var(--body-line-height);
