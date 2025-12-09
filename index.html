@@ -24,11 +24,17 @@
 
         <link rel="icon" type="image/png" href="assets/favicon.png" />
         <link rel="apple-touch-icon" href="assets/favicon.png" />
+        <!-- Preconnect to font server early -->
+        <link rel="preconnect" href="https://rsms.me/" crossorigin />
+        <!-- Preload the Inter font CSS -->
+        <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" />
+        <!-- Preload the variable font file -->
+        <link rel="preload" href="https://rsms.me/inter/font-files/InterVariable.woff2" as="font" type="font/woff2" crossorigin />
+        <!-- Load font stylesheet -->
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <!-- Preload critical assets -->
         <link rel="preload" href="assets/phone-mockups/home-desktop.jpg" as="image" />
         <link rel="preload" href="assets/favicon.png" as="image" />
-        <link rel="preconnect" href="https://rsms.me/" />
-        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <link rel="stylesheet" href="style.css" />
         <script src="https://cdn.jsdelivr.net/npm/motion@12.7.4/dist/motion.js"></script>
     </head>
@@ -2152,7 +2158,11 @@
                         .classList.add("intro-mode");
 
                     init();
-                    setTimeout(runIntroSequence, 100);
+
+                    // Wait for fonts to load before starting typewriter
+                    document.fonts.ready.then(() => {
+                        setTimeout(runIntroSequence, 100);
+                    });
                 }
             }
 
