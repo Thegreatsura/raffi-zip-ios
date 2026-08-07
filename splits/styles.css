@@ -22,7 +22,7 @@ body {
 
 a {
     color: inherit;
-    text-underline-offset: 3px;
+    text-decoration: none;
 }
 
 .home {
@@ -41,18 +41,6 @@ a {
     width: 112px;
     height: 112px;
     fill: currentColor;
-}
-
-.home h1 {
-    margin: 24px 0 0;
-    font-size: 2rem;
-    letter-spacing: -0.035em;
-    line-height: 1.1;
-}
-
-.tagline {
-    margin: 8px 0 0;
-    color: #717278;
 }
 
 .home-links {
@@ -127,7 +115,6 @@ a {
         color: #f8f8fa;
     }
 
-    .tagline,
     .back,
     .muted,
     .page-footer {
