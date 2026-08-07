@@ -1,0 +1,155 @@
+:root {
+    color-scheme: light dark;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-synthesis: none;
+    line-height: 1.55;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    min-height: 100%;
+}
+
+body {
+    background: #fff;
+    color: #111216;
+}
+
+a {
+    color: inherit;
+    text-underline-offset: 3px;
+}
+
+.home {
+    display: grid;
+    min-height: 100svh;
+    place-items: center;
+}
+
+.home-content {
+    display: grid;
+    justify-items: center;
+    text-align: center;
+}
+
+.logo {
+    width: 112px;
+    height: 112px;
+    fill: currentColor;
+}
+
+.home h1 {
+    margin: 24px 0 0;
+    font-size: 2rem;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+}
+
+.tagline {
+    margin: 8px 0 0;
+    color: #717278;
+}
+
+.home-links {
+    position: fixed;
+    bottom: max(32px, env(safe-area-inset-bottom));
+    display: flex;
+    gap: 24px;
+    font-size: 0.95rem;
+}
+
+.page {
+    width: min(680px, calc(100% - 40px));
+    margin: 0 auto;
+    padding: 64px 0 max(72px, env(safe-area-inset-bottom));
+}
+
+.back {
+    display: inline-block;
+    margin-bottom: 40px;
+    color: #717278;
+    text-decoration: none;
+}
+
+.page h1,
+.page h2 {
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.page h1 {
+    margin: 0 0 8px;
+    font-size: clamp(2rem, 7vw, 2.75rem);
+}
+
+.page h2 {
+    margin: 36px 0 8px;
+    font-size: 1.15rem;
+}
+
+.page p {
+    margin: 0 0 16px;
+}
+
+.muted {
+    color: #717278;
+}
+
+.contact {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 12px 18px;
+    border-radius: 999px;
+    background: #111216;
+    color: #fff;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.page-footer {
+    display: flex;
+    gap: 20px;
+    margin-top: 52px;
+    padding-top: 24px;
+    border-top: 1px solid #e6e6e8;
+    color: #717278;
+    font-size: 0.9rem;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #111216;
+        color: #f8f8fa;
+    }
+
+    .tagline,
+    .back,
+    .muted,
+    .page-footer {
+        color: #999a9f;
+    }
+
+    .contact {
+        background: #f8f8fa;
+        color: #111216;
+    }
+
+    .page-footer {
+        border-color: #303136;
+    }
+}
+
+@media (max-width: 480px) {
+    .page {
+        padding-top: 36px;
+    }
+
+    .back {
+        margin-bottom: 28px;
+    }
+}
